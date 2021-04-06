@@ -1,0 +1,29 @@
+name: CD
+on:
+  push:
+    branches:
+      - master
+      - alpha
+
+jobs:
+  build:
+    name: Build, test, and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - uses: bahmutov/npm-install@v1
+
+      - name: Build
+        run: yarn build
+
+      - name: UI tests
+        run: |
+          yarn start & yarn wait-on http://localhost:3000
+          yarn percy exec -- cypress run -e CI=true
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          DISABLE_SSR: 'yes'
