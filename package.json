@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
+    "@percy/cli": "^1.0.0-beta.46",
     "@percy/cypress": "^3.0.0",
     "@swingby-protocol/eslint-config": "^2.3.0",
     "@swingby-protocol/prettier-config": "^1.0.0",
