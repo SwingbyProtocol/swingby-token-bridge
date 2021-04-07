@@ -1,3 +1,4 @@
+import { ShortAddress } from '../components/ShortAddress';
 import { logger } from '../modules/logger';
 import { useOnboard } from '../modules/web3';
 
@@ -6,7 +7,9 @@ export default function HomePage() {
   return (
     <>
       <div>Wallet: {JSON.stringify(wallet)}</div>
-      <div>Address: {JSON.stringify(address)}</div>
+      <div>
+        Address: <ShortAddress value={address} />
+      </div>
       <div>Network: {JSON.stringify(network)}</div>
       <button
         onClick={() => {
