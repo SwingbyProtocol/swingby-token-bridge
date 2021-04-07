@@ -35,27 +35,16 @@ export const initOnboard = ({
     subscriptions,
     walletSelect: {
       wallets: [
-        { walletName: 'metamask', preferred: true, rpcUrl, appName, appUrl },
-        { walletName: 'ledger', preferred: true, rpcUrl, appUrl, appName },
-        ...(infuraApiKey
-          ? [
-              {
-                walletName: 'walletConnect',
-                infuraKey: infuraApiKey,
-                preferred: true,
-                rpcUrl,
-                appUrl,
-                appName,
-              },
-            ]
-          : []),
-        { walletName: 'walletLink', preferred: true, rpcUrl, appUrl, appName },
-        { walletName: 'authereum', rpcUrl, appUrl, appName },
-        { walletName: 'lattice', rpcUrl, appUrl, appName },
-        { walletName: 'torus', rpcUrl, appUrl, appName },
-        { walletName: 'opera', rpcUrl, appUrl, appName },
-        { walletName: 'trezor', rpcUrl, appUrl, appName },
-      ],
+        { walletName: 'metamask', preferred: true },
+        { walletName: 'ledger', preferred: true },
+        ...(infuraApiKey ? [{ walletName: 'walletConnect', preferred: true }] : []),
+        { walletName: 'walletLink', preferred: true },
+        { walletName: 'authereum' },
+        { walletName: 'lattice' },
+        { walletName: 'torus' },
+        { walletName: 'opera' },
+        { walletName: 'trezor' },
+      ].map((it) => ({ ...it, rpcUrl, appUrl, appName, infuraKey: infuraApiKey })),
     },
     walletCheck: [
       { checkName: 'derivationPath' },
