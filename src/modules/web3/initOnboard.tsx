@@ -3,8 +3,8 @@ import type { Subscriptions } from 'bnc-onboard/dist/src/interfaces'; // eslint-
 
 import { blocknativeApiKey, infuraApiKey } from '../env';
 
-const appName = 'Skybridge Widget';
-const appUrl = 'https://skybridge.exchange';
+const appName = 'Swingby Bridge';
+const appUrl = 'https://bridge.swingby.network';
 
 const RPC_URLS = {
   1: `https://mainnet.infura.io/v3/${infuraApiKey}`,
@@ -34,7 +34,28 @@ export const initOnboard = ({
     hideBranding: true,
     subscriptions,
     walletSelect: {
-      wallets: [{ walletName: 'metamask', preferred: true, rpcUrl, appName, appUrl }],
+      wallets: [
+        { walletName: 'metamask', preferred: true, rpcUrl, appName, appUrl },
+        { walletName: 'ledger', preferred: true, rpcUrl, appUrl, appName },
+        ...(infuraApiKey
+          ? [
+              {
+                walletName: 'walletConnect',
+                infuraKey: infuraApiKey,
+                preferred: true,
+                rpcUrl,
+                appUrl,
+                appName,
+              },
+            ]
+          : []),
+        { walletName: 'walletLink', preferred: true, rpcUrl, appUrl, appName },
+        { walletName: 'authereum', rpcUrl, appUrl, appName },
+        { walletName: 'lattice', rpcUrl, appUrl, appName },
+        { walletName: 'torus', rpcUrl, appUrl, appName },
+        { walletName: 'opera', rpcUrl, appUrl, appName },
+        { walletName: 'trezor', rpcUrl, appUrl, appName },
+      ],
     },
     walletCheck: [
       { checkName: 'derivationPath' },
