@@ -13,6 +13,9 @@ const RPC_URLS = {
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
 } as const;
 
+export const isValidNetworkId = (value: any): value is keyof typeof RPC_URLS =>
+  !!Object.keys(RPC_URLS).find((it) => `${it}` === `${value}`);
+
 export const initOnboard = ({
   networkId = 1,
   subscriptions,
@@ -31,9 +34,7 @@ export const initOnboard = ({
     hideBranding: true,
     subscriptions,
     walletSelect: {
-      wallets: [
-        { walletName: 'metamask', preferred: true, isMobile: true, rpcUrl, appName, appUrl },
-      ],
+      wallets: [{ walletName: 'metamask', preferred: true, rpcUrl, appName, appUrl }],
     },
     walletCheck: [
       { checkName: 'derivationPath' },
