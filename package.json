@@ -25,6 +25,7 @@
     "polished": "^4.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-dropzone": "^11.3.2",
     "react-intl": "^5.15.7",
     "react-spring": ">=8 <9",
     "styled-components": "^5.2.3"

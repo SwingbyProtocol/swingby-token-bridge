@@ -1,14 +1,6 @@
 import { rem, transitions } from 'polished';
 import styled from 'styled-components';
 
-export const Title = styled.h1`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: ${({ theme }) => rem(theme.pulsar.size.street)};
-  font-weight: 600;
-`;
-
 export const Subtitle = styled.div`
   font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
 `;
