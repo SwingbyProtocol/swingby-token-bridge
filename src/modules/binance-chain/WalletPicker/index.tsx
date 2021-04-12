@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { WalletType } from './WalletType';
+import { WalletConnect } from './WalletConnect';
 import { Selector } from './Selector';
 import { KeystoreFile } from './KeystoreFile';
 import { BackButton, Title, TitleIcon } from './styled';
@@ -37,7 +38,7 @@ export const WalletPicker = ({ open, onClose }: Props) => {
         {(() => {
           switch (walletType) {
             case 'wallet-connect':
-              return <>Wallet Connect</>;
+              return <WalletConnect />;
             case 'ledger':
               return <>Ledger</>;
             case 'keystore-file':
