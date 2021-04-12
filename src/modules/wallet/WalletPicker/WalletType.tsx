@@ -1,1 +1,1 @@
-export type WalletType = 'wallet-connect' | 'ledger' | 'keystore-file' | 'seed-phrase' | null;
+export type WalletType = 'wallet-connect' | 'binance-chain-wallet' | null;

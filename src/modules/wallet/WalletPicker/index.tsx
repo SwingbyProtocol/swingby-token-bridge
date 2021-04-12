@@ -4,13 +4,13 @@ import { FormattedMessage } from 'react-intl';
 
 import { WalletType } from './WalletType';
 import { WalletConnect } from './WalletConnect';
-import { Selector } from './Selector';
-import { KeystoreFile } from './KeystoreFile';
+import { WalletSelector } from './WalletSelector';
 import { BackButton, Title, TitleIcon } from './styled';
 
 type Props = { open: boolean; onClose?: () => void };
 
 export const WalletPicker = ({ open, onClose }: Props) => {
+  const [chainPicked, setChainPicked] = useState(false);
   const [walletType, setWalletType] = useState<WalletType>(null);
   return (
     <Modal open={open} onClose={onClose}>
@@ -26,27 +26,41 @@ export const WalletPicker = ({ open, onClose }: Props) => {
             >
               <Icon.ArrowLeft />
             </BackButton>
+          ) : chainPicked ? (
+            <BackButton
+              onClick={(evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                setChainPicked(false);
+              }}
+            >
+              <Icon.ArrowLeft />
+            </BackButton>
           ) : (
             <TitleIcon>
               <Icon.Wallet />
             </TitleIcon>
           )}
           &nbsp;
-          <FormattedMessage id={`bc-wallet.select-a-wallet.${walletType}.title`} />
+          {chainPicked ? (
+            <FormattedMessage id={`bc-wallet.select-a-wallet.${walletType}.title`} />
+          ) : (
+            <FormattedMessage id="use-wallet.select-chain.title" />
+          )}
         </Title>
 
         {(() => {
+          if (!chainPicked) {
+            return <WalletSelector onSelection={setWalletType} />;
+          }
+
           switch (walletType) {
             case 'wallet-connect':
               return <WalletConnect />;
-            case 'ledger':
-              return <>Ledger</>;
-            case 'keystore-file':
-              return <KeystoreFile />;
-            case 'seed-phrase':
-              return <>Seed Phrase</>;
+            case 'binance-chain-wallet':
+              return <>Binance Chain Wallet</>;
             default:
-              return <Selector onSelection={setWalletType} />;
+              return <WalletSelector onSelection={setWalletType} />;
           }
         })()}
       </Modal.Content>

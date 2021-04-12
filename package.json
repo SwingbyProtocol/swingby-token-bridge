@@ -12,7 +12,7 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,mdx,html,yml}'"
   },
   "dependencies": {
-    "@swingby-protocol/pulsar": "^3.12.0",
+    "@swingby-protocol/pulsar": "^3.13.0",
     "@swingby-protocol/sdk": "^1.0.0-alpha.95",
     "@walletconnect/client": "^1.4.1",
     "big.js": "^6.0.3",
