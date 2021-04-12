@@ -2,7 +2,10 @@ import { Icon, Modal } from '@swingby-protocol/pulsar';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { useInternalContext } from '../context';
+
 import { WalletType } from './WalletType';
+import { ChainSelector } from './ChainSelector';
 import { WalletConnect } from './WalletConnect';
 import { WalletSelector } from './WalletSelector';
 import { BackButton, Title, TitleIcon } from './styled';
@@ -10,6 +13,7 @@ import { BackButton, Title, TitleIcon } from './styled';
 type Props = { open: boolean; onClose?: () => void };
 
 export const WalletPicker = ({ open, onClose }: Props) => {
+  const { onboard } = useInternalContext();
   const [chainPicked, setChainPicked] = useState(false);
   const [walletType, setWalletType] = useState<WalletType>(null);
   return (
@@ -51,7 +55,19 @@ export const WalletPicker = ({ open, onClose }: Props) => {
 
         {(() => {
           if (!chainPicked) {
-            return <WalletSelector onSelection={setWalletType} />;
+            return (
+              <ChainSelector
+                onSelection={(chain) => {
+                  if (chain === 'binance-chain') {
+                    setChainPicked(true);
+                    return;
+                  }
+
+                  onboard.instance?.walletSelect();
+                  onClose?.();
+                }}
+              />
+            );
           }
 
           switch (walletType) {

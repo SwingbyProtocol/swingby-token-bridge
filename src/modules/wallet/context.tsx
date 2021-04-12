@@ -48,8 +48,10 @@ export const WalletProvider = ({ children }: { children?: React.ReactNode }) => 
   );
 };
 
+export const useInternalContext = () => useContext(Context);
+
 export const useWallet = () => {
-  const { onboard, walletConnect, setModalOpen } = useContext(Context);
+  const { onboard, walletConnect, setModalOpen } = useInternalContext();
 
   return useMemo(
     () => ({
