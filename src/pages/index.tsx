@@ -1,35 +1,32 @@
-import { FormattedMessage } from 'react-intl';
-
-import { ShortAddress } from '../components/ShortAddress';
 import { logger } from '../modules/logger';
-import { useOnboard, isValidNetworkId } from '../modules/web3';
+import { useWallet } from '../modules/wallet';
 
 export default function HomePage() {
-  const { onboard, network, address, wallet } = useOnboard();
+  const { walletSelect, walletReset, address } = useWallet();
   return (
     <>
-      <div>
+      {/* <div>
         Address: <ShortAddress value={address} />
       </div>
       <div>
         Network:{' '}
         {isValidNetworkId(network) ? <FormattedMessage id={`network.short.${network}`} /> : 'null'}
-      </div>
+      </div> */}
       <button
         onClick={() => {
           try {
-            if (wallet) {
-              onboard?.walletReset();
+            if (address) {
+              walletReset();
               return;
             }
 
-            onboard?.walletSelect();
+            walletSelect();
           } catch (e) {
             logger.error(e);
           }
         }}
       >
-        {wallet ? 'Disconnect' : 'Connect'}
+        {address ? 'Disconnect' : 'Connect'}
       </button>
     </>
   );

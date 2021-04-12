@@ -1,7 +1,7 @@
 import Onboard from 'bnc-onboard';
 import type { Subscriptions } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
 
-import { blocknativeApiKey, infuraApiKey } from '../env';
+import { blocknativeApiKey, infuraApiKey } from '../../env';
 
 const appName = 'Swingby Bridge';
 const appUrl = 'https://bridge.swingby.network';

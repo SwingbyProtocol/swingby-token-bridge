@@ -11,7 +11,7 @@ import Head from 'next/head';
 
 import { languages } from '../modules/i18n';
 import { Favicon } from '../components/Favicon';
-import { OnboardProvider } from '../modules/web3';
+import { WalletProvider } from '../modules/wallet';
 
 function MyApp({ Component, pageProps, router }: AppProps) {
   const locale = (() => {
@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <IntlProvider messages={messages} locale={locale} defaultLocale="en">
       <PulsarThemeProvider>
-        <OnboardProvider>
+        <WalletProvider>
           <>
             <Head>
               <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,7 +41,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
             <Component {...pageProps} />
             <PulsarToastContainer />
           </>
-        </OnboardProvider>
+        </WalletProvider>
       </PulsarThemeProvider>
     </IntlProvider>
   );
