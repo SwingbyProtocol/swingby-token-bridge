@@ -1,3 +1,3 @@
 export { OnboardProvider, useOnboard } from './context';
-export { isValidNetworkId } from './initOnboard';
+export { isValidNetworkId, NETWORK_IDS } from './initOnboard';
 export { OnboardGlobalStyles } from './OnboardGlobalStyles';
