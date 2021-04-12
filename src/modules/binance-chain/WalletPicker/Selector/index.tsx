@@ -3,14 +3,23 @@ import { FormattedMessage } from 'react-intl';
 
 import { WalletType } from '../WalletType';
 
-import { OptionsContainer, Item, ItemIcon } from './styled';
+import { OptionsContainer, Item, ItemIcon, Title, Subtitle } from './styled';
 
 type Props = { onSelection: (walletType: WalletType) => void };
 
 export const Selector = ({ onSelection }: Props) => {
   return (
     <>
-      <FormattedMessage id="bc-wallet.select-a-wallet" />
+      <Title>
+        <ItemIcon>
+          <Icon.Wallet />
+        </ItemIcon>
+        &nbsp;
+        <FormattedMessage id="bc-wallet.select-a-wallet.title" />
+      </Title>
+      <Subtitle>
+        <FormattedMessage id="bc-wallet.select-a-wallet.subtitle" />
+      </Subtitle>
       <OptionsContainer>
         <Item
           onClick={(evt) => {

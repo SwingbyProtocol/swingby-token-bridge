@@ -1,10 +1,23 @@
 import { rem, transitions } from 'polished';
 import styled from 'styled-components';
 
+export const Title = styled.h1`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: ${({ theme }) => rem(theme.pulsar.size.street)};
+  font-weight: 600;
+`;
+
+export const Subtitle = styled.div`
+  font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
+`;
+
 export const OptionsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: ${({ theme }) => rem(theme.pulsar.size.room)};
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.room)};
 `;
 
 export const Item = styled.button`

@@ -1,10 +1,6 @@
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 
-import { ShortAddress } from '../components/ShortAddress';
-import { WalletPicker } from '../modules/binance-chain/WalletPicker';
-import { logger } from '../modules/logger';
-import { useOnboard, isValidNetworkId } from '../modules/web3';
+import { WalletPicker } from '../modules/binance-chain';
 
 export default function HomePage() {
   const [open, setOpen] = useState(true);

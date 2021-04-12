@@ -12,7 +12,7 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,mdx,html,yml}'"
   },
   "dependencies": {
-    "@swingby-protocol/pulsar": "^3.11.0",
+    "@swingby-protocol/pulsar": "^3.12.0",
     "@swingby-protocol/sdk": "^1.0.0-alpha.95",
     "big.js": "^6.0.3",
     "bnc-onboard": "1.20.0",
