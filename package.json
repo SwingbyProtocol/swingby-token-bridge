@@ -12,7 +12,8 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,mdx,html,yml}'"
   },
   "dependencies": {
-    "@swingby-protocol/pulsar": "^3.10.1",
+    "@swingby-protocol/pulsar": "^3.11.0",
+    "@swingby-protocol/sdk": "^1.0.0-alpha.95",
     "big.js": "^6.0.3",
     "bnc-onboard": "1.20.0",
     "cors": "^2.8.5",
@@ -25,7 +26,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-intl": "^5.15.7",
-    "react-spring": "^9.0.0",
+    "react-spring": ">=8 <9",
     "styled-components": "^5.2.3"
   },
   "devDependencies": {
