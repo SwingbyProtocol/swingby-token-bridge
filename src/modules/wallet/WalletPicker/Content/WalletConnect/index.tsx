@@ -1,7 +1,7 @@
 import { Loading } from '@swingby-protocol/pulsar';
 import { useEffect, useState } from 'react';
 
-import { useInternalContext } from '../../internal-context';
+import { useInternalContext } from '../../../internal-context';
 
 import { QrContainer, StyledQRCode } from './styled';
 
