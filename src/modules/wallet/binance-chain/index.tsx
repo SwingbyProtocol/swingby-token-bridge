@@ -1,2 +1,127 @@
-export { WalletPicker } from '../WalletPicker';
-export { useWalletConnect } from './useWalletConnect';
+import WalletConnectClient from '@walletconnect/client';
+import { useMemo, useState } from 'react';
+
+import { logger } from '../../logger';
+
+const WALLET_CONNECT_BINANCE_CHAIN_ID = 714; // Binance-Chain-Tigris
+
+export const useWalletConnect = () => {
+  const [address, setAddress] = useState<string | null>(null);
+  const instance = useMemo(() => {
+    const instance = new WalletConnectClient({ bridge: 'https://bridge.walletconnect.org' });
+
+    instance.on('session_request', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "session_request"');
+      if (err) throw err;
+    });
+
+    instance.on('connect', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "connect"');
+      if (err) throw err;
+
+      instance
+        .sendCustomRequest({
+          id: 1,
+          jsonrpc: '2.0',
+          method: 'get_accounts',
+          params: [],
+        })
+        .then((accounts: Array<{ address: string; network: number }>) => {
+          logger.debug({ accounts }, 'WalletConnect: Got list of accounts');
+          const account = accounts.find(
+            ({ network }) => network === WALLET_CONNECT_BINANCE_CHAIN_ID,
+          );
+          if (!account) {
+            throw new Error(`Could not find any Binance Chain account`);
+          }
+
+          setAddress(account.address);
+        });
+    });
+
+    instance.on('session_update', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "session_update"');
+      if (err) throw err;
+    });
+
+    instance.on('disconnect', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "disconnect"');
+      if (err) throw err;
+      setAddress(null);
+    });
+
+    return instance;
+  }, []);
+
+  return useMemo(() => ({ instance, address }), [instance, address]);
+};
+
+class MyWalletConnect extends WalletConnectClient {
+  static METHOD_SIGN = 'bnb_sign';
+  static METHOD_CONFIRM = 'bnb_tx_confirmation';
+
+  async sendTransaction(signDocObj) {
+    if (!signDocObj || typeof signDocObj !== 'object') {
+      throw new Error('sendTransaction expected a `signDocObj` of type `object`');
+    }
+
+    return this.sendCustomRequest({
+      id: 1,
+      jsonrpc: '2.0',
+      method: MyWalletConnect.METHOD_SIGN,
+      params: [signDocObj],
+    });
+  }
+
+  async sendConfirmation(ok = true, errorMsg = null) {
+    if (typeof ok !== 'boolean') {
+      throw new Error('sendConfirmation expected an `ok` of type `boolean`');
+    }
+
+    if (errorMsg && typeof errorMsg !== 'string') {
+      throw new Error('sendConfirmation expected an optional `errorMsg` of type `string`');
+    }
+
+    return this.sendCustomRequest({
+      id: 1,
+      jsonrpc: '2.0',
+      method: MyWalletConnect.METHOD_CONFIRM,
+      params: [{ ok, errorMsg }],
+    });
+  }
+
+  async signRawBnbTransaction(signDocObj) {
+    if (!this.connected) {
+      throw new Error('Session currently disconnected');
+    }
+
+    return await this.sendCustomRequest({
+      id: 1,
+      jsonrpc: '2.0',
+      method: MyWalletConnect.METHOD_SIGN,
+      params: [signDocObj],
+    });
+  }
+
+  // Ref: https://github.com/trustwallet/web-core/blob/master/packages/walletconnect/src/index.ts#L30
+  async trustSignTransaction(signDocObj) {
+    if (!this.connected) {
+      throw new Error('Session currently disconnected');
+    }
+
+    const request = this._formatRequest({
+      method: 'trust_signTransaction',
+      params: [
+        {
+          network: WALLET_CONNECT_BINANCE_CHAIN_ID,
+          transaction: JSON.stringify(signDocObj.toJSON()),
+        },
+      ],
+    });
+    try {
+      return await this._sendCallRequest(request);
+    } catch (error) {
+      throw error;
+    }
+  }
+}

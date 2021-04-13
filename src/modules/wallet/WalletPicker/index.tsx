@@ -1,8 +1,9 @@
 import { Icon, Modal } from '@swingby-protocol/pulsar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useInternalContext } from '../context';
+import { useWallet } from '../useWallet';
+import { useInternalContext } from '../internal-context';
 
 import { WalletType } from './WalletType';
 import { ChainSelector } from './ChainSelector';
@@ -14,8 +15,16 @@ type Props = { open: boolean; onClose?: () => void };
 
 export const WalletPicker = ({ open, onClose }: Props) => {
   const { onboard } = useInternalContext();
+  const { address } = useWallet();
   const [chainPicked, setChainPicked] = useState(false);
   const [walletType, setWalletType] = useState<WalletType>(null);
+
+  useEffect(() => {
+    if (address) {
+      onClose?.();
+    }
+  }, [address, onClose]);
+
   return (
     <Modal open={open} onClose={onClose}>
       <Modal.Content>

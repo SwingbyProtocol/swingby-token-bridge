@@ -1,1 +1,2 @@
-export { useWallet, WalletProvider } from './context';
+export { useWallet } from './useWallet';
+export { WalletProvider } from './WalletProvider';
