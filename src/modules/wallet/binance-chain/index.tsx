@@ -1,15 +1,18 @@
 import WalletConnectClient from '@walletconnect/client';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { logger } from '../../logger';
 
 const WALLET_CONNECT_BINANCE_CHAIN_ID = 714; // Binance-Chain-Tigris
 
-export const useWalletConnect = () => {
-  const [address, setAddress] = useState<string | null>(null);
-  const instance = useMemo(() => {
-    const instance = new WalletConnectClient({ bridge: 'https://bridge.walletconnect.org' });
+const buildNewInstance = () =>
+  new WalletConnectClient({ bridge: 'https://bridge.walletconnect.org' });
 
+export const useWalletConnect = () => {
+  const [instance, setInstance] = useState(buildNewInstance());
+  const [address, setAddress] = useState<string | null>(null);
+
+  useEffect(() => {
     instance.on('session_request', (err, payload) => {
       logger.debug({ err, payload }, 'WalletConnect event: "session_request"');
       if (err) throw err;
@@ -46,12 +49,10 @@ export const useWalletConnect = () => {
 
     instance.on('disconnect', (err, payload) => {
       logger.debug({ err, payload }, 'WalletConnect event: "disconnect"');
-      if (err) throw err;
       setAddress(null);
+      setInstance(buildNewInstance());
     });
-
-    return instance;
-  }, []);
+  }, [instance]);
 
   return useMemo(() => ({ instance, address }), [instance, address]);
 };
