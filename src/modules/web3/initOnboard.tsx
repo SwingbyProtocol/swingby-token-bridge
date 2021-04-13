@@ -1,7 +1,7 @@
 import Onboard from 'bnc-onboard';
 import type { Subscriptions } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
 
-import { blocknativeApiKey, infuraApiKey } from '../../env';
+import { blocknativeApiKey, infuraApiKey } from '../env';
 
 const appName = 'Swingby Bridge';
 const appUrl = 'https://bridge.swingby.network';
@@ -12,10 +12,6 @@ const RPC_URLS = {
   56: 'https://bsc-dataseed1.binance.org:443',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
 } as const;
-
-export const NETWORK_IDS = (Object.keys(RPC_URLS) as unknown) as Array<keyof typeof RPC_URLS>;
-export const isValidNetworkId = (value: any): value is keyof typeof RPC_URLS =>
-  !!NETWORK_IDS.find((it) => `${it}` === `${value}`);
 
 export const initOnboard = ({
   networkId = 1,
