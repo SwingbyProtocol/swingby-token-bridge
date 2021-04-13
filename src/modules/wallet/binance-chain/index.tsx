@@ -13,11 +13,6 @@ export const useWalletConnect = () => {
   const [address, setAddress] = useState<string | null>(null);
 
   useEffect(() => {
-    instance.on('session_request', (err, payload) => {
-      logger.debug({ err, payload }, 'WalletConnect event: "session_request"');
-      if (err) throw err;
-    });
-
     instance.on('connect', (err, payload) => {
       logger.debug({ err, payload }, 'WalletConnect event: "connect"');
       if (err) throw err;
@@ -42,15 +37,35 @@ export const useWalletConnect = () => {
         });
     });
 
+    instance.on('disconnect', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "disconnect"');
+      setAddress(null);
+      setInstance(buildNewInstance());
+    });
+
+    instance.on('session_request', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "session_request"');
+      if (err) throw err;
+    });
+
     instance.on('session_update', (err, payload) => {
       logger.debug({ err, payload }, 'WalletConnect event: "session_update"');
       if (err) throw err;
     });
 
-    instance.on('disconnect', (err, payload) => {
-      logger.debug({ err, payload }, 'WalletConnect event: "disconnect"');
-      setAddress(null);
-      setInstance(buildNewInstance());
+    instance.on('call_request', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "call_request"');
+      if (err) throw err;
+    });
+
+    instance.on('wc_sessionRequest', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "wc_sessionRequest"');
+      if (err) throw err;
+    });
+
+    instance.on('wc_sessionUpdate', (err, payload) => {
+      logger.debug({ err, payload }, 'WalletConnect event: "wc_sessionUpdate"');
+      if (err) throw err;
     });
   }, [instance]);
 

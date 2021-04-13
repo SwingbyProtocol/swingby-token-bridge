@@ -10,11 +10,11 @@ export const WalletConnect = () => {
   const { walletConnect } = useInternalContext();
 
   useEffect(() => {
-    (async () => {
-      if (walletConnect.address) {
-        return;
-      }
+    if (walletConnect.address) {
+      return;
+    }
 
+    (async () => {
       if (walletConnect.instance.connected) {
         try {
           await walletConnect.instance.killSession();
