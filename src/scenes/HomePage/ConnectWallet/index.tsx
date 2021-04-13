@@ -7,10 +7,10 @@ import { isValidNetworkId, useOnboard } from '../../../modules/web3';
 
 import { Container, Network } from './styled';
 
-export const ConnectWallet = () => {
+export const ConnectWallet = ({ className }: { className?: string }) => {
   const { address, network, onboard } = useOnboard();
   return (
-    <Container>
+    <Container className={className}>
       {!!address && (
         <Network value={isValidNetworkId(network) ? network : null}>
           {isValidNetworkId(network) ? <FormattedMessage id={`network.short.${network}`} /> : '?'}

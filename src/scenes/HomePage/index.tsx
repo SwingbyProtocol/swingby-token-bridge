@@ -1,12 +1,11 @@
 import { Card } from '@swingby-protocol/pulsar';
 
-import { ConnectWallet } from './ConnectWallet';
-import { Container } from './styled';
+import { Container, StyledConnectWallet } from './styled';
 
 export const HomePage = () => {
   return (
     <Container>
-      <ConnectWallet />
+      <StyledConnectWallet />
       <Card size="town">aaaa</Card>
     </Container>
   );
