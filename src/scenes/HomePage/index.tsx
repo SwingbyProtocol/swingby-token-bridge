@@ -1,4 +1,10 @@
-import { Button, Loading, TextInput } from '@swingby-protocol/pulsar';
+import {
+  Button,
+  Loading,
+  TextInput,
+  createOrUpdateToast,
+  dismissToast,
+} from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -20,6 +26,8 @@ import {
   MaxButton,
   ButtonsContainer,
 } from './styled';
+
+const TOAST_ID_GET_MAX = 'get-max';
 
 export const HomePage = () => {
   const { address, network, onboard } = useOnboard();
@@ -45,8 +53,14 @@ export const HomePage = () => {
     try {
       setGettingMax(true);
       setAmount(await getSwingbyBalance({ onboard }));
+      dismissToast({ toastId: TOAST_ID_GET_MAX });
     } catch (err) {
       logger.debug({ err }, 'Failed to get balance');
+      createOrUpdateToast({
+        content: 'Failed to get balance',
+        type: 'danger',
+        toastId: TOAST_ID_GET_MAX,
+      });
     } finally {
       setGettingMax(false);
     }
