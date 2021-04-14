@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@swingby-protocol/pulsar": "^3.13.0",
-    "@swingby-protocol/sdk": "^1.0.0-alpha.95",
     "@walletconnect/client": "^1.4.1",
     "big.js": "^6.0.3",
     "bnc-onboard": "1.20.0",
@@ -27,7 +26,6 @@
     "polished": "^4.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-dropzone": "^11.3.2",
     "react-intl": "^5.15.7",
     "react-spring": ">=8 <9",
     "styled-components": "^5.2.3",
