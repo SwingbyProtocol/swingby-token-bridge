@@ -28,6 +28,7 @@ import {
 } from './styled';
 
 const TOAST_ID_GET_MAX = 'get-max';
+const TOAST_ID_APPROVE = 'approve';
 
 export const HomePage = () => {
   const { address, network, onboard } = useOnboard();
@@ -65,6 +66,24 @@ export const HomePage = () => {
       setGettingMax(false);
     }
   }, [onboard]);
+
+  const approveAmount = useCallback(async () => {
+    if (!parsedAmount) return;
+    try {
+      setApproving(true);
+      await approveHotWallet({ amount: parsedAmount, onboard });
+      dismissToast({ toastId: TOAST_ID_APPROVE });
+    } catch (err) {
+      logger.error({ err }, 'Failed to approve');
+      createOrUpdateToast({
+        content: 'Failed to approve' + (err.message ? `: ${err.message}` : ''),
+        type: 'danger',
+        toastId: TOAST_ID_APPROVE,
+      });
+    } finally {
+      setApproving(false);
+    }
+  }, [onboard, parsedAmount]);
 
   useEffect(() => {
     let cancelled = false;
@@ -108,15 +127,7 @@ export const HomePage = () => {
             variant="primary"
             size="state"
             disabled={!address || !network || allowance.gte(parsedAmount ?? 0) || approving}
-            onClick={async () => {
-              if (!parsedAmount) return;
-              try {
-                setApproving(true);
-                await approveHotWallet({ amount: parsedAmount, onboard });
-              } finally {
-                setApproving(false);
-              }
-            }}
+            onClick={approveAmount}
           >
             {approving ? <Loading /> : <FormattedMessage id="form.approve-btn" />}
           </Button>
