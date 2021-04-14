@@ -2,7 +2,7 @@ import { Button, TextInput } from '@swingby-protocol/pulsar';
 import Big from 'big.js';
 import { useMemo, useState } from 'react';
 
-import { useOnboard } from '../../modules/web3';
+import { useOnboard } from '../../modules/onboard';
 
 import { Container, StyledConnectWallet, StyledCard, AmountContainer, MaxButton } from './styled';
 

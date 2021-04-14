@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { ShortAddress } from '../../../components/ShortAddress';
 import { logger } from '../../../modules/logger';
-import { isValidNetworkId, useOnboard } from '../../../modules/web3';
+import { isValidNetworkId, useOnboard } from '../../../modules/onboard';
 
 import { Container, Network } from './styled';
 

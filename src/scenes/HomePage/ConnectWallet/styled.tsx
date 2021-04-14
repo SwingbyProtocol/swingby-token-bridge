@@ -1,7 +1,7 @@
 import { rem, transitions, transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-import type { NetworkId } from '../../../modules/web3';
+import type { NetworkId } from '../../../modules/onboard';
 
 const COLOR_ETH = '#8892b5';
 const COLOR_BSC = '#f0b90b';

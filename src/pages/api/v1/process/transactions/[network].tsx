@@ -1,5 +1,5 @@
 import { createEndpoint, getStringParam } from '../../../../../modules/server__api-endpoint';
-import { isValidNetworkId, NETWORK_IDS } from '../../../../../modules/web3';
+import { isValidNetworkId, NETWORK_IDS } from '../../../../../modules/onboard';
 
 export default createEndpoint({
   isSecret: true,
