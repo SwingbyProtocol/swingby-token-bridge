@@ -1,7 +1,10 @@
+import { Button, Card } from '@swingby-protocol/pulsar';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
 import { ConnectWallet } from './ConnectWallet';
+
+const MEDIA = `(min-width: ${rem(768)})`;
 
 export const Container = styled.div`
   display: grid;
@@ -11,9 +14,29 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 0 ${({ theme }) => rem(theme.pulsar.size.city)};
+  padding: 0 ${({ theme }) => rem(theme.pulsar.size.drawer)};
 `;
 
 export const StyledConnectWallet = styled(ConnectWallet)`
   justify-self: flex-end;
+`;
+
+export const StyledCard = styled(Card)`
+  @media ${MEDIA} {
+    width: ${rem(320)};
+    justify-self: center;
+  }
+`;
+
+export const AmountContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: ${({ theme }) => rem(theme.pulsar.size.street)};
+`;
+
+export const MaxButton = styled(Button)`
+  margin-left: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  padding: 0 ${({ theme }) => rem(theme.pulsar.size.box)};
 `;

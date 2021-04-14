@@ -50,12 +50,13 @@ export const useOnboardInstance = () => {
 
   return useMemo(() => {
     const wallet = onboard?.getState().wallet ?? null;
+    const network = onboard?.getState().network ?? null;
     return {
       updateCount,
       address: onboard?.getState().address ?? null,
       wallet: wallet?.provider ? wallet : null,
       onboard,
-      network: onboard?.getState().network ?? null,
+      network: isValidNetworkId(network) ? network : null,
     };
   }, [onboard, updateCount]);
 };
