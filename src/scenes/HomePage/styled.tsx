@@ -23,7 +23,7 @@ export const StyledConnectWallet = styled(ConnectWallet)`
 
 export const StyledCard = styled(Card)`
   @media ${MEDIA} {
-    width: ${rem(320)};
+    width: ${rem(450)};
     justify-self: center;
   }
 `;
@@ -39,4 +39,10 @@ export const AmountContainer = styled.div`
 export const MaxButton = styled(Button)`
   margin-left: ${({ theme }) => rem(theme.pulsar.size.drawer)};
   padding: 0 ${({ theme }) => rem(theme.pulsar.size.box)};
+`;
+
+export const ButtonsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
 `;

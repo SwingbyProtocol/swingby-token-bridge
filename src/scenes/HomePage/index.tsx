@@ -1,17 +1,30 @@
 import { Button, TextInput } from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
-import { ChangeEventHandler, useCallback, useMemo, useState } from 'react';
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { logger } from '../../modules/logger';
 import { useOnboard } from '../../modules/onboard';
-import { useGetSwingbyBalance } from '../../modules/web3';
+import {
+  approveHotWallet,
+  getDestinationNetwork,
+  getHotWalletAllowance,
+  getSwingbyBalance,
+} from '../../modules/web3';
 
-import { Container, StyledConnectWallet, StyledCard, AmountContainer, MaxButton } from './styled';
+import {
+  Container,
+  StyledConnectWallet,
+  StyledCard,
+  AmountContainer,
+  MaxButton,
+  ButtonsContainer,
+} from './styled';
 
 export const HomePage = () => {
-  const { address, network } = useOnboard();
+  const { address, network, onboard } = useOnboard();
   const [amount, setAmount] = useState('');
-  const { getSwingbyBalance } = useGetSwingbyBalance();
+  const [allowance, setAllowance] = useState(new Big(0));
 
   const parsedAmount = useMemo(() => {
     try {
@@ -27,8 +40,33 @@ export const HomePage = () => {
   );
 
   const getMax = useCallback(async () => {
-    setAmount(await getSwingbyBalance());
-  }, [getSwingbyBalance]);
+    try {
+      setAmount(await getSwingbyBalance({ onboard }));
+    } catch (err) {
+      logger.debug({ err }, 'Failed to get balance');
+    }
+  }, [onboard]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const updateAllowance = async () => {
+      if (cancelled) return;
+
+      try {
+        setAllowance(new Big(await getHotWalletAllowance({ onboard })));
+        setTimeout(updateAllowance, 5000);
+      } catch (err) {
+        logger.debug({ err }, 'Failed to get allowance');
+      }
+    };
+
+    updateAllowance();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [onboard]);
 
   return (
     <Container>
@@ -46,13 +84,37 @@ export const HomePage = () => {
             <FormattedMessage id="form.max-btn" />
           </MaxButton>
         </AmountContainer>
-        <Button
-          variant="primary"
-          size="state"
-          disabled={!address || !network || !parsedAmount?.gt(0)}
-        >
-          <FormattedMessage id="form.swap-btn" />
-        </Button>
+        <ButtonsContainer>
+          <Button
+            variant="primary"
+            size="state"
+            disabled={!address || !network || allowance.gte(parsedAmount ?? 0)}
+            onClick={() => {
+              if (!parsedAmount) return;
+              approveHotWallet({ amount: parsedAmount, onboard });
+            }}
+          >
+            <FormattedMessage id="form.approve-btn" />
+          </Button>
+          <Button
+            variant="primary"
+            size="state"
+            disabled={!address || !network || !parsedAmount?.gt(0) || allowance.lt(parsedAmount)}
+          >
+            {network ? (
+              <FormattedMessage
+                id="form.swap-to-btn"
+                values={{
+                  network: (
+                    <FormattedMessage id={`network.short.${getDestinationNetwork(network)}`} />
+                  ),
+                }}
+              />
+            ) : (
+              <FormattedMessage id="form.swap-btn" />
+            )}
+          </Button>
+        </ButtonsContainer>
       </StyledCard>
     </Container>
   );

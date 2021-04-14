@@ -9,5 +9,7 @@
   "network.short.97": "BSC (T)",
   "wallet.connect": "Connect",
   "form.max-btn": "MAX",
+  "form.approve-btn": "Approve",
+  "form.swap-to-btn": "Swap to {network}",
   "form.swap-btn": "Swap"
 }
