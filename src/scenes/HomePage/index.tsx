@@ -1,4 +1,4 @@
-import { Button, TextInput } from '@swingby-protocol/pulsar';
+import { Button, Loading, TextInput } from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -25,6 +25,8 @@ export const HomePage = () => {
   const { address, network, onboard } = useOnboard();
   const [amount, setAmount] = useState('');
   const [allowance, setAllowance] = useState(new Big(0));
+  const [gettingMax, setGettingMax] = useState(false);
+  const [approving, setApproving] = useState(false);
 
   const parsedAmount = useMemo(() => {
     try {
@@ -41,9 +43,12 @@ export const HomePage = () => {
 
   const getMax = useCallback(async () => {
     try {
+      setGettingMax(true);
       setAmount(await getSwingbyBalance({ onboard }));
     } catch (err) {
       logger.debug({ err }, 'Failed to get balance');
+    } finally {
+      setGettingMax(false);
     }
   }, [onboard]);
 
@@ -78,28 +83,39 @@ export const HomePage = () => {
             variant="secondary"
             size="street"
             shape="fit"
-            disabled={!address || !network}
+            disabled={!address || !network || gettingMax}
             onClick={getMax}
           >
-            <FormattedMessage id="form.max-btn" />
+            {gettingMax ? <Loading /> : <FormattedMessage id="form.max-btn" />}
           </MaxButton>
         </AmountContainer>
         <ButtonsContainer>
           <Button
             variant="primary"
             size="state"
-            disabled={!address || !network || allowance.gte(parsedAmount ?? 0)}
-            onClick={() => {
+            disabled={!address || !network || allowance.gte(parsedAmount ?? 0) || approving}
+            onClick={async () => {
               if (!parsedAmount) return;
-              approveHotWallet({ amount: parsedAmount, onboard });
+              try {
+                setApproving(true);
+                await approveHotWallet({ amount: parsedAmount, onboard });
+              } finally {
+                setApproving(false);
+              }
             }}
           >
-            <FormattedMessage id="form.approve-btn" />
+            {approving ? <Loading /> : <FormattedMessage id="form.approve-btn" />}
           </Button>
           <Button
             variant="primary"
             size="state"
-            disabled={!address || !network || !parsedAmount?.gt(0) || allowance.lt(parsedAmount)}
+            disabled={
+              !address ||
+              !network ||
+              !parsedAmount?.gt(0) ||
+              allowance.lt(parsedAmount) ||
+              approving
+            }
           >
             {network ? (
               <FormattedMessage
