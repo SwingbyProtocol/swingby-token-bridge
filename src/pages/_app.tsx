@@ -11,7 +11,8 @@ import Head from 'next/head';
 
 import { languages } from '../modules/i18n';
 import { Favicon } from '../components/Favicon';
-import { OnboardProvider } from '../modules/web3';
+import { OnboardProvider } from '../modules/onboard';
+import { GlobalStyles } from '../modules/styles';
 
 function MyApp({ Component, pageProps, router }: AppProps) {
   const locale = (() => {
@@ -37,6 +38,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 
             <PulsarGlobalStyles />
             <Favicon />
+            <GlobalStyles />
 
             <Component {...pageProps} />
             <PulsarToastContainer />

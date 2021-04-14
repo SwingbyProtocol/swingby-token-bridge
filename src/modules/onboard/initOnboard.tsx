@@ -13,10 +13,6 @@ const RPC_URLS = {
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545',
 } as const;
 
-export const NETWORK_IDS = (Object.keys(RPC_URLS) as unknown) as Array<keyof typeof RPC_URLS>;
-export const isValidNetworkId = (value: any): value is keyof typeof RPC_URLS =>
-  !!NETWORK_IDS.find((it) => `${it}` === `${value}`);
-
 export const initOnboard = ({
   networkId = 1,
   subscriptions,

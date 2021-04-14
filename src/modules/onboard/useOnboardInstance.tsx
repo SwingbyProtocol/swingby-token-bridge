@@ -1,17 +1,11 @@
-import React, { useContext, useMemo, useEffect, useState } from 'react';
-import { Wallet, API as OnboardInstance } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
+import { useEffect, useMemo, useState } from 'react';
+import { API as OnboardInstance } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
 import { useTheme } from 'styled-components';
 
-import { initOnboard, isValidNetworkId } from './initOnboard';
+import { isValidNetworkId } from './networks';
+import { initOnboard } from './initOnboard';
 
-const Context = React.createContext<{
-  address: string | null;
-  wallet: Wallet | null;
-  network: number | null;
-  onboard: OnboardInstance | null;
-}>({ address: null, wallet: null, network: null, onboard: null });
-
-export const OnboardProvider = ({ children }: { children?: React.ReactNode }) => {
+export const useOnboardInstance = () => {
   const [updateCount, setUpdateCount] = useState(0);
   const theme = useTheme();
 
@@ -54,18 +48,15 @@ export const OnboardProvider = ({ children }: { children?: React.ReactNode }) =>
     onboard?.config({ darkMode: theme.pulsar.id !== 'PulsarLight' });
   }, [onboard, theme]);
 
-  const value = useMemo(() => {
+  return useMemo(() => {
     const wallet = onboard?.getState().wallet ?? null;
+    const network = onboard?.getState().network ?? null;
     return {
       updateCount,
       address: onboard?.getState().address ?? null,
       wallet: wallet?.provider ? wallet : null,
       onboard,
-      network: onboard?.getState().network ?? null,
+      network: isValidNetworkId(network) ? network : null,
     };
   }, [onboard, updateCount]);
-
-  return <Context.Provider value={value}>{children}</Context.Provider>;
 };
-
-export const useOnboard = () => useContext(Context);
