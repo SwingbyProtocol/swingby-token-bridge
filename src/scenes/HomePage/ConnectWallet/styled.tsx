@@ -20,6 +20,13 @@ const eth = css`
 
 const goerli = css`
   background: ${transparentize(0.5, COLOR_ETH)};
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    ${COLOR_ETH} 5px,
+    ${COLOR_ETH} 10px
+  );
   color: ${({ theme }) => theme.pulsar.color.danger.text};
 `;
 
@@ -30,6 +37,13 @@ const bsc = css`
 
 const bsct = css`
   background: ${transparentize(0.5, COLOR_BSC)};
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    ${COLOR_BSC} 5px,
+    ${COLOR_BSC} 10px
+  );
   color: ${({ theme }) => theme.pulsar.color.warning.text};
 `;
 
