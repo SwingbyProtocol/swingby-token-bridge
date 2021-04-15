@@ -26,9 +26,9 @@ import {
   MaxButton,
   ButtonsContainer,
   FeeContainer,
-  StyledDivider,
 } from './styled';
 import { SwapFee } from './SwapFee';
+import { SwapToBep2 } from './SwapToBep2';
 
 const TOAST_ID_GET_MAX = 'get-max';
 const TOAST_ID_APPROVE = 'approve';
@@ -162,11 +162,7 @@ export const HomePage = () => {
             )}
           </Button>
         </ButtonsContainer>
-        {(network === 56 || network === 97) && (
-          <div>
-            <StyledDivider />
-          </div>
-        )}
+        <SwapToBep2 amount={parsedAmount} />
       </StyledCard>
     </Container>
   );
