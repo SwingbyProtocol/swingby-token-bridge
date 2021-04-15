@@ -11,4 +11,5 @@ export const ButtonsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.street)};
 `;

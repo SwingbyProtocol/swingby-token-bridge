@@ -1,7 +1,14 @@
-import { Button, createOrUpdateToast, dismissToast, Loading } from '@swingby-protocol/pulsar';
+import {
+  Button,
+  createOrUpdateToast,
+  dismissToast,
+  Loading,
+  TextInput,
+} from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { isAddressValid } from 'binance-chain-sdk-lite';
 
 import { logger } from '../../../modules/logger';
 import { useOnboard } from '../../../modules/onboard';
@@ -15,6 +22,16 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
   const { address, network, onboard } = useOnboard();
   const [allowance, setAllowance] = useState(new Big(0));
   const [approving, setApproving] = useState(false);
+  const [bcAddress, setBcAddress] = useState('');
+
+  const isBcAddressValid = useMemo(
+    () =>
+      isAddressValid({
+        address: bcAddress,
+        context: { mode: network === 97 ? 'test' : 'production' },
+      }),
+    [network, bcAddress],
+  );
 
   const approveAmount = useCallback(async () => {
     if (!amount) return;
@@ -62,6 +79,18 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
   return (
     <>
       <StyledDivider />
+      <TextInput
+        size="state"
+        value={bcAddress}
+        onChange={(evt) => setBcAddress(evt.target.value)}
+        state={!bcAddress || isBcAddressValid ? 'normal' : 'danger'}
+        label={<FormattedMessage id="form.bsc-bc.input.label" />}
+        placeholder={
+          network === 97
+            ? 'tbnb1mpg44t3mzr0yyx76s2vzhhqg5jngfamdwww69k'
+            : 'bnb1thagrtfude74x2j2wuknhj2savucy2tx0k58y9'
+        }
+      />
       <ButtonsContainer>
         <Button
           variant="secondary"
@@ -74,9 +103,21 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
         <Button
           variant="secondary"
           size="state"
-          disabled={!address || !network || !amount?.gt(0) || allowance.lt(amount) || approving}
+          disabled={
+            !address ||
+            !network ||
+            !amount?.gt(0) ||
+            allowance.lt(amount) ||
+            approving ||
+            !isBcAddressValid
+          }
         >
-          <FormattedMessage id="form.swap-btn" />
+          <FormattedMessage
+            id="form.swap-to-btn"
+            values={{
+              network: <FormattedMessage id={`network.short.${network === 97 ? 'bct' : 'bc'}`} />,
+            }}
+          />
         </Button>
       </ButtonsContainer>
     </>

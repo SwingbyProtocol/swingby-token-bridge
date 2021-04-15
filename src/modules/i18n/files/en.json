@@ -7,6 +7,8 @@
   "network.short.5": "GÖR (T)",
   "network.short.56": "BSC",
   "network.short.97": "BSC (T)",
+  "network.short.bc": "BC",
+  "network.short.bct": "BC (T)",
   "wallet.connect": "Connect",
   "form.max-btn": "MAX",
   "form.approve-btn": "Approve",
@@ -14,5 +16,6 @@
   "form.swap-btn": "Swap",
   "form.swap-fee": "Swap fee: {value}",
   "form.swap-fee.est-value": "~{swingby} ({usd})",
-  "form.bsc-bc.divider": "or"
+  "form.bsc-bc.divider": "or",
+  "form.bsc-bc.input.label": "Your Binance Chain address"
 }
