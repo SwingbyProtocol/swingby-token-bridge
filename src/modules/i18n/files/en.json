@@ -11,5 +11,7 @@
   "form.max-btn": "MAX",
   "form.approve-btn": "Approve",
   "form.swap-to-btn": "Swap to {network}",
-  "form.swap-btn": "Swap"
+  "form.swap-btn": "Swap",
+  "form.swap-fee": "Swap fee: {value}",
+  "form.swap-fee.est-value": "~{swingby} ({usd})"
 }

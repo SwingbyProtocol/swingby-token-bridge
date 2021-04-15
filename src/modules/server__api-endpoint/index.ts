@@ -5,6 +5,7 @@ import { DateTime, Duration } from 'luxon';
 import { corsMiddleware } from '../server__cors';
 import { logger } from '../logger';
 import { server__processTaskSecret } from '../env';
+import { NetworkId, NETWORK_IDS } from '../onboard';
 
 const WARN_IF_SPENT_MORE_THAN = Duration.fromObject({ seconds: 30 });
 
@@ -52,7 +53,11 @@ export const createEndpoint = <T extends any = any>({
   fn,
 }: {
   isSecret?: boolean;
-  fn: (params: { req: NextApiRequest; res: NextApiResponse<T> }) => void | Promise<void>;
+  fn: (params: {
+    req: NextApiRequest;
+    res: NextApiResponse<T>;
+    network: NetworkId;
+  }) => void | Promise<void>;
 }) => async (req: NextApiRequest, res: NextApiResponse<T>) => {
   const startedAt = DateTime.utc();
 
@@ -64,7 +69,18 @@ export const createEndpoint = <T extends any = any>({
       throw new NotAuthenticatedError('Must provide a secret key to be able to call this endpoint');
     }
 
-    return await fn({ req, res });
+    return await fn({
+      req,
+      res,
+      get network() {
+        return +getStringParam({
+          req,
+          from: 'query',
+          name: 'network',
+          oneOf: NETWORK_IDS.map((it) => `${it}` as const),
+        }) as NetworkId;
+      },
+    });
   } catch (e) {
     const message = e?.message || '';
 

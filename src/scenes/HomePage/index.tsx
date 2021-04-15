@@ -25,7 +25,9 @@ import {
   AmountContainer,
   MaxButton,
   ButtonsContainer,
+  FeeContainer,
 } from './styled';
+import { SwapFee } from './SwapFee';
 
 const TOAST_ID_GET_MAX = 'get-max';
 const TOAST_ID_APPROVE = 'approve';
@@ -122,6 +124,9 @@ export const HomePage = () => {
             {gettingMax ? <Loading /> : <FormattedMessage id="form.max-btn" />}
           </MaxButton>
         </AmountContainer>
+        <FeeContainer>
+          <SwapFee />
+        </FeeContainer>
         <ButtonsContainer>
           <Button
             variant="primary"
