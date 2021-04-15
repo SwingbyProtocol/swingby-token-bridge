@@ -26,6 +26,7 @@ import {
   MaxButton,
   ButtonsContainer,
   FeeContainer,
+  StyledDivider,
 } from './styled';
 import { SwapFee } from './SwapFee';
 
@@ -161,6 +162,11 @@ export const HomePage = () => {
             )}
           </Button>
         </ButtonsContainer>
+        {(network === 56 || network === 97) && (
+          <div>
+            <StyledDivider />
+          </div>
+        )}
       </StyledCard>
     </Container>
   );
