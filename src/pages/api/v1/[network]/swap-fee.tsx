@@ -17,6 +17,11 @@ export default createEndpoint({
         `https://bitmax.io/api/pro/v1/ticker?symbol=${etherSymbol}/USDT`,
       )
     ).data.bid[0];
+    const swingbyUsdtPrice = (
+      await fetcher<{ data: { [k in 'ask' | 'bid']: [string, string] } }>(
+        `https://bitmax.io/api/pro/v1/ticker?symbol=SWINGBY/USDT`,
+      )
+    ).data.bid[0];
 
     const web3 = buildWeb3Instance({ network });
     const { address } = web3.eth.accounts.privateKeyToAccount(server__ethereumWalletPrivateKey);
@@ -44,12 +49,15 @@ export default createEndpoint({
     const etherGasPrice = web3.utils.fromWei(gasPrice, 'ether');
     const estimatedGas = await web3.eth.estimateGas(rawTx);
     const estimatedFeeEther = new Big(etherGasPrice).times(estimatedGas);
+    const estimatedFeeUsd = estimatedFeeEther.times(etherUsdtPrice);
+    const estimatedFeeSwingby = estimatedFeeUsd.div(swingbyUsdtPrice);
 
     res.status(StatusCodes.OK).json({
       gasPrice: etherGasPrice,
       estimatedGas,
       estimatedFeeEther: estimatedFeeEther.toFixed(),
-      estimatedFeeUsd: estimatedFeeEther.times(etherUsdtPrice).toFixed(),
+      estimatedFeeUsd: estimatedFeeUsd.toFixed(),
+      estimatedFeeSwingby: estimatedFeeSwingby.toFixed(),
     });
   },
 });

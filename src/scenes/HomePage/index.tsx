@@ -4,10 +4,14 @@ import {
   TextInput,
   createOrUpdateToast,
   dismissToast,
+  getCryptoAssetFormatter,
+  getFiatAssetFormatter,
 } from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+import useSWR from 'swr';
+import { stringifyUrl } from 'query-string';
 
 import { logger } from '../../modules/logger';
 import { useOnboard } from '../../modules/onboard';
@@ -17,6 +21,7 @@ import {
   getHotWalletAllowance,
   getSwingbyBalance,
 } from '../../modules/web3';
+import { fetcher } from '../../modules/fetch';
 
 import {
   Container,
@@ -32,11 +37,20 @@ const TOAST_ID_GET_MAX = 'get-max';
 const TOAST_ID_APPROVE = 'approve';
 
 export const HomePage = () => {
+  const { locale } = useIntl();
   const { address, network, onboard } = useOnboard();
   const [amount, setAmount] = useState('');
   const [allowance, setAllowance] = useState(new Big(0));
   const [gettingMax, setGettingMax] = useState(false);
   const [approving, setApproving] = useState(false);
+  const { data: feeData } = useSWR<{ estimatedFeeUsd: string; estimatedFeeSwingby: string }>(
+    stringifyUrl({
+      url: `/api/v1/${network}/swap-fee`,
+      query: { addressReceiving: address || undefined, amount: amount || undefined },
+    }),
+    fetcher,
+    { refreshInterval: 15000 },
+  );
 
   const parsedAmount = useMemo(() => {
     try {
@@ -124,7 +138,28 @@ export const HomePage = () => {
           </MaxButton>
         </AmountContainer>
         <FeeContainer>
-          <FormattedMessage id="form.swap-fee" values={{ value: parsedAmount ? null : '?' }} />
+          <FormattedMessage
+            id="form.swap-fee"
+            values={{
+              value: feeData ? (
+                <FormattedMessage
+                  id="form.swap-fee.est-value"
+                  values={{
+                    swingby: getCryptoAssetFormatter({
+                      locale,
+                      displaySymbol: 'SWINGBY',
+                      maximumFractionDigits: 2,
+                    }).format(+feeData.estimatedFeeSwingby),
+                    usd: getFiatAssetFormatter({ locale, currency: 'USD' }).format(
+                      +feeData.estimatedFeeUsd,
+                    ),
+                  }}
+                />
+              ) : (
+                '?'
+              ),
+            }}
+          />
         </FeeContainer>
         <ButtonsContainer>
           <Button
