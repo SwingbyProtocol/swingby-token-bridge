@@ -33,6 +33,11 @@ export const AmountContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+`;
+
+export const FeeContainer = styled.div`
+  font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.box)};
   margin-bottom: ${({ theme }) => rem(theme.pulsar.size.street)};
 `;
 

@@ -1,3 +1,3 @@
 export { useOnboard, OnboardProvider } from './context';
-export { isValidNetworkId } from './networks';
+export { isValidNetworkId, NETWORK_IDS } from './networks';
 export type { NetworkId } from './networks';
