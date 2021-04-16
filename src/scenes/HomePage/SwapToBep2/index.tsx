@@ -12,16 +12,22 @@ import { isAddressValid } from 'binance-chain-sdk-lite';
 
 import { logger } from '../../../modules/logger';
 import { useOnboard } from '../../../modules/onboard';
-import { approveBep20CrossChainTransfer, getBep20CrossChainAllowance } from '../../../modules/web3';
+import {
+  approveBep20CrossChainTransfer,
+  doBep20CrossChainTransfer,
+  getBep20CrossChainAllowance,
+} from '../../../modules/web3';
 
 import { StyledDivider, ButtonsContainer } from './styled';
 
 const TOAST_ID_APPROVE = 'approve-bep20';
+const TOAST_ID_RUN = 'cross-chain-bep20';
 
 export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
   const { address, network, onboard } = useOnboard();
   const [allowance, setAllowance] = useState(new Big(0));
   const [approving, setApproving] = useState(false);
+  const [running, setRunning] = useState(false);
   const [bcAddress, setBcAddress] = useState('');
 
   const isBcAddressValid = useMemo(
@@ -51,6 +57,24 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
     }
   }, [onboard, amount]);
 
+  const runCrossChainTransfer = useCallback(async () => {
+    if (!amount) return;
+    try {
+      setRunning(true);
+      await doBep20CrossChainTransfer({ amount, onboard, addressReceiving: bcAddress });
+      dismissToast({ toastId: TOAST_ID_RUN });
+    } catch (err) {
+      logger.error({ err }, 'Failed to perform cross-chain transfer');
+      createOrUpdateToast({
+        content: 'Transaction failed' + (err.message ? `: ${err.message}` : ''),
+        type: 'danger',
+        toastId: TOAST_ID_RUN,
+      });
+    } finally {
+      setRunning(false);
+    }
+  }, [onboard, amount, bcAddress]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -58,6 +82,7 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
       if (cancelled) return;
 
       try {
+        logger.debug('Will get cross-chain contract allowance');
         setAllowance(new Big(await getBep20CrossChainAllowance({ onboard })));
         setTimeout(updateAllowance, 5000);
       } catch (err) {
@@ -109,15 +134,21 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
             !amount?.gt(0) ||
             allowance.lt(amount) ||
             approving ||
+            running ||
             !isBcAddressValid
           }
+          onClick={runCrossChainTransfer}
         >
-          <FormattedMessage
-            id="form.swap-to-btn"
-            values={{
-              network: <FormattedMessage id={`network.short.${network === 97 ? 'bct' : 'bc'}`} />,
-            }}
-          />
+          {running ? (
+            <Loading />
+          ) : (
+            <FormattedMessage
+              id="form.swap-to-btn"
+              values={{
+                network: <FormattedMessage id={`network.short.${network === 97 ? 'bct' : 'bc'}`} />,
+              }}
+            />
+          )}
         </Button>
       </ButtonsContainer>
     </>

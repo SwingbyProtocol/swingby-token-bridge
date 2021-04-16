@@ -3017,10 +3017,10 @@ bignumber.js@^9.0.0, bignumber.js@^9.0.1:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.1.tgz#8d7ba124c882bfd8e43260c67475518d0689e4e5"
   integrity sha512-IdZR9mh6ahOBv/hYGiXyVuyCetmGJhtYkqLBpTStdhEGjegpPlUawydyaF3pbIOFynJTpllEs+NP+CS9jKFLjA==
 
-binance-chain-sdk-lite@^1.0.0-alpha.2:
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/binance-chain-sdk-lite/-/binance-chain-sdk-lite-1.0.0-alpha.2.tgz#b65c5c2baf13b4f036b1c33e9033a77ea45cd84e"
-  integrity sha512-hoHKiunbj68d1BSrxxuJF2WZWNIHW2GnvkouqJZT4+0eiVOl4zHu5fMVtAVaYapisUBFSSQrHutr6TTMbjgoHw==
+binance-chain-sdk-lite@^1.0.0-alpha.3:
+  version "1.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/binance-chain-sdk-lite/-/binance-chain-sdk-lite-1.0.0-alpha.3.tgz#a7093cdd5c2f0e048e6b8e77a104d5d6fc093e1a"
+  integrity sha512-wwCGKKNPbHQWxOeyjgas+hSdL1NnZbczi/J5lroiF55d03NW5xs9+b1viCEebZSWj0+gkDOT8cUWNtRCmh5l4Q==
   dependencies:
     bech32 "^1.1.4"
     big.js "^6.0.3"

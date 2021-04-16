@@ -16,10 +16,9 @@ export const getHotWalletAllowance = async ({ onboard: onboardParam }: { onboard
   const web3 = new Web3(wallet.provider);
   const contract = new web3.eth.Contract(ABI, SB_TOKEN_CONTRACT[network]);
   const allowance = await contract.methods.allowance(address, addressDeposit).call();
-  logger.debug('Allowance call returned: %s', allowance);
 
   const decimals = await contract.methods.decimals().call();
-  logger.debug('Decimals call returned: %s', decimals);
-
-  return new Big(allowance).div(`1e${decimals}`).toFixed();
+  const result = new Big(allowance).div(`1e${decimals}`).toFixed();
+  logger.debug('Hot wallet allowance call returned: %s', result);
+  return result;
 };

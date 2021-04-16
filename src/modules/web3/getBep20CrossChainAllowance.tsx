@@ -24,10 +24,9 @@ export const getBep20CrossChainAllowance = async ({
   const allowance = await contract.methods
     .allowance(address, BEP20_CROSS_CHAIN_CONTRACT[network])
     .call();
-  logger.debug('Allowance call returned: %s', allowance);
 
   const decimals = await contract.methods.decimals().call();
-  logger.debug('Decimals call returned: %s', decimals);
-
-  return new Big(allowance).div(`1e${decimals}`).toFixed();
+  const result = new Big(allowance).div(`1e${decimals}`).toFixed();
+  logger.debug('BEP20 cross-chain allowance call returned: %s', result);
+  return result;
 };
