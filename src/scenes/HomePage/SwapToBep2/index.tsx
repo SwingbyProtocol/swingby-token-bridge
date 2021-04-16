@@ -2,6 +2,7 @@ import {
   Button,
   createOrUpdateToast,
   dismissToast,
+  Icon,
   Loading,
   TextInput,
 } from '@swingby-protocol/pulsar';
@@ -104,10 +105,22 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
         <Button
           variant="secondary"
           size="state"
-          disabled={!address || !network || allowance.gte(amount ?? 0) || approving}
+          disabled={
+            !address || !network || !amount || amount.lte(0) || allowance.gte(amount) || approving
+          }
           onClick={approveAmount}
         >
-          {approving ? <Loading /> : <FormattedMessage id="form.approve-btn" />}
+          {(() => {
+            if (approving) {
+              return <Loading />;
+            }
+
+            if (amount && amount.gt(0) && allowance.gte(amount)) {
+              return <Icon.Tick />;
+            }
+
+            return <FormattedMessage id="form.approve-btn" />;
+          })()}
         </Button>
         <Button
           variant="secondary"
