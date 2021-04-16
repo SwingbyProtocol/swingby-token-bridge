@@ -22,5 +22,9 @@
   "tx-toast.transaction-result.bad": "Transaction failed!",
   "tx-toast.transaction-result.confirmed-by": "Transaction succeeded! ({value} confirmations)",
   "tx-toast.transaction-result.ok": "Transaction succeeded!",
-  "tx-toast.transaction-result.sent": "Transaction sent!"
+  "tx-toast.transaction-result.sent": "Transaction sent!",
+  "tx-toast.hot-wallet-transfer.bad": "Transaction failed!",
+  "tx-toast.hot-wallet-transfer.confirmed-by": "Funds sent to our hot wallet! ({value} confirmations)",
+  "tx-toast.hot-wallet-transfer.ok": "Funds sent to our hot wallet!",
+  "tx-toast.hot-wallet-transfer.sent": "Funds sent to our hot wallet!"
 }
