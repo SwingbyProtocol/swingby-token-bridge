@@ -1,6 +1,6 @@
 import { PulsarThemeProvider } from '@swingby-protocol/pulsar';
 import { useMemo } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { NetworkId } from '../../onboard';
 
@@ -23,30 +23,39 @@ export const TransferToast = ({
   network,
   toastId,
 }: Props) => {
+  const { formatMessage } = useIntl();
+
   const text = useMemo(() => {
+    const buildMessage = ({
+      suffix,
+      values,
+    }: {
+      suffix: string;
+      values?: Parameters<typeof formatMessage>['1'];
+    }) => {
+      const id = `tx-toast.${toastId}.${suffix}`;
+      const result = formatMessage({ id }, values);
+      if (!result || result === id) {
+        return formatMessage({ id: `tx-toast.transaction-result.${suffix}` }, values);
+      }
+
+      return result;
+    };
+
     if (error) {
-      return <FormattedMessage id={`tx-toast.${toastId}.bad`} />;
+      return buildMessage({ suffix: 'bad' });
     }
 
     if (confirmations) {
-      return (
-        <FormattedMessage
-          id={`tx-toast.${toastId}.confirmed-by`}
-          values={{ value: confirmations }}
-        />
-      );
+      return buildMessage({ suffix: 'confirmed-by', values: { value: confirmations } });
     }
 
     if (typeof transactionStatus === 'boolean') {
-      return transactionStatus ? (
-        <FormattedMessage id={`tx-toast.${toastId}.ok`} />
-      ) : (
-        <FormattedMessage id={`tx-toast.${toastId}.bad`} />
-      );
+      return transactionStatus ? buildMessage({ suffix: 'ok' }) : buildMessage({ suffix: 'bad' });
     }
 
-    return <FormattedMessage id={`tx-toast.${toastId}.sent`} />;
-  }, [confirmations, transactionStatus, error, toastId]);
+    return buildMessage({ suffix: 'sent' });
+  }, [confirmations, transactionStatus, error, toastId, formatMessage]);
 
   return (
     <PulsarThemeProvider>
