@@ -6,17 +6,12 @@ import {
   dismissToast,
 } from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEventHandler, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { logger } from '../../modules/logger';
 import { useOnboard } from '../../modules/onboard';
-import {
-  approveHotWallet,
-  getDestinationNetwork,
-  getHotWalletAllowance,
-  getSwingbyBalance,
-} from '../../modules/web3';
+import { getDestinationNetwork, getSwingbyBalance, transferToHotWallet } from '../../modules/web3';
 
 import {
   Container,
@@ -28,16 +23,15 @@ import {
   FeeContainer,
 } from './styled';
 import { SwapFee } from './SwapFee';
+import { SwapToBep2 } from './SwapToBep2';
 
 const TOAST_ID_GET_MAX = 'get-max';
-const TOAST_ID_APPROVE = 'approve';
 
 export const HomePage = () => {
   const { address, network, onboard } = useOnboard();
   const [amount, setAmount] = useState('');
-  const [allowance, setAllowance] = useState(new Big(0));
   const [gettingMax, setGettingMax] = useState(false);
-  const [approving, setApproving] = useState(false);
+  const [transferring, setTrasferring] = useState(false);
 
   const parsedAmount = useMemo(() => {
     try {
@@ -69,44 +63,16 @@ export const HomePage = () => {
     }
   }, [onboard]);
 
-  const approveAmount = useCallback(async () => {
+  const transfer = useCallback(async () => {
     if (!parsedAmount) return;
     try {
-      setApproving(true);
-      await approveHotWallet({ amount: parsedAmount, onboard });
-      dismissToast({ toastId: TOAST_ID_APPROVE });
+      setTrasferring(true);
+      await transferToHotWallet({ amount: parsedAmount, onboard });
     } catch (err) {
-      logger.error({ err }, 'Failed to approve');
-      createOrUpdateToast({
-        content: 'Failed to approve' + (err.message ? `: ${err.message}` : ''),
-        type: 'danger',
-        toastId: TOAST_ID_APPROVE,
-      });
     } finally {
-      setApproving(false);
+      setTrasferring(false);
     }
   }, [onboard, parsedAmount]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const updateAllowance = async () => {
-      if (cancelled) return;
-
-      try {
-        setAllowance(new Big(await getHotWalletAllowance({ onboard })));
-        setTimeout(updateAllowance, 5000);
-      } catch (err) {
-        logger.debug({ err }, 'Failed to get allowance');
-      }
-    };
-
-    updateAllowance();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [onboard]);
 
   return (
     <Container>
@@ -128,39 +94,36 @@ export const HomePage = () => {
           <SwapFee />
         </FeeContainer>
         <ButtonsContainer>
+          <div />
           <Button
             variant="primary"
             size="state"
-            disabled={!address || !network || allowance.gte(parsedAmount ?? 0) || approving}
-            onClick={approveAmount}
+            disabled={!address || !network || !parsedAmount?.gt(0) || transferring}
+            onClick={transfer}
           >
-            {approving ? <Loading /> : <FormattedMessage id="form.approve-btn" />}
-          </Button>
-          <Button
-            variant="primary"
-            size="state"
-            disabled={
-              !address ||
-              !network ||
-              !parsedAmount?.gt(0) ||
-              allowance.lt(parsedAmount) ||
-              approving
-            }
-          >
-            {network ? (
-              <FormattedMessage
-                id="form.swap-to-btn"
-                values={{
-                  network: (
-                    <FormattedMessage id={`network.short.${getDestinationNetwork(network)}`} />
-                  ),
-                }}
-              />
-            ) : (
-              <FormattedMessage id="form.swap-btn" />
-            )}
+            {(() => {
+              if (transferring) {
+                return <Loading />;
+              }
+
+              if (network) {
+                return (
+                  <FormattedMessage
+                    id="form.swap-to-btn"
+                    values={{
+                      network: (
+                        <FormattedMessage id={`network.short.${getDestinationNetwork(network)}`} />
+                      ),
+                    }}
+                  />
+                );
+              }
+
+              return <FormattedMessage id="form.swap-btn" />;
+            })()}
           </Button>
         </ButtonsContainer>
+        <SwapToBep2 amount={parsedAmount} />
       </StyledCard>
     </Container>
   );

@@ -1,7 +1,5 @@
 import originalFetch from 'isomorphic-unfetch';
 
-import { logger } from '../logger';
-
 const fetch = async <SuccessResponse extends unknown, ErrorResponse extends unknown = string>(
   url: Parameters<typeof originalFetch>[0],
   optionsParam?: Parameters<typeof originalFetch>[1],
@@ -17,7 +15,6 @@ const fetch = async <SuccessResponse extends unknown, ErrorResponse extends unkn
     },
   };
 
-  logger.trace(`Will call "%s" with: %O`, url, options);
   const result = await originalFetch(url, options);
 
   const response = await (async () => {
