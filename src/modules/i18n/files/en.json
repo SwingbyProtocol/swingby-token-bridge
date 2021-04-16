@@ -17,5 +17,10 @@
   "form.swap-fee": "Swap fee: {value}",
   "form.swap-fee.est-value": "~{swingby} ({usd})",
   "form.bsc-bc.divider": "or",
-  "form.bsc-bc.input.label": "Your Binance Chain address"
+  "form.bsc-bc.input.label": "Your Binance Chain address",
+  "tx-toast.explorer": "Explorer",
+  "tx-toast.transaction-result.bad": "Transaction failed!",
+  "tx-toast.transaction-result.confirmed-by": "Transaction succeeded! ({value} confirmations)",
+  "tx-toast.transaction-result.ok": "Transaction succeeded!",
+  "tx-toast.transaction-result.sent": "Transaction sent!"
 }

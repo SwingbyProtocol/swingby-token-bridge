@@ -11,6 +11,7 @@ import { logger } from '../logger';
 
 import { getOnboardData } from './getOnboardData';
 import { BEP20_CROSS_CHAIN_ABI, BEP20_CROSS_CHAIN_CONTRACT } from './BEP20_CROSS_CHAIN_CONTRACT';
+import { watchTransaction } from './watchTransaction';
 
 export const doBep20CrossChainTransfer = async ({
   amount: amountParam,
@@ -78,5 +79,9 @@ export const doBep20CrossChainTransfer = async ({
     );
   }
 
-  return web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas });
+  return watchTransaction({
+    network,
+    tx: web3.eth.sendTransaction({ ...rawTx, gas: estimatedGas }),
+    toastId: 'run-bep20-cross-chain',
+  });
 };

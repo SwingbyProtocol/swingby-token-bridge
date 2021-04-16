@@ -84,9 +84,10 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
       try {
         logger.debug('Will get cross-chain contract allowance');
         setAllowance(new Big(await getBep20CrossChainAllowance({ onboard })));
-        setTimeout(updateAllowance, 5000);
       } catch (err) {
         logger.debug({ err }, 'Failed to get allowance');
+      } finally {
+        setTimeout(updateAllowance, 5000);
       }
     };
 
