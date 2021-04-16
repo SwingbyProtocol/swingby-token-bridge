@@ -96,9 +96,10 @@ export const HomePage = () => {
 
       try {
         setAllowance(new Big(await getHotWalletAllowance({ onboard })));
-        setTimeout(updateAllowance, 5000);
       } catch (err) {
         logger.debug({ err }, 'Failed to get allowance');
+      } finally {
+        setTimeout(updateAllowance, 5000);
       }
     };
 
