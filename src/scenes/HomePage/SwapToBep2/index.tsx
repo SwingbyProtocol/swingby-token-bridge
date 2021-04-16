@@ -20,9 +20,6 @@ import {
 
 import { StyledDivider, ButtonsContainer } from './styled';
 
-const TOAST_ID_APPROVE = 'approve-bep20';
-const TOAST_ID_RUN = 'cross-chain-bep20';
-
 export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
   const { address, network, onboard } = useOnboard();
   const [allowance, setAllowance] = useState(new Big(0));
@@ -44,14 +41,7 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
     try {
       setApproving(true);
       await approveBep20CrossChainTransfer({ amount, onboard });
-      dismissToast({ toastId: TOAST_ID_APPROVE });
-    } catch (err) {
-      logger.error({ err }, 'Failed to approve');
-      createOrUpdateToast({
-        content: 'Failed to approve' + (err.message ? `: ${err.message}` : ''),
-        type: 'danger',
-        toastId: TOAST_ID_APPROVE,
-      });
+    } catch (e) {
     } finally {
       setApproving(false);
     }
@@ -62,14 +52,7 @@ export const SwapToBep2 = ({ amount }: { amount: Big | null }) => {
     try {
       setRunning(true);
       await doBep20CrossChainTransfer({ amount, onboard, addressReceiving: bcAddress });
-      dismissToast({ toastId: TOAST_ID_RUN });
-    } catch (err) {
-      logger.error({ err }, 'Failed to perform cross-chain transfer');
-      createOrUpdateToast({
-        content: 'Transaction failed' + (err.message ? `: ${err.message}` : ''),
-        type: 'danger',
-        toastId: TOAST_ID_RUN,
-      });
+    } catch (e) {
     } finally {
       setRunning(false);
     }

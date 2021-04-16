@@ -34,6 +34,7 @@ export const watchTransaction = ({
             transactionId={transactionHash}
             confirmations={confirmations}
             network={network}
+            toastId={toastId}
           />
         ),
         type: 'success',
