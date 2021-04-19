@@ -22,6 +22,13 @@ CREATE TABLE "Transaction" (
     PRIMARY KEY ("network","hash","transactionIndex")
 );
 
+-- CreateTable
+CREATE TABLE "LiquidityProvider" (
+    "address" TEXT NOT NULL,
+
+    PRIMARY KEY ("address")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Transaction_transactionOutNetwork_transactionOutHash_transactionOutIndex_unique" ON "Transaction"("transactionOutNetwork", "transactionOutHash", "transactionOutIndex");
 

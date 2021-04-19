@@ -38,3 +38,7 @@ model Transaction {
 
   @@id([network, hash, transactionIndex])
 }
+
+model LiquidityProvider {
+  address String @id
+}

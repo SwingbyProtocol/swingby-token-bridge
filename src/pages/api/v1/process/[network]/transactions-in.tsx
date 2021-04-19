@@ -35,6 +35,11 @@ export default createEndpoint({
       server__ethereumWalletPrivateKey,
     );
 
+    const liquitidyProviders = (await prisma.liquidityProvider.findMany()).map((it) =>
+      it.address.toLowerCase(),
+    );
+    logger.debug({ liquitidyProviders }, 'Got list of liquidity providers');
+
     const lastBlock =
       (
         await prisma.transaction.findFirst({
@@ -59,7 +64,21 @@ export default createEndpoint({
           },
         }),
       )
-    ).result.filter(({ to }) => to?.toLowerCase() === hotWalletAddress.toLowerCase());
+    ).result.filter((item) => {
+      if (item.to?.toLowerCase() !== hotWalletAddress.toLowerCase()) {
+        return false;
+      }
+
+      if (liquitidyProviders.includes(item.from?.toLowerCase())) {
+        logger.debug(
+          { item },
+          'Will ignore item because the transfer comes from a liquidity provider',
+        );
+        return false;
+      }
+
+      return true;
+    });
 
     const failed: typeof depositTxs = [];
     for (let i = 0; i < depositTxs.length; i++) {
