@@ -1,13 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { StatusCodes } from 'http-status-codes';
 import { DateTime, Duration } from 'luxon';
+import { PrismaClient } from '@prisma/client';
 
 import { corsMiddleware } from '../server__cors';
 import { logger } from '../logger';
 import { server__processTaskSecret } from '../env';
-import { NetworkId, NETWORK_IDS } from '../onboard';
+import { NetworkId } from '../onboard';
+import { fromDbNetwork } from '../server__db';
 
 const WARN_IF_SPENT_MORE_THAN = Duration.fromObject({ seconds: 30 });
+
+const prisma = new PrismaClient();
 
 export class InvalidParamError extends Error {}
 
@@ -57,6 +61,7 @@ export const createEndpoint = <T extends any = any>({
     req: NextApiRequest;
     res: NextApiResponse<T>;
     network: NetworkId;
+    prisma: typeof prisma;
   }) => void | Promise<void>;
 }) => async (req: NextApiRequest, res: NextApiResponse<T>) => {
   const startedAt = DateTime.utc();
@@ -72,13 +77,16 @@ export const createEndpoint = <T extends any = any>({
     return await fn({
       req,
       res,
+      prisma,
       get network() {
-        return +getStringParam({
+        const value = getStringParam({
           req,
           from: 'query',
           name: 'network',
-          oneOf: NETWORK_IDS.map((it) => `${it}` as const),
-        }) as NetworkId;
+          oneOf: ['ethereum', 'goerli', 'bsc', 'bsct'],
+        });
+
+        return fromDbNetwork(value.toUpperCase() as Uppercase<typeof value>);
       },
     });
   } catch (e) {
