@@ -1311,6 +1311,23 @@
     penpal "3.0.7"
     pocket-js-core "0.0.3"
 
+"@prisma/client@2.21.2":
+  version "2.21.2"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.21.2.tgz#ca8489832da1d61add429390210be4d7896e5e29"
+  integrity sha512-UjkOXYpxLuHyoMDsP2m0LTcxhrjQa1dEOLFe3aDrO/BLrs/2yUxyPdtwSKxizRXFzuXSGkKIK225vcjZRuMpAg==
+  dependencies:
+    "@prisma/engines-version" "2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d"
+
+"@prisma/engines-version@2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d":
+  version "2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d"
+  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d.tgz#b749bae4173eb766dafc298aaa7d883c2dbe555b"
+  integrity sha512-9/fE1gdPWmjbMjXUJjrTMt848TsgEnSjZCcJ1wu9OAcRlAKKJBLehftqC3gSEShDijvMYgeTdGU5snMpwmv4vg==
+
+"@prisma/engines@2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d":
+  version "2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d"
+  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d.tgz#aafed60c9506bc766e49ea60b9f8ce7da2385bc6"
+  integrity sha512-L57tvSoom2GDWDqik4wrAUBvLTAv5MTm2OOzNMBKsv0w5cX7ONoZ8KnGQN+csmdJpQVBs93dIvIBm72OO+l/9Q==
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.1.tgz#a21117b19ee9be70c379ec1877537ef2e1c63301"
@@ -9335,6 +9352,13 @@ printj@~1.1.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"
   integrity sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==
+
+prisma@2.21.2:
+  version "2.21.2"
+  resolved "https://registry.yarnpkg.com/prisma/-/prisma-2.21.2.tgz#a73b4cbe92a884aa98b317684d6741871b5e94a5"
+  integrity sha512-Ux9ovDIUHsMNLGLtuo6BBKCuuBVLpZmhM2LXF+VBUQvsbmsVfp3u5CRyHGEqaZqMibYQJISy7YZYF/RgozHKkQ==
+  dependencies:
+    "@prisma/engines" "2.21.0-36.e421996c87d5f3c8f7eeadd502d4ad402c89464d"
 
 private@^0.1.6, private@^0.1.8:
   version "0.1.8"

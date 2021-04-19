@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Network {
+  ETHEREUM
+  GOERLI
+  BSC
+  BSCT
+}
+
+model Transaction {
+  network               Network
+  hash                  String
+  transactionIndex      Int          @db.SmallInt
+  blockNumber           BigInt
+  at                    DateTime
+  addressFrom           String
+  addressTo             String
+  value                 Decimal      @db.Decimal(65, 18)
+  addressContract       String
+  tokenDecimals         Int          @db.SmallInt
+  gas                   BigInt
+  gasPrice              Decimal      @db.Decimal(65, 18)
+  transactionOutNetwork Network?
+  transactionOutHash    String?
+  transactionOutIndex   Int?         @db.SmallInt
+  transactionOut        Transaction? @relation("TransactionRelation", fields: [transactionOutNetwork, transactionOutHash, transactionOutIndex], references: [network, hash, transactionIndex])
+  transactionIn         Transaction? @relation("TransactionRelation")
+
+  @@id([network, hash, transactionIndex])
+}
