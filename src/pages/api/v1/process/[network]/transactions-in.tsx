@@ -43,7 +43,10 @@ export default createEndpoint({
     const lastBlock =
       (
         await prisma.transaction.findFirst({
-          where: { network: { equals: toDbNetwork(network) } },
+          where: {
+            network: { equals: toDbNetwork(network) },
+            addressTo: { equals: hotWalletAddress, mode: 'insensitive' },
+          },
           orderBy: { blockNumber: 'desc' },
         })
       )?.blockNumber ?? BigInt(0);
