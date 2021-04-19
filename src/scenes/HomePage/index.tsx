@@ -22,7 +22,7 @@ import {
   ButtonsContainer,
   FeeContainer,
 } from './styled';
-import { SwapFee } from './SwapFee';
+import { useSwapFee } from './useSwapFee';
 import { SwapToBep2 } from './SwapToBep2';
 
 const TOAST_ID_GET_MAX = 'get-max';
@@ -32,6 +32,7 @@ export const HomePage = () => {
   const [amount, setAmount] = useState('');
   const [gettingMax, setGettingMax] = useState(false);
   const [transferring, setTrasferring] = useState(false);
+  const { data: feeData, node: feeNode } = useSwapFee();
 
   const parsedAmount = useMemo(() => {
     try {
@@ -90,15 +91,20 @@ export const HomePage = () => {
             {gettingMax ? <Loading /> : <FormattedMessage id="form.max-btn" />}
           </MaxButton>
         </AmountContainer>
-        <FeeContainer>
-          <SwapFee />
-        </FeeContainer>
+        <FeeContainer>{feeNode}</FeeContainer>
         <ButtonsContainer>
           <div />
           <Button
             variant="primary"
             size="state"
-            disabled={!address || !network || !parsedAmount?.gt(0) || transferring}
+            disabled={
+              !address ||
+              !network ||
+              !parsedAmount?.gt(0) ||
+              transferring ||
+              !feeData ||
+              parsedAmount.lt(feeData.minimumSwapSwingby)
+            }
             onClick={transfer}
           >
             {(() => {
