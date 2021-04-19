@@ -5,13 +5,26 @@ import { getCryptoAssetFormatter, getFiatAssetFormatter } from '@swingby-protoco
 
 import { useOnboard } from '../../../modules/onboard';
 import { fetcher } from '../../../modules/fetch';
+import { getDestinationNetwork } from '../../../modules/web3';
 
 export const SwapFee = () => {
   const { locale } = useIntl();
   const { address, network } = useOnboard();
   const { data: feeData } = useSWR<{ estimatedFeeUsd: string; estimatedFeeSwingby: string }>(
     stringifyUrl({
-      url: `/api/v1/${network}/swap-fee`,
+      url: `/api/v1/${(() => {
+        if (!network) return null;
+        switch (getDestinationNetwork(network)) {
+          case 1:
+            return 'ethereum';
+          case 5:
+            return 'goerli';
+          case 56:
+            return 'bsc';
+          case 97:
+            return 'bsct';
+        }
+      })()}/swap-fee`,
       query: { addressReceiving: address || undefined },
     }),
     fetcher,
