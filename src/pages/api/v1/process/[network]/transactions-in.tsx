@@ -49,7 +49,7 @@ export default createEndpoint({
           },
           orderBy: { blockNumber: 'desc' },
         })
-      )?.blockNumber ?? BigInt(0);
+      )?.blockNumber ?? new Prisma.Decimal(1);
     logger.debug('Will start looking from block %s', lastBlock);
 
     const depositTxs = (
@@ -61,7 +61,7 @@ export default createEndpoint({
             action: 'tokentx',
             address: hotWalletAddress,
             contractaddress: SB_TOKEN_CONTRACT[network],
-            startblock: (lastBlock - BigInt(1)).toString(),
+            startblock: lastBlock.minus(1).toString(),
             endblock: 99999999,
             sort: 'desc',
           },
@@ -95,13 +95,13 @@ export default createEndpoint({
           network: toDbNetwork(network),
           hash: item.hash,
           transactionIndex: +item.transactionIndex,
-          blockNumber: BigInt(item.blockNumber),
+          blockNumber: new Prisma.Decimal(item.blockNumber),
           at: DateTime.fromMillis(+item.timeStamp * 1000, { zone: 'utc' }).toJSDate(),
           addressFrom: web3.utils.toChecksumAddress(item.from),
           addressTo: web3.utils.toChecksumAddress(item.to),
           addressContract: web3.utils.toChecksumAddress(item.contractAddress),
           tokenDecimals: +item.tokenDecimal,
-          gas: BigInt(item.gas),
+          gas: new Prisma.Decimal(item.gas),
           gasPrice: new Prisma.Decimal(item.gasPrice).div(`1e${item.tokenDecimal}`),
           value: new Prisma.Decimal(item.value).div(`1e${item.tokenDecimal}`),
         };

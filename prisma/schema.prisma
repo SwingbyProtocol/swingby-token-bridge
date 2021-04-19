@@ -21,15 +21,15 @@ model Transaction {
   network               Network
   hash                  String
   transactionIndex      Int          @db.SmallInt
-  blockNumber           BigInt
+  blockNumber           Decimal      @db.Decimal(65, 20)
   at                    DateTime
   addressFrom           String
   addressTo             String
-  value                 Decimal      @db.Decimal(65, 18)
+  value                 Decimal      @db.Decimal(65, 20)
   addressContract       String
   tokenDecimals         Int          @db.SmallInt
-  gas                   BigInt
-  gasPrice              Decimal      @db.Decimal(65, 18)
+  gas                   Decimal      @db.Decimal(65, 20)
+  gasPrice              Decimal      @db.Decimal(65, 20)
   transactionOutNetwork Network?
   transactionOutHash    String?
   transactionOutIndex   Int?         @db.SmallInt

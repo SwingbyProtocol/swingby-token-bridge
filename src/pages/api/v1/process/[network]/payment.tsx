@@ -66,17 +66,6 @@ export default createEndpoint({
 
         const etherGasPrice = web3.utils.fromWei(gasPrice, 'ether');
         const estimatedGas = await web3.eth.estimateGas(rawTx);
-        if (!estimatedGas) {
-          logger.warn(rawTx, 'Did not get any value from estimateGas(): %s', estimatedGas);
-        } else {
-          logger.debug(
-            rawTx,
-            'Estimated gas that will be spent %s (price: %s ETH)',
-            estimatedGas,
-            etherGasPrice,
-          );
-        }
-
         const estimatedGasSwingby = new Prisma.Decimal(etherGasPrice)
           .times(estimatedGas)
           .times(etherUsdtPrice)
@@ -93,7 +82,7 @@ export default createEndpoint({
             data: contract.methods
               .transfer(
                 tx.addressFrom,
-                web3.utils.toHex(amountReceiving.times(`1e${decimals}`).toFixed()),
+                web3.utils.toHex(amountReceiving.times(`1e${decimals}`).toFixed(0)),
               )
               .encodeABI(),
           },
