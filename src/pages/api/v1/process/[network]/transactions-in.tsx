@@ -107,13 +107,7 @@ export default createEndpoint({
         };
 
         await prisma.transaction.upsert({
-          where: {
-            network_hash_transactionIndex: {
-              hash: parsedItem.hash,
-              transactionIndex: parsedItem.transactionIndex,
-              network: parsedItem.network,
-            },
-          },
+          where: { network_hash: { hash: parsedItem.hash, network: parsedItem.network } },
           create: parsedItem,
           update: parsedItem,
         });

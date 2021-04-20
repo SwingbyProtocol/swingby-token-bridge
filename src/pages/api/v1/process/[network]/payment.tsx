@@ -99,13 +99,7 @@ export default createEndpoint({
         await prisma.transaction.create({
           data: {
             transactionIn: {
-              connect: {
-                network_hash_transactionIndex: {
-                  hash: tx.hash,
-                  network: tx.network,
-                  transactionIndex: tx.transactionIndex,
-                },
-              },
+              connect: { network_hash: { hash: tx.hash, network: tx.network } },
             },
 
             network: toDbNetwork(network),

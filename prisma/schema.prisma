@@ -32,11 +32,10 @@ model Transaction {
   gasPrice              Decimal      @db.Decimal(65, 20)
   transactionOutNetwork Network?
   transactionOutHash    String?
-  transactionOutIndex   Int?         @db.SmallInt
-  transactionOut        Transaction? @relation("TransactionRelation", fields: [transactionOutNetwork, transactionOutHash, transactionOutIndex], references: [network, hash, transactionIndex])
+  transactionOut        Transaction? @relation("TransactionRelation", fields: [transactionOutNetwork, transactionOutHash], references: [network, hash])
   transactionIn         Transaction? @relation("TransactionRelation")
 
-  @@id([network, hash, transactionIndex])
+  @@id([network, hash])
 }
 
 model LiquidityProvider {
