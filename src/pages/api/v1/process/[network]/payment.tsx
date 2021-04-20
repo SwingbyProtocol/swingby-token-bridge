@@ -3,7 +3,6 @@ import ABI from 'human-standard-token-abi';
 import { TransactionConfig } from 'web3-eth';
 import { Prisma } from '@prisma/client';
 import { DateTime } from 'luxon';
-import { Transaction } from 'ethereumjs-tx';
 
 import { server__ethereumWalletPrivateKey } from '../../../../../modules/env';
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
@@ -18,6 +17,8 @@ export default createEndpoint({
   isSecret: true,
   fn: async ({ req, res, network: depositNetwork, prisma }) => {
     const network = getDestinationNetwork(depositNetwork);
+    logger.info({ depositNetwork, network }, 'Getting started with these networks');
+
     const etherSymbol = network === 56 || network === 97 ? 'BNB' : 'ETH';
     const etherUsdtPrice = (
       await fetcher<{ data: { [k in 'ask' | 'bid']: [string, string] } }>(
@@ -32,6 +33,9 @@ export default createEndpoint({
 
     const web3 = buildWeb3Instance({ network });
     const hotWallet = web3.eth.accounts.privateKeyToAccount(server__ethereumWalletPrivateKey);
+
+    const contract = new web3.eth.Contract(ABI, SB_TOKEN_CONTRACT[network]);
+    const decimals = await contract.methods.decimals().call();
 
     const pendingTransactions = await prisma.transaction.findMany({
       where: {
@@ -50,35 +54,32 @@ export default createEndpoint({
       const tx = cappedPendingTransactions[i];
 
       try {
-        const contract = new web3.eth.Contract(ABI, SB_TOKEN_CONTRACT[network]);
-        const decimals = await contract.methods.decimals().call();
         const gasPrice = await web3.eth.getGasPrice();
         const rawTx: TransactionConfig = {
+          chainId: network,
           nonce: await web3.eth.getTransactionCount(hotWallet.address),
           gasPrice: web3.utils.toHex(gasPrice),
           from: hotWallet.address,
           to: SB_TOKEN_CONTRACT[network],
           value: '0x0',
           data: contract.methods
-            .transfer(tx.addressFrom, web3.utils.toHex(tx.value.times(`1e${decimals}`).toFixed()))
+            .transfer(tx.addressFrom, web3.utils.toHex(tx.value.times(`1e${decimals}`).toFixed(0)))
             .encodeABI(),
         };
 
-        const etherGasPrice = web3.utils.fromWei(gasPrice, 'ether');
         const estimatedGas = await web3.eth.estimateGas(rawTx);
-        const estimatedGasSwingby = new Prisma.Decimal(etherGasPrice)
-          .times(estimatedGas)
-          .times(etherUsdtPrice)
-          .div(swingbyUsdtPrice);
-        logger.info({ estimatedGasSwingby }, 'Estimated transaction fee in Swingby');
+        const etherGasPrice = new Prisma.Decimal(web3.utils.fromWei(gasPrice, 'ether'));
+        const estimatedFeeEther = etherGasPrice.times(estimatedGas);
+        const estimatedFeeSwingby = estimatedFeeEther.times(etherUsdtPrice).div(swingbyUsdtPrice);
+        logger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
 
-        const amountReceiving = tx.value.minus(estimatedGasSwingby);
+        const amountReceiving = tx.value.minus(estimatedFeeSwingby);
         logger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
 
-        const outTx = new Transaction(
+        const signedTransaction = await web3.eth.accounts.signTransaction(
           {
             ...rawTx,
-            gasLimit: estimatedGas,
+            gas: new Prisma.Decimal(estimatedGas).times('1.5').toFixed(0),
             data: contract.methods
               .transfer(
                 tx.addressFrom,
@@ -86,14 +87,15 @@ export default createEndpoint({
               )
               .encodeABI(),
           },
-          { chain: network },
-        );
-        outTx.sign(Buffer.from(hotWallet.privateKey.replace(/^0x/, ''), 'hex'));
-
-        const result = await web3.eth.sendSignedTransaction(
-          `0x${outTx.serialize().toString('hex')}`,
+          hotWallet.privateKey,
         );
 
+        if (!signedTransaction.rawTransaction) {
+          logger.error({ signedTransaction }, 'Error signing transaction');
+          throw new Error('Error signing transaction!');
+        }
+
+        const result = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
         await prisma.transaction.create({
           data: {
             transactionIn: {
