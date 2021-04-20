@@ -103,8 +103,10 @@ export default createEndpoint({
         await new Promise<string>((resolve, reject) => {
           web3.eth
             .sendSignedTransaction(rawTransaction)
+            .on('error', reject)
             .on('transactionHash', async (hash) => {
               logger.trace('Got transaction hash %j', hash);
+
               await prisma.payment.create({
                 data: {
                   deposit: {
@@ -116,9 +118,6 @@ export default createEndpoint({
               });
 
               resolve(hash);
-            })
-            .on('error', (err) => {
-              reject(err);
             });
         });
       } catch (err) {
