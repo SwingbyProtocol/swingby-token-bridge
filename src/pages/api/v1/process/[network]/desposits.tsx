@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { stringifyUrl } from 'query-string';
-import { Prisma, Transaction } from '@prisma/client';
+import { Prisma, Deposit } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { server__ethereumWalletPrivateKey } from '../../../../../modules/env';
@@ -42,7 +42,7 @@ export default createEndpoint({
 
     const lastBlock =
       (
-        await prisma.transaction.findFirst({
+        await prisma.deposit.findFirst({
           where: {
             network: { equals: toDbNetwork(network) },
             addressTo: { equals: hotWalletAddress, mode: 'insensitive' },
@@ -88,10 +88,7 @@ export default createEndpoint({
       const item = depositTxs[i];
 
       try {
-        const parsedItem: Omit<
-          Transaction,
-          'transactionOutHash' | 'transactionOutIndex' | 'transactionOutNetwork'
-        > = {
+        const parsedItem: Deposit = {
           network: toDbNetwork(network),
           hash: item.hash,
           transactionIndex: +item.transactionIndex,
@@ -106,7 +103,7 @@ export default createEndpoint({
           value: new Prisma.Decimal(item.value).div(`1e${item.tokenDecimal}`),
         };
 
-        await prisma.transaction.upsert({
+        await prisma.deposit.upsert({
           where: { network_hash: { hash: parsedItem.hash, network: parsedItem.network } },
           create: parsedItem,
           update: parsedItem,
