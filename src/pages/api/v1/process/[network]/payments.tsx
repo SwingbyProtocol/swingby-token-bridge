@@ -71,6 +71,7 @@ export default createEndpoint({
             .encodeABI(),
         };
 
+        logger.trace({ txIn, rawTx }, 'Will estimate gas');
         const estimatedGas = await web3.eth.estimateGas(rawTx);
         const etherGasPrice = new Prisma.Decimal(web3.utils.fromWei(gasPrice, 'ether'));
         const estimatedFeeEther = etherGasPrice.times(estimatedGas);
