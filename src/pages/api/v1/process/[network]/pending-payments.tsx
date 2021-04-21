@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { stringifyUrl } from 'query-string';
-import { Prisma, Deposit } from '@prisma/client';
+import { Prisma, Deposit, PaymentStatus } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { server__ethereumWalletPrivateKey } from '../../../../../modules/env';
@@ -24,6 +24,7 @@ type ApiResult = {
     gas: string;
     gasPrice: string;
     transactionIndex: string;
+    confirmations: string;
   }> | null;
 };
 
@@ -35,22 +36,18 @@ export default createEndpoint({
       server__ethereumWalletPrivateKey,
     );
 
-    const liquitidyProviders = (await prisma.liquidityProvider.findMany()).map((it) =>
-      it.address.toLowerCase(),
-    );
-    logger.debug({ liquitidyProviders }, 'Got list of liquidity providers');
-
-    const lastBlock =
+    const firstPendingBlock =
       (
-        await prisma.deposit.findFirst({
+        await prisma.payment.findFirst({
           where: {
             network: { equals: toDbNetwork(network) },
-            addressTo: { equals: hotWalletAddress, mode: 'insensitive' },
+            addressFrom: { equals: hotWalletAddress, mode: 'insensitive' },
+            status: { equals: PaymentStatus.PENDING },
           },
-          orderBy: { blockNumber: 'desc' },
+          orderBy: { blockNumber: 'asc' },
         })
       )?.blockNumber ?? new Prisma.Decimal(1);
-    logger.debug('Will start looking from block %s', lastBlock);
+    logger.debug('Will start looking from block %s', firstPendingBlock);
 
     const depositTxs = (
       (
@@ -62,30 +59,18 @@ export default createEndpoint({
               action: 'tokentx',
               address: hotWalletAddress,
               contractaddress: SB_TOKEN_CONTRACT[network],
-              startblock: lastBlock.minus(1).toString(),
+              startblock: firstPendingBlock.minus(1).toString(),
               endblock: 99999999,
               sort: 'desc',
             },
           }),
         )
       ).result ?? []
-    )
-      .slice(0, lastBlock.eq(1) ? 1 : undefined) // Take only the latest transaction into account if the DB is empty
-      .filter((item) => {
-        if (item.to?.toLowerCase() !== hotWalletAddress.toLowerCase()) {
-          return false;
-        }
-
-        if (liquitidyProviders.includes(item.from?.toLowerCase())) {
-          logger.debug(
-            { item },
-            'Will ignore item because the transfer comes from a liquidity provider',
-          );
-          return false;
-        }
-
-        return true;
-      });
+    ).filter(
+      (item) =>
+        item.from?.toLowerCase() === hotWalletAddress.toLowerCase() &&
+        new Prisma.Decimal(item.confirmations).gte(10),
+    );
 
     const failed: typeof depositTxs = [];
     for (let i = 0; i < depositTxs.length; i++) {
@@ -107,10 +92,9 @@ export default createEndpoint({
           value: new Prisma.Decimal(item.value).div(`1e${item.tokenDecimal}`),
         };
 
-        await prisma.deposit.upsert({
+        await prisma.payment.update({
           where: { network_hash: { hash: parsedItem.hash, network: parsedItem.network } },
-          create: parsedItem,
-          update: parsedItem,
+          data: parsedItem,
         });
       } catch (err) {
         logger.error({ err }, 'Failed to save transaction to DB');
