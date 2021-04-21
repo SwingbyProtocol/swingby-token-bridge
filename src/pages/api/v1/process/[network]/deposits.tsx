@@ -67,21 +67,23 @@ export default createEndpoint({
           },
         }),
       )
-    ).result.filter((item) => {
-      if (item.to?.toLowerCase() !== hotWalletAddress.toLowerCase()) {
-        return false;
-      }
+    ).result
+      .slice(0, lastBlock.eq(1) ? 1 : undefined) // Take only the latest transaction into account if the DB is empty
+      .filter((item) => {
+        if (item.to?.toLowerCase() !== hotWalletAddress.toLowerCase()) {
+          return false;
+        }
 
-      if (liquitidyProviders.includes(item.from?.toLowerCase())) {
-        logger.debug(
-          { item },
-          'Will ignore item because the transfer comes from a liquidity provider',
-        );
-        return false;
-      }
+        if (liquitidyProviders.includes(item.from?.toLowerCase())) {
+          logger.debug(
+            { item },
+            'Will ignore item because the transfer comes from a liquidity provider',
+          );
+          return false;
+        }
 
-      return true;
-    });
+        return true;
+      });
 
     const failed: typeof depositTxs = [];
     for (let i = 0; i < depositTxs.length; i++) {
