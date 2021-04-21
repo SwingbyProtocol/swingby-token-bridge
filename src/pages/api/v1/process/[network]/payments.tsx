@@ -54,7 +54,7 @@ export default createEndpoint({
       const txIn = cappedPendingTransactions[i];
 
       try {
-        const gasPrice = await web3.eth.getGasPrice();
+        const gasPrice = new Prisma.Decimal(await web3.eth.getGasPrice()).times('1.5').toFixed(0);
         const rawTx: TransactionConfig = {
           chainId: network,
           // Dirty trick adding `i` here to avoid having to wait for a tx receipt for each item.
