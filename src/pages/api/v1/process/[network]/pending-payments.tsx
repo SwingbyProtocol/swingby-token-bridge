@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { stringifyUrl } from 'query-string';
-import { Prisma, Deposit, PaymentStatus } from '@prisma/client';
+import { Prisma, PaymentStatus } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { server__ethereumWalletPrivateKey } from '../../../../../modules/env';
@@ -77,24 +77,25 @@ export default createEndpoint({
       const item = depositTxs[i];
 
       try {
-        const parsedItem: Deposit = {
-          network: toDbNetwork(network),
-          hash: item.hash,
-          transactionIndex: +item.transactionIndex,
-          blockNumber: new Prisma.Decimal(item.blockNumber),
-          at: DateTime.fromMillis(+item.timeStamp * 1000, { zone: 'utc' }).toJSDate(),
-          addressFrom: web3.utils.toChecksumAddress(item.from),
-          addressTo: web3.utils.toChecksumAddress(item.to),
-          addressContract: web3.utils.toChecksumAddress(item.contractAddress),
-          tokenDecimals: +item.tokenDecimal,
-          gas: new Prisma.Decimal(item.gas),
-          gasPrice: new Prisma.Decimal(item.gasPrice).div(`1e${item.tokenDecimal}`),
-          value: new Prisma.Decimal(item.value).div(`1e${item.tokenDecimal}`),
-        };
-
         await prisma.payment.update({
-          where: { network_hash: { hash: parsedItem.hash, network: parsedItem.network } },
-          data: parsedItem,
+          where: { network_hash: { hash: item.hash, network: toDbNetwork(network) } },
+          data: {
+            network: toDbNetwork(network),
+            hash: item.hash,
+            status: new Prisma.Decimal(item.confirmations).gte(10)
+              ? PaymentStatus.COMPLETED
+              : PaymentStatus.PENDING,
+            transactionIndex: +item.transactionIndex,
+            blockNumber: new Prisma.Decimal(item.blockNumber),
+            at: DateTime.fromMillis(+item.timeStamp * 1000, { zone: 'utc' }).toJSDate(),
+            addressFrom: web3.utils.toChecksumAddress(item.from),
+            addressTo: web3.utils.toChecksumAddress(item.to),
+            addressContract: web3.utils.toChecksumAddress(item.contractAddress),
+            tokenDecimals: +item.tokenDecimal,
+            gas: new Prisma.Decimal(item.gas),
+            gasPrice: new Prisma.Decimal(item.gasPrice).div(`1e${item.tokenDecimal}`),
+            value: new Prisma.Decimal(item.value).div(`1e${item.tokenDecimal}`),
+          },
         });
       } catch (err) {
         logger.error({ err }, 'Failed to save transaction to DB');
