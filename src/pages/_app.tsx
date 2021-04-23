@@ -17,7 +17,7 @@ import { OnboardProvider } from '../modules/onboard';
 import { GlobalStyles } from '../modules/styles';
 
 const apolloClient = new ApolloClient({
-  uri: '/api/v1/graphql',
+  uri: 'https://bridge.swingby.network/api/v1/graphql',
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
