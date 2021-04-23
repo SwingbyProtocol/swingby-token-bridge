@@ -16,7 +16,6 @@
 
 # production
 /build
-/schema.graphql
 /graphql.schema.json
 
 # misc
