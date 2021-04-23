@@ -1,3 +1,5 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { relayStylePagination } from '@apollo/client/utilities'; // eslint-disable-line import/no-internal-modules
 import { AppProps } from 'next/app';
 import { useMemo } from 'react';
 import { IntlProvider } from 'react-intl';
@@ -14,6 +16,19 @@ import { Favicon } from '../components/Favicon';
 import { OnboardProvider } from '../modules/onboard';
 import { GlobalStyles } from '../modules/styles';
 
+const apolloClient = new ApolloClient({
+  uri: '/api/v1/graphql',
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          transactions: relayStylePagination(['where']),
+        },
+      },
+    },
+  }),
+});
+
 function MyApp({ Component, pageProps, router }: AppProps) {
   const locale = (() => {
     const result = router.locale ?? router.defaultLocale ?? 'en';
@@ -27,26 +42,28 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   const messages = useMemo(() => ({ ...languages.en, ...languages[locale] }), [locale]);
 
   return (
-    <IntlProvider messages={messages} locale={locale} defaultLocale="en">
-      <PulsarThemeProvider>
-        <OnboardProvider>
-          <>
-            <Head>
-              <meta name="viewport" content="width=device-width, initial-scale=1" />
-              <link rel="stylesheet" href={PULSAR_GLOBAL_FONT_HREF} />
-              <title>{messages['generic.page-title']}</title>
-            </Head>
+    <ApolloProvider client={apolloClient}>
+      <IntlProvider messages={messages} locale={locale} defaultLocale="en">
+        <PulsarThemeProvider>
+          <OnboardProvider>
+            <>
+              <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="stylesheet" href={PULSAR_GLOBAL_FONT_HREF} />
+                <title>{messages['generic.page-title']}</title>
+              </Head>
 
-            <PulsarGlobalStyles />
-            <Favicon />
-            <GlobalStyles />
+              <PulsarGlobalStyles />
+              <Favicon />
+              <GlobalStyles />
 
-            <Component {...pageProps} />
-            <PulsarToastContainer />
-          </>
-        </OnboardProvider>
-      </PulsarThemeProvider>
-    </IntlProvider>
+              <Component {...pageProps} />
+              <PulsarToastContainer />
+            </>
+          </OnboardProvider>
+        </PulsarThemeProvider>
+      </IntlProvider>
+    </ApolloProvider>
   );
 }
 

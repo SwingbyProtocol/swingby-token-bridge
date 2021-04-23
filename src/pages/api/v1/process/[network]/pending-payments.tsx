@@ -3,7 +3,7 @@ import { stringifyUrl } from 'query-string';
 import { Prisma, PaymentStatus } from '@prisma/client';
 import { DateTime } from 'luxon';
 
-import { server__ethereumWalletPrivateKey } from '../../../../../modules/env';
+import { server__ethereumWalletPrivateKey } from '../../../../../modules/server__env';
 import { fetcher } from '../../../../../modules/fetch';
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance, getScanApiUrl } from '../../../../../modules/server__web3';

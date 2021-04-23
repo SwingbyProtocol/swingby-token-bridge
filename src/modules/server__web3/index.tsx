@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-import { server__infuraProjectId, server__infuraProjectSecret } from '../env';
+import { server__infuraProjectId, server__infuraProjectSecret } from '../server__env';
 import { NetworkId } from '../onboard';
 
 export const buildWeb3Instance = ({ network }: { network: NetworkId }) => {

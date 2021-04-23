@@ -3,7 +3,7 @@ import ABI from 'human-standard-token-abi';
 import { TransactionConfig } from 'web3-eth';
 import { PaymentStatus, Prisma } from '@prisma/client';
 
-import { server__ethereumWalletPrivateKey } from '../../../../../modules/env';
+import { server__ethereumWalletPrivateKey } from '../../../../../modules/server__env';
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';

@@ -4,7 +4,7 @@ import { DateTime, Duration } from 'luxon';
 
 import { corsMiddleware } from '../server__cors';
 import { logger } from '../logger';
-import { server__processTaskSecret, prisma } from '../env';
+import { server__processTaskSecret, prisma } from '../server__env';
 import { NetworkId } from '../onboard';
 import { fromDbNetwork } from '../server__db';
 

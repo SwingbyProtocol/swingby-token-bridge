@@ -1,0 +1,12 @@
+query DepositsHistory {
+  deposits {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        at
+      }
+    }
+  }
+}

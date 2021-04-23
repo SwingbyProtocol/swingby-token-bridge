@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-micro';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { corsMiddleware } from '../../../modules/server__cors';
-import { prisma } from '../../../modules/env';
+import { prisma } from '../../../modules/server__env';
 import { schema } from '../../../modules/model';
 
 const server = new ApolloServer({

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "yarn -s generate && next dev | pino-pretty",
-    "generate": "ts-node --compiler-options '{ \"module\": \"commonjs\" }' --transpile-only src/modules/model",
+    "generate": "ts-node --compiler-options '{ \"module\": \"commonjs\" }' --transpile-only src/modules/model && graphql-codegen --config codegen.yml",
     "build": "yarn -s generate && next build",
     "start": "next start",
     "lint": "eslint .",
@@ -13,6 +13,7 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,mdx,html,yml}'"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.15",
     "@prisma/client": "2.21.2",
     "@swingby-protocol/pulsar": "^3.13.0",
     "@walletconnect/client": "^1.4.1",
@@ -44,6 +45,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
+    "@graphql-codegen/cli": "^1.21.4",
+    "@graphql-codegen/introspection": "^1.18.2",
+    "@graphql-codegen/typescript": "^1.22.0",
+    "@graphql-codegen/typescript-operations": "^1.17.16",
+    "@graphql-codegen/typescript-react-apollo": "^2.2.4",
     "@percy/cli": "^1.0.0-beta.46",
     "@percy/cypress": "^3.0.0",
     "@swingby-protocol/eslint-config": "^2.3.0",
