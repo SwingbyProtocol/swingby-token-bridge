@@ -169,7 +169,7 @@ export const TransactionHistory = () => {
                                 &nbsp;
                                 <Amount>
                                   <FormattedNumber
-                                    value={+item.value}
+                                    value={+lastPayment.value}
                                     maximumFractionDigits={2}
                                     maximumSignificantDigits={isWideScreen ? 7 : 5}
                                   />
