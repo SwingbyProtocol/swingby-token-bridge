@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
@@ -15,28 +16,28 @@ export const TransactionHistory = () => {
     throw new Error('Not connected to a wallet or valid network');
   }
 
-  const { data, fetchMore } = useDepositsHistoryQuery({
-    variables: {
-      first: PAGE_SIZE,
-      where: {
-        network: {
-          equals: (() => {
-            switch (network) {
-              case 1:
-                return Network.Ethereum;
-              case 5:
-                return Network.Goerli;
-              case 56:
-                return Network.Bsc;
-              case 97:
-                return Network.Bsct;
-            }
-          })(),
-        },
-        addressFrom: { equals: address, mode: StringFilterMode.Insensitive },
+  const where = useMemo(
+    () => ({
+      network: {
+        equals: (() => {
+          switch (network) {
+            case 1:
+              return Network.Ethereum;
+            case 5:
+              return Network.Goerli;
+            case 56:
+              return Network.Bsc;
+            case 97:
+              return Network.Bsct;
+          }
+        })(),
       },
-    },
-  });
+      addressFrom: { equals: address, mode: StringFilterMode.Insensitive },
+    }),
+    [address, network],
+  );
+
+  const { data, fetchMore } = useDepositsHistoryQuery({ variables: { first: PAGE_SIZE, where } });
   if (!data) {
     return <></>;
   }
@@ -53,27 +54,7 @@ export const TransactionHistory = () => {
             }
             loadMoreItems={() =>
               fetchMore({
-                variables: {
-                  after: deposits.pageInfo.endCursor,
-                  first: PAGE_SIZE,
-                  where: {
-                    network: {
-                      equals: (() => {
-                        switch (network) {
-                          case 1:
-                            return Network.Ethereum;
-                          case 5:
-                            return Network.Goerli;
-                          case 56:
-                            return Network.Bsc;
-                          case 97:
-                            return Network.Bsct;
-                        }
-                      })(),
-                    },
-                    addressFrom: { equals: address, mode: StringFilterMode.Insensitive },
-                  },
-                },
+                variables: { after: deposits.pageInfo.endCursor, first: PAGE_SIZE, where },
               })
             }
           >
