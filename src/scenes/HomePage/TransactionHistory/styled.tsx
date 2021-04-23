@@ -2,11 +2,12 @@ import { Card } from '@swingby-protocol/pulsar';
 import { rem } from 'polished';
 import styled, { css } from 'styled-components';
 
+export const WIDE_SCREEN = `(min-width: ${rem(768)})`;
+
 export const Container = styled(Card)`
   align-self: stretch;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  padding: ${({ theme }) => rem(theme.pulsar.size.street)} 0;
 `;
 
 const even = css`
@@ -14,24 +15,55 @@ const even = css`
 `;
 
 export const Item = styled.div<{ isEven: boolean }>`
-  display: flex;
-  flex-direction: row;
+  display: grid;
   align-items: center;
-  justify-content: center;
+  justify-items: left;
+  grid-template-columns: 1fr min-content 1fr;
+  grid-gap: ${({ theme }) => rem(theme.pulsar.size.town)};
   padding: 0 ${({ theme }) => rem(theme.pulsar.size.town)};
   ${({ isEven }) => isEven && even};
+`;
 
-  > * {
-    flex: 1;
-  }
+export const SideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 
-  > *:not(:first-child) {
-    margin-left: ${({ theme }) => rem(theme.pulsar.size.town)};
+  @media ${WIDE_SCREEN} {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
   }
+`;
 
-  > *:not(:last-child) {
-    margin-right: ${({ theme }) => rem(theme.pulsar.size.town)};
-  }
+const warning = css`
+  background: ${({ theme }) => theme.pulsar.color.warning.normal};
+  color: ${({ theme }) => theme.pulsar.color.warning.text};
+`;
+
+const danger = css`
+  background: ${({ theme }) => theme.pulsar.color.danger.normal};
+  color: ${({ theme }) => theme.pulsar.color.danger.text};
+`;
+
+const success = css`
+  background: ${({ theme }) => theme.pulsar.color.success.normal};
+  color: ${({ theme }) => theme.pulsar.color.success.text};
+`;
+
+export const Arrow = styled.div<{ status: 'warning' | 'danger' | 'success' }>`
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: ${({ theme }) => rem(theme.pulsar.size.town)};
+  height: ${({ theme }) => rem(theme.pulsar.size.town)};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ status }) => status === 'success' && success};
+  ${({ status }) => status === 'warning' && warning};
+  ${({ status }) => status === 'danger' && danger};
 `;
 
 export const ItemHashContainer = styled.div`
@@ -50,4 +82,28 @@ export const ItemDate = styled.span`
   color: ${({ theme }) => theme.pulsar.color.text.masked};
   font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
   font-weight: 500;
+`;
+
+export const AmountContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.box)};
+
+  @media ${WIDE_SCREEN} {
+    font-size: ${({ theme }) => rem(theme.pulsar.size.house)};
+    margin-top: 0;
+    margin-left: ${({ theme }) => rem(theme.pulsar.size.town)};
+  }
+`;
+
+export const Amount = styled.span`
+  font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
+  font-weight: 600;
+
+  @media ${WIDE_SCREEN} {
+    font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
+  }
 `;
