@@ -200,7 +200,13 @@ export enum StringFilterMode {
   Insensitive = 'insensitive'
 }
 
-export type DepositsHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+export type DepositsHistoryQueryVariables = Exact<{
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
+  last?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['String']>;
+  where?: Maybe<DepositWhereInput>;
+}>;
 
 
 export type DepositsHistoryQuery = (
@@ -215,14 +221,23 @@ export type DepositsHistoryQuery = (
         { __typename?: 'Deposit' }
         & Pick<Deposit, 'id' | 'at'>
       ) }
-    )> }
+    )>, pageInfo: (
+      { __typename?: 'ForwardPaginationPageInfo' }
+      & Pick<ForwardPaginationPageInfo, 'startCursor' | 'endCursor' | 'hasNextPage' | 'hasPreviousPage'>
+    ) }
   ) }
 );
 
 
 export const DepositsHistoryDocument = gql`
-    query DepositsHistory {
-  deposits {
+    query DepositsHistory($first: Int, $after: String, $last: Int, $before: String, $where: DepositWhereInput) {
+  deposits(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    where: $where
+  ) {
     totalCount
     edges {
       cursor
@@ -230,6 +245,12 @@ export const DepositsHistoryDocument = gql`
         id
         at
       }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
@@ -247,6 +268,11 @@ export const DepositsHistoryDocument = gql`
  * @example
  * const { data, loading, error } = useDepositsHistoryQuery({
  *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      last: // value for 'last'
+ *      before: // value for 'before'
+ *      where: // value for 'where'
  *   },
  * });
  */

@@ -133,7 +133,7 @@ export const HomePage = () => {
         </ButtonsContainer>
         <SwapToBep2 amount={parsedAmount} />
       </StyledCard>
-      {!!address && isTransactionHistoryEnabled && <TransactionHistory />}
+      {!!address && !!network && isTransactionHistoryEnabled && <TransactionHistory />}
     </Container>
   );
 };
