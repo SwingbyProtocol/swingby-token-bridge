@@ -9,8 +9,7 @@ const MEDIA = `(min-width: ${rem(768)})`;
 export const Container = styled.div`
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: ${({ theme }) => rem(theme.pulsar.size.city)} 1fr ${({ theme }) =>
-      rem(theme.pulsar.size.city)};
+  grid-template-rows: ${({ theme }) => rem(theme.pulsar.size.city)} auto 1fr;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
@@ -22,6 +21,9 @@ export const StyledConnectWallet = styled(ConnectWallet)`
 `;
 
 export const StyledCard = styled(Card)`
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.state)};
+  margin-bottom: ${({ theme }) => rem(theme.pulsar.size.country)};
+
   @media ${MEDIA} {
     width: ${rem(450)};
     justify-self: center;

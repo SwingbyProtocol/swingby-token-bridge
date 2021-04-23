@@ -5,7 +5,7 @@ import { Big } from 'big.js';
 import { Prisma } from '@prisma/client';
 
 import { createEndpoint, getStringParam } from '../../../../modules/server__api-endpoint';
-import { server__ethereumWalletPrivateKey } from '../../../../modules/env';
+import { server__ethereumWalletPrivateKey } from '../../../../modules/server__env';
 import { buildWeb3Instance } from '../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../modules/swingby-token';
 import { fetcher } from '../../../../modules/fetch';

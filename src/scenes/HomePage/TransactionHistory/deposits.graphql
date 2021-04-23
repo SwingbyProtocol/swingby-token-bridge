@@ -1,0 +1,35 @@
+query DepositsHistory(
+  $first: Int
+  $after: String
+  $last: Int
+  $before: String
+  $where: DepositWhereInput
+) {
+  deposits(first: $first, after: $after, last: $last, before: $before, where: $where) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        at
+        network
+        hash
+        value
+        payments {
+          id
+          at
+          network
+          hash
+          status
+          value
+        }
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
