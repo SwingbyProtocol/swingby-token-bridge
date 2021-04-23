@@ -12,6 +12,17 @@ query DepositsHistory(
       node {
         id
         at
+        network
+        hash
+        value
+        payments {
+          id
+          at
+          network
+          hash
+          status
+          value
+        }
       }
     }
     pageInfo {

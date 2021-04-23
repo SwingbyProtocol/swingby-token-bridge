@@ -219,7 +219,11 @@ export type DepositsHistoryQuery = (
       & Pick<DepositsConnectionEdges, 'cursor'>
       & { node: (
         { __typename?: 'Deposit' }
-        & Pick<Deposit, 'id' | 'at'>
+        & Pick<Deposit, 'id' | 'at' | 'network' | 'hash' | 'value'>
+        & { payments: Array<(
+          { __typename?: 'Payment' }
+          & Pick<Payment, 'id' | 'at' | 'network' | 'hash' | 'status' | 'value'>
+        )> }
       ) }
     )>, pageInfo: (
       { __typename?: 'ForwardPaginationPageInfo' }
@@ -244,6 +248,17 @@ export const DepositsHistoryDocument = gql`
       node {
         id
         at
+        network
+        hash
+        value
+        payments {
+          id
+          at
+          network
+          hash
+          status
+          value
+        }
       }
     }
     pageInfo {
