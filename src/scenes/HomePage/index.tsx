@@ -12,6 +12,7 @@ import { FormattedMessage } from 'react-intl';
 import { logger } from '../../modules/logger';
 import { useOnboard } from '../../modules/onboard';
 import { getDestinationNetwork, getSwingbyBalance, transferToHotWallet } from '../../modules/web3';
+import { isTransactionHistoryEnabled } from '../../modules/env';
 
 import {
   Container,
@@ -24,6 +25,7 @@ import {
 } from './styled';
 import { useSwapFee } from './useSwapFee';
 import { SwapToBep2 } from './SwapToBep2';
+import { TransactionHistory } from './TransactionHistory';
 
 const TOAST_ID_GET_MAX = 'get-max';
 
@@ -131,6 +133,7 @@ export const HomePage = () => {
         </ButtonsContainer>
         <SwapToBep2 amount={parsedAmount} />
       </StyledCard>
+      {isTransactionHistoryEnabled && <TransactionHistory />}
     </Container>
   );
 };
