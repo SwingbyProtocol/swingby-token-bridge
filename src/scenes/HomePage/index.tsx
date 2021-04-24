@@ -29,6 +29,8 @@ import { TransactionHistory } from './TransactionHistory';
 
 const TOAST_ID_GET_MAX = 'get-max';
 
+logger.debug({ isTransactionHistoryEnabled }, 'Is the transaction history feature enabled?');
+
 export const HomePage = () => {
   const { address, network, onboard } = useOnboard();
   const [amount, setAmount] = useState('');
