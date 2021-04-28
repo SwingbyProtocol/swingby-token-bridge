@@ -11,6 +11,7 @@ import { logger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
 import { getDestinationNetwork } from '../../../../../modules/web3';
 import { fetcher } from '../../../../../modules/fetch';
+import { assertPaymentSanityCheck } from '../../../../../modules/server__payment-sanity-check';
 
 const MAX_TRANSACTIONS_PER_CALL = 10;
 
@@ -19,6 +20,8 @@ export default createEndpoint({
   fn: async ({ req, res, network: depositNetwork, prisma }) => {
     const network = getDestinationNetwork(depositNetwork);
     logger.info({ depositNetwork, network }, 'Getting started with these networks');
+
+    await assertPaymentSanityCheck({ network });
 
     const etherSymbol = network === 56 || network === 97 ? 'BNB' : 'ETH';
     const etherUsdtPrice = (
