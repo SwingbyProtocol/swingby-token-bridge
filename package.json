@@ -15,7 +15,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.15",
     "@prisma/client": "2.21.2",
-    "@swingby-protocol/pulsar": "^3.13.0",
+    "@swingby-protocol/pulsar": "^3.14.1",
     "@walletconnect/client": "^1.4.1",
     "apollo-server": "^2.23.0",
     "apollo-server-micro": "^2.23.0",
