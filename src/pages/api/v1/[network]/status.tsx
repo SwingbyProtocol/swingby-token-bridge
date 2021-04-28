@@ -5,7 +5,6 @@ import { assertPaymentSanityCheck } from '../../../../modules/server__payment-sa
 import { logger } from '../../../../modules/logger';
 
 export default createEndpoint({
-  isSecret: true,
   fn: async ({ res, network }) => {
     try {
       await assertPaymentSanityCheck({ network });
