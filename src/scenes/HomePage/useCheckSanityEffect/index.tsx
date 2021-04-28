@@ -2,9 +2,9 @@ import { createOrUpdateToast, dismissToast } from '@swingby-protocol/pulsar';
 import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Network, useSanityCheckQuery } from '../../generated/graphql';
-import { useOnboard } from '../../modules/onboard';
-import { getDestinationNetwork } from '../../modules/web3';
+import { Network, useSanityCheckQuery } from '../../../generated/graphql';
+import { useOnboard } from '../../../modules/onboard';
+import { getDestinationNetwork } from '../../../modules/web3';
 
 const TOAST_ID_SANITY_CHECK = 'sanity-check';
 
