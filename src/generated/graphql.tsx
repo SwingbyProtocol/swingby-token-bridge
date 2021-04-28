@@ -238,6 +238,16 @@ export type DepositsHistoryQuery = (
   ) }
 );
 
+export type SanityCheckQueryVariables = Exact<{
+  network: Network;
+}>;
+
+
+export type SanityCheckQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'sanityCheck'>
+);
+
 
 export const DepositsHistoryDocument = gql`
     query DepositsHistory($first: Int, $after: String, $last: Int, $before: String, $where: DepositWhereInput) {
@@ -308,3 +318,36 @@ export function useDepositsHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type DepositsHistoryQueryHookResult = ReturnType<typeof useDepositsHistoryQuery>;
 export type DepositsHistoryLazyQueryHookResult = ReturnType<typeof useDepositsHistoryLazyQuery>;
 export type DepositsHistoryQueryResult = Apollo.QueryResult<DepositsHistoryQuery, DepositsHistoryQueryVariables>;
+export const SanityCheckDocument = gql`
+    query SanityCheck($network: Network!) {
+  sanityCheck(network: $network)
+}
+    `;
+
+/**
+ * __useSanityCheckQuery__
+ *
+ * To run a query within a React component, call `useSanityCheckQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSanityCheckQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSanityCheckQuery({
+ *   variables: {
+ *      network: // value for 'network'
+ *   },
+ * });
+ */
+export function useSanityCheckQuery(baseOptions: Apollo.QueryHookOptions<SanityCheckQuery, SanityCheckQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SanityCheckQuery, SanityCheckQueryVariables>(SanityCheckDocument, options);
+      }
+export function useSanityCheckLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SanityCheckQuery, SanityCheckQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SanityCheckQuery, SanityCheckQueryVariables>(SanityCheckDocument, options);
+        }
+export type SanityCheckQueryHookResult = ReturnType<typeof useSanityCheckQuery>;
+export type SanityCheckLazyQueryHookResult = ReturnType<typeof useSanityCheckLazyQuery>;
+export type SanityCheckQueryResult = Apollo.QueryResult<SanityCheckQuery, SanityCheckQueryVariables>;

@@ -1,0 +1,3 @@
+query SanityCheck($network: Network!) {
+  sanityCheck(network: $network)
+}

@@ -26,6 +26,7 @@ import {
 import { useSwapFee } from './useSwapFee';
 import { SwapToBep2 } from './SwapToBep2';
 import { TransactionHistory } from './TransactionHistory';
+import { useCheckSanityEffect } from './useCheckSanityEffect';
 
 const TOAST_ID_GET_MAX = 'get-max';
 
@@ -37,6 +38,7 @@ export const HomePage = () => {
   const [gettingMax, setGettingMax] = useState(false);
   const [transferring, setTrasferring] = useState(false);
   const { data: feeData, node: feeNode } = useSwapFee();
+  const { isOk: isSanityCheckOk } = useCheckSanityEffect();
 
   const parsedAmount = useMemo(() => {
     try {
@@ -102,6 +104,7 @@ export const HomePage = () => {
             variant="primary"
             size="state"
             disabled={
+              !isSanityCheckOk ||
               !address ||
               !network ||
               !parsedAmount?.gt(0) ||

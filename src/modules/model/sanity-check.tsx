@@ -1,4 +1,3 @@
-import { ApolloError } from 'apollo-server';
 import { extendType, arg, nonNull } from 'nexus';
 
 import { Network } from '../../generated/graphql';
