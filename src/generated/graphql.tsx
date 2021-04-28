@@ -169,6 +169,7 @@ export type PaymentWhereUniqueInput = {
 export type Query = {
   __typename?: 'Query';
   deposits: DepositsConnection;
+  sanityCheck: Scalars['Boolean'];
 };
 
 
@@ -178,6 +179,11 @@ export type QueryDepositsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
   where?: Maybe<DepositWhereInput>;
+};
+
+
+export type QuerySanityCheckArgs = {
+  network: Network;
 };
 
 export type StringFilter = {

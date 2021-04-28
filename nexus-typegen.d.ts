@@ -244,6 +244,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
+    sanityCheck: boolean; // Boolean!
   }
 }
 
@@ -298,6 +299,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     deposits: 'DepositsConnection'
+    sanityCheck: 'Boolean'
   }
 }
 
@@ -317,6 +319,9 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       where?: NexusGenInputs['DepositWhereInput'] | null; // DepositWhereInput
+    }
+    sanityCheck: { // args
+      network: NexusGenEnums['Network']; // Network!
     }
   }
 }

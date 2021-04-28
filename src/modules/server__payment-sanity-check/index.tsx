@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { stringifyUrl } from 'query-string';
+import { ApolloError } from 'apollo-server';
 
 import { prisma, server__ethereumWalletPrivateKey } from '../server__env';
 import { NetworkId } from '../onboard';
@@ -16,6 +17,15 @@ type ApiResult = {
     from: string;
   }> | null;
 };
+
+export class SanityCheckFailedError extends ApolloError {
+  constructor({ hash }: { hash: string }) {
+    super(`The last payment in the chain ("${hash}") was not found in DB`, 'SANITY_CHECK_FAILED', {
+      hash,
+    });
+    Object.defineProperty(this, 'name', { value: 'SanityCheckFailedError' });
+  }
+}
 
 export const assertPaymentSanityCheck = async ({
   network,
@@ -80,9 +90,7 @@ export const assertPaymentSanityCheck = async ({
   });
 
   if (!lastPayment) {
-    throw new Error(
-      `The last payment in the chain ("${latestPayments[0].hash}") was not found in DB`,
-    );
+    throw new SanityCheckFailedError({ hash: latestPayments[0].hash });
   }
 
   logger.info('Last payment from Etherscan/BSCscan found in the DB. Sanity check passed.');

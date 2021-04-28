@@ -6,9 +6,10 @@ import { nexusPrisma } from 'nexus-plugin-prisma';
 import * as scalars from './scalars';
 import * as transactions from './transactions';
 import * as filters from './filters';
+import * as sanityCheck from './sanity-check';
 
 export const schema = makeSchema({
-  types: { ...scalars, ...transactions, ...filters },
+  types: { ...scalars, ...transactions, ...filters, ...sanityCheck },
   plugins: [nexusPrisma()],
   contextType: {
     module: path.join(__dirname, 'context.ts'),
