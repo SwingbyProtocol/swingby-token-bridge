@@ -9,7 +9,7 @@
   "network.short.97": "BSC (T)",
   "network.short.bc": "BC",
   "network.short.bct": "BC (T)",
-  "network.sanity-error": "Sanity check for the destination network failed. Swaps will not be processed until this is resolved.",
+  "network.sanity-error": "Sanity checks for the destination address failed. Please contact {email} for further assistance.",
   "wallet.connect": "Connect",
   "form.max-btn": "MAX",
   "form.approve-btn": "Approve",

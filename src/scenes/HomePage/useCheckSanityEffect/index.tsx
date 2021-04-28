@@ -1,11 +1,12 @@
 import { createOrUpdateToast, dismissToast } from '@swingby-protocol/pulsar';
 import { useEffect } from 'react';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { Network, useSanityCheckQuery } from '../../../generated/graphql';
 import { useOnboard } from '../../../modules/onboard';
 import { getDestinationNetwork } from '../../../modules/web3';
 
+const EMAIL_ADDRESS = 'tech@swingby.network';
 const TOAST_ID_SANITY_CHECK = 'sanity-check';
 
 export const useCheckSanityEffect = () => {
@@ -36,17 +37,22 @@ export const useCheckSanityEffect = () => {
 
   const isOk = data?.sanityCheck || !error;
   useEffect(() => {
-    if (data?.sanityCheck || !error) {
+    if (isOk) {
       dismissToast({ toastId: TOAST_ID_SANITY_CHECK });
       return;
     }
 
     createOrUpdateToast({
       toastId: TOAST_ID_SANITY_CHECK,
-      content: formatMessage({ id: 'network.sanity-error' }),
+      content: (
+        <FormattedMessage
+          id="network.sanity-error"
+          values={{ email: <a href={`mailto:${EMAIL_ADDRESS}`}>{EMAIL_ADDRESS}</a> }}
+        />
+      ),
       type: 'warning',
     });
-  }, [data, error, formatMessage]);
+  }, [isOk, formatMessage]);
 
   return { isOk };
 };
