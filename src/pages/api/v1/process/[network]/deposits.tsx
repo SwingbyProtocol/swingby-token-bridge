@@ -92,7 +92,7 @@ export default createEndpoint({
       const item = depositTxs[i];
 
       try {
-        const parsedItem: Deposit = {
+        const parsedItem: Omit<Deposit, 'createdAt' | 'updatedAt'> = {
           network: toDbNetwork(network),
           hash: item.hash,
           transactionIndex: +item.transactionIndex,
