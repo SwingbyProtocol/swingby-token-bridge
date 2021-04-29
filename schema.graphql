@@ -36,6 +36,7 @@ type Deposit {
   addressTo: String!
   at: DateTime!
   blockNumber: Decimal!
+  createdAt: DateTime!
   gas: Decimal!
   gasPrice: Decimal!
   hash: String!
@@ -44,6 +45,7 @@ type Deposit {
   payments(after: PaymentWhereUniqueInput, before: PaymentWhereUniqueInput, first: Int, last: Int): [Payment!]!
   tokenDecimals: Int!
   transactionIndex: Int!
+  updatedAt: DateTime!
   value: Decimal!
 }
 
@@ -56,12 +58,14 @@ input DepositWhereInput {
   addressTo: StringFilter
   at: DateTimeFilter
   blockNumber: DecimalFilter
+  createdAt: DateTimeFilter
   gas: DecimalFilter
   gasPrice: DecimalFilter
   hash: StringFilter
   network: NetworkFilter
   tokenDecimals: IntFilter
   transactionIndex: IntFilter
+  updatedAt: DateTimeFilter
   value: DecimalFilter
 }
 
@@ -114,6 +118,7 @@ type Payment {
   addressTo: String
   at: DateTime
   blockNumber: Decimal
+  createdAt: DateTime!
   deposit: Deposit!
   gas: Decimal
   gasPrice: Decimal
@@ -123,6 +128,7 @@ type Payment {
   status: PaymentStatus!
   tokenDecimals: Int
   transactionIndex: Int
+  updatedAt: DateTime!
   value: Decimal
 }
 

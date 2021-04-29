@@ -72,12 +72,14 @@ export interface NexusGenInputs {
     addressTo?: NexusGenInputs['StringFilter'] | null; // StringFilter
     at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     blockNumber?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     gas?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
     gasPrice?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
     hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
     network?: NexusGenInputs['NetworkFilter'] | null; // NetworkFilter
     tokenDecimals?: NexusGenInputs['IntFilter'] | null; // IntFilter
     transactionIndex?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     value?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
   }
   IntFilter: { // input type
@@ -142,12 +144,14 @@ export interface NexusGenObjects {
     addressTo: string; // String!
     at: NexusGenScalars['DateTime']; // DateTime!
     blockNumber: NexusGenScalars['Decimal']; // Decimal!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     gas: NexusGenScalars['Decimal']; // Decimal!
     gasPrice: NexusGenScalars['Decimal']; // Decimal!
     hash: string; // String!
     network: NexusGenEnums['Network']; // Network!
     tokenDecimals: number; // Int!
     transactionIndex: number; // Int!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
     value: NexusGenScalars['Decimal']; // Decimal!
   }
   DepositsConnection: { // root type
@@ -171,6 +175,7 @@ export interface NexusGenObjects {
     addressTo?: string | null; // String
     at?: NexusGenScalars['DateTime'] | null; // DateTime
     blockNumber?: NexusGenScalars['Decimal'] | null; // Decimal
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     gas?: NexusGenScalars['Decimal'] | null; // Decimal
     gasPrice?: NexusGenScalars['Decimal'] | null; // Decimal
     hash: string; // String!
@@ -178,6 +183,7 @@ export interface NexusGenObjects {
     status: NexusGenEnums['PaymentStatus']; // PaymentStatus!
     tokenDecimals?: number | null; // Int
     transactionIndex?: number | null; // Int
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
     value?: NexusGenScalars['Decimal'] | null; // Decimal
   }
   Query: {};
@@ -200,6 +206,7 @@ export interface NexusGenFieldTypes {
     addressTo: string; // String!
     at: NexusGenScalars['DateTime']; // DateTime!
     blockNumber: NexusGenScalars['Decimal']; // Decimal!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     gas: NexusGenScalars['Decimal']; // Decimal!
     gasPrice: NexusGenScalars['Decimal']; // Decimal!
     hash: string; // String!
@@ -208,6 +215,7 @@ export interface NexusGenFieldTypes {
     payments: NexusGenRootTypes['Payment'][]; // [Payment!]!
     tokenDecimals: number; // Int!
     transactionIndex: number; // Int!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
     value: NexusGenScalars['Decimal']; // Decimal!
   }
   DepositsConnection: { // field return type
@@ -231,6 +239,7 @@ export interface NexusGenFieldTypes {
     addressTo: string | null; // String
     at: NexusGenScalars['DateTime'] | null; // DateTime
     blockNumber: NexusGenScalars['Decimal'] | null; // Decimal
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     deposit: NexusGenRootTypes['Deposit']; // Deposit!
     gas: NexusGenScalars['Decimal'] | null; // Decimal
     gasPrice: NexusGenScalars['Decimal'] | null; // Decimal
@@ -240,6 +249,7 @@ export interface NexusGenFieldTypes {
     status: NexusGenEnums['PaymentStatus']; // PaymentStatus!
     tokenDecimals: number | null; // Int
     transactionIndex: number | null; // Int
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
     value: NexusGenScalars['Decimal'] | null; // Decimal
   }
   Query: { // field return type
@@ -255,6 +265,7 @@ export interface NexusGenFieldTypeNames {
     addressTo: 'String'
     at: 'DateTime'
     blockNumber: 'Decimal'
+    createdAt: 'DateTime'
     gas: 'Decimal'
     gasPrice: 'Decimal'
     hash: 'String'
@@ -263,6 +274,7 @@ export interface NexusGenFieldTypeNames {
     payments: 'Payment'
     tokenDecimals: 'Int'
     transactionIndex: 'Int'
+    updatedAt: 'DateTime'
     value: 'Decimal'
   }
   DepositsConnection: { // field return type name
@@ -286,6 +298,7 @@ export interface NexusGenFieldTypeNames {
     addressTo: 'String'
     at: 'DateTime'
     blockNumber: 'Decimal'
+    createdAt: 'DateTime'
     deposit: 'Deposit'
     gas: 'Decimal'
     gasPrice: 'Decimal'
@@ -295,6 +308,7 @@ export interface NexusGenFieldTypeNames {
     status: 'PaymentStatus'
     tokenDecimals: 'Int'
     transactionIndex: 'Int'
+    updatedAt: 'DateTime'
     value: 'Decimal'
   }
   Query: { // field return type name

@@ -6,8 +6,16 @@ import { NetworkTag } from '../../../components/NetworkTag';
 
 export const WIDE_SCREEN = `(min-width: ${rem(768)})`;
 
-export const Container = styled(Card)`
+export const Container = styled.div`
   align-self: stretch;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+`;
+
+export const StyledCard = styled(Card)`
+  max-width: ${rem(800)};
+  margin: 0 auto;
+  height: 100%;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 `;
@@ -17,13 +25,20 @@ const even = css`
 `;
 
 export const Item = styled.div<{ isEven: boolean }>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  ${({ isEven }) => isEven && even};
+`;
+
+export const ItemWrapper = styled.div`
+  width: 100%;
   display: grid;
   align-items: center;
   justify-items: left;
   grid-template-columns: 1fr min-content 1fr;
   grid-gap: ${({ theme }) => rem(theme.pulsar.size.town)};
   padding: 0 ${({ theme }) => rem(theme.pulsar.size.town)};
-  ${({ isEven }) => isEven && even};
 `;
 
 export const SideContainer = styled.div`

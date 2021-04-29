@@ -49,6 +49,7 @@ export type Deposit = {
   addressTo: Scalars['String'];
   at: Scalars['DateTime'];
   blockNumber: Scalars['Decimal'];
+  createdAt: Scalars['DateTime'];
   gas: Scalars['Decimal'];
   gasPrice: Scalars['Decimal'];
   hash: Scalars['String'];
@@ -57,6 +58,7 @@ export type Deposit = {
   payments: Array<Payment>;
   tokenDecimals: Scalars['Int'];
   transactionIndex: Scalars['Int'];
+  updatedAt: Scalars['DateTime'];
   value: Scalars['Decimal'];
 };
 
@@ -77,12 +79,14 @@ export type DepositWhereInput = {
   addressTo?: Maybe<StringFilter>;
   at?: Maybe<DateTimeFilter>;
   blockNumber?: Maybe<DecimalFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
   gas?: Maybe<DecimalFilter>;
   gasPrice?: Maybe<DecimalFilter>;
   hash?: Maybe<StringFilter>;
   network?: Maybe<NetworkFilter>;
   tokenDecimals?: Maybe<IntFilter>;
   transactionIndex?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
   value?: Maybe<DecimalFilter>;
 };
 
@@ -139,6 +143,7 @@ export type Payment = {
   addressTo?: Maybe<Scalars['String']>;
   at?: Maybe<Scalars['DateTime']>;
   blockNumber?: Maybe<Scalars['Decimal']>;
+  createdAt: Scalars['DateTime'];
   deposit: Deposit;
   gas?: Maybe<Scalars['Decimal']>;
   gasPrice?: Maybe<Scalars['Decimal']>;
@@ -148,6 +153,7 @@ export type Payment = {
   status: PaymentStatus;
   tokenDecimals?: Maybe<Scalars['Int']>;
   transactionIndex?: Maybe<Scalars['Int']>;
+  updatedAt: Scalars['DateTime'];
   value?: Maybe<Scalars['Decimal']>;
 };
 
@@ -228,7 +234,7 @@ export type DepositsHistoryQuery = (
         & Pick<Deposit, 'id' | 'at' | 'network' | 'hash' | 'value'>
         & { payments: Array<(
           { __typename?: 'Payment' }
-          & Pick<Payment, 'id' | 'at' | 'network' | 'hash' | 'status' | 'value'>
+          & Pick<Payment, 'id' | 'at' | 'network' | 'hash' | 'status' | 'value' | 'updatedAt'>
         )> }
       ) }
     )>, pageInfo: (
@@ -274,6 +280,7 @@ export const DepositsHistoryDocument = gql`
           hash
           status
           value
+          updatedAt
         }
       }
     }

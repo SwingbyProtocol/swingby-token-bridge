@@ -25,6 +25,8 @@ export const Deposit = objectType({
     t.model.gasPrice();
     t.model.tokenDecimals();
     t.model.value();
+    t.model.createdAt();
+    t.model.updatedAt();
 
     t.model.payments();
   },
@@ -51,6 +53,8 @@ export const Payment = objectType({
     t.model.gasPrice();
     t.model.tokenDecimals();
     t.model.value();
+    t.model.createdAt();
+    t.model.updatedAt();
 
     t.model.status();
     t.model.deposit();
@@ -76,6 +80,8 @@ const DepositWhereInput = inputObjectType({
     t.field('gasPrice', { type: 'DecimalFilter' });
     t.field('tokenDecimals', { type: 'IntFilter' });
     t.field('value', { type: 'DecimalFilter' });
+    t.field('createdAt', { type: 'DateTimeFilter' });
+    t.field('updatedAt', { type: 'DateTimeFilter' });
   },
 });
 
