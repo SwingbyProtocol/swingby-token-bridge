@@ -13,23 +13,42 @@ export default createEndpoint({
   fn: async ({ req, res, network, prisma }) => {
     const web3 = buildWeb3Instance({ network });
 
-    const pendingHashes = (
-      await prisma.payment.findMany({
-        where: {
-          network: { equals: toDbNetwork(network) },
-          status: { equals: PaymentStatus.PENDING },
-        },
-        orderBy: { blockNumber: 'asc' },
-      })
-    ).map((it) => it.hash);
-    logger.trace('Got %d pending transactions to check', pendingHashes.length);
+    const pendingTransactions = await prisma.payment.findMany({
+      where: {
+        network: { equals: toDbNetwork(network) },
+        status: { equals: PaymentStatus.PENDING },
+      },
+      orderBy: { blockNumber: 'asc' },
+    });
+    logger.trace('Got %d pending transactions to check', pendingTransactions.length);
 
-    const failed: typeof pendingHashes = [];
-    for (let i = 0; i < pendingHashes.length; i++) {
-      logger.trace('Will check transaction: %j', pendingHashes[i]);
+    const failed: typeof pendingTransactions = [];
+    for (let i = 0; i < pendingTransactions.length; i++) {
+      logger.trace('Will check transaction: %j', pendingTransactions[i].hash);
 
       try {
-        const receipt = await web3.eth.getTransactionReceipt(pendingHashes[i]);
+        if (
+          (await web3.eth.getTransaction(pendingTransactions[i].hash)) === null &&
+          DateTime.local()
+            .diff(DateTime.fromJSDate(pendingTransactions[i].createdAt))
+            .as('minutes') >= 5
+        ) {
+          logger.debug(
+            'getTransaction(%j) returns "null" after 5 minutes. Will mark as failed.',
+            pendingTransactions[i].hash,
+          );
+
+          await prisma.payment.update({
+            where: {
+              network_hash: { hash: pendingTransactions[i].hash, network: toDbNetwork(network) },
+            },
+            data: { status: PaymentStatus.FAILED },
+          });
+
+          continue;
+        }
+
+        const receipt = await web3.eth.getTransactionReceipt(pendingTransactions[i].hash);
         const transaction = await web3.eth.getTransactionFromBlock(
           receipt.blockNumber,
           receipt.transactionIndex,
@@ -50,7 +69,7 @@ export default createEndpoint({
         logger.trace(
           { receipt, transaction },
           'Will update transaction %j in DB',
-          pendingHashes[i],
+          pendingTransactions[i].hash,
         );
         await prisma.payment.update({
           where: { network_hash: { hash: receipt.transactionHash, network: toDbNetwork(network) } },
@@ -72,12 +91,12 @@ export default createEndpoint({
         });
       } catch (err) {
         logger.error({ err }, 'Failed to save transaction to DB');
-        failed.push(pendingHashes[i]);
+        failed.push(pendingTransactions[i]);
       }
     }
 
     res
       .status(failed.length === 0 ? StatusCodes.OK : StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ transactionCount: pendingHashes.length, failed: failed.length });
+      .json({ transactionCount: pendingTransactions.length, failed: failed.length });
   },
 });

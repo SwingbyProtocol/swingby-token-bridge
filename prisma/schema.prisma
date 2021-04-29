@@ -40,6 +40,8 @@ model Deposit {
   tokenDecimals    Int       @db.SmallInt
   gas              Decimal   @db.Decimal(65, 20)
   gasPrice         Decimal   @db.Decimal(65, 20)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
   payments         Payment[] @relation("PaymentRelation")
 
   @@id([network, hash])
@@ -63,6 +65,8 @@ model Payment {
   tokenDecimals    Int?          @db.SmallInt
   gas              Decimal?      @db.Decimal(65, 20)
   gasPrice         Decimal?      @db.Decimal(65, 20)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
   depositNetwork   Network
   depositHash      String
   deposit          Deposit       @relation("PaymentRelation", fields: [depositNetwork, depositHash], references: [network, hash])
