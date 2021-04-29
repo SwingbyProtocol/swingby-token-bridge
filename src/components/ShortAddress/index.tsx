@@ -1,11 +1,21 @@
 import { StyledShortAddress } from './styled';
 
-const WIDTH = 5;
+const WIDTH_DEFAULT = 5;
 
-export const ShortAddress = ({ value }: { value: string | null | undefined }) => {
+export const ShortAddress = ({
+  value,
+  width = WIDTH_DEFAULT,
+}: {
+  value: string | null | undefined;
+  width?: number;
+}) => {
   return (
     <StyledShortAddress>
-      {value ? `${value.slice(0, WIDTH)}…${value.slice(-WIDTH)}` : null}
+      {(() => {
+        if (!value) return null;
+        if (value.length <= width * 2) return value;
+        return `${value.slice(0, width)}…${value.slice(-width)}`;
+      })()}
     </StyledShortAddress>
   );
 };
