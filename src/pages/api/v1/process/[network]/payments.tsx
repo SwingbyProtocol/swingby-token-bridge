@@ -118,6 +118,7 @@ export default createEndpoint({
                   },
                   network: toDbNetwork(network),
                   hash,
+                  signedTransaction: rawTransaction,
                 },
               });
 

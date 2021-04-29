@@ -25,6 +25,8 @@ CREATE TABLE "Deposit" (
     "tokenDecimals" SMALLINT NOT NULL,
     "gas" DECIMAL(65,20) NOT NULL,
     "gasPrice" DECIMAL(65,20) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("network","hash")
 );
@@ -33,6 +35,7 @@ CREATE TABLE "Deposit" (
 CREATE TABLE "Payment" (
     "network" "Network" NOT NULL,
     "hash" TEXT NOT NULL,
+    "signedTransaction" TEXT NOT NULL DEFAULT E'',
     "status" "PaymentStatus" NOT NULL DEFAULT E'PENDING',
     "transactionIndex" SMALLINT,
     "blockNumber" DECIMAL(65,20),
@@ -44,6 +47,8 @@ CREATE TABLE "Payment" (
     "tokenDecimals" SMALLINT,
     "gas" DECIMAL(65,20),
     "gasPrice" DECIMAL(65,20),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "depositNetwork" "Network" NOT NULL,
     "depositHash" TEXT NOT NULL,
 

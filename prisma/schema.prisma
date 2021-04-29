@@ -52,24 +52,25 @@ model Deposit {
 }
 
 model Payment {
-  network          Network
-  hash             String
-  status           PaymentStatus @default(PENDING)
-  transactionIndex Int?          @db.SmallInt
-  blockNumber      Decimal?      @db.Decimal(65, 20)
-  at               DateTime?
-  addressFrom      String?
-  addressTo        String?
-  value            Decimal?      @db.Decimal(65, 20)
-  addressContract  String?
-  tokenDecimals    Int?          @db.SmallInt
-  gas              Decimal?      @db.Decimal(65, 20)
-  gasPrice         Decimal?      @db.Decimal(65, 20)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @default(now()) @updatedAt
-  depositNetwork   Network
-  depositHash      String
-  deposit          Deposit       @relation("PaymentRelation", fields: [depositNetwork, depositHash], references: [network, hash])
+  network           Network
+  hash              String
+  signedTransaction String        @default("")
+  status            PaymentStatus @default(PENDING)
+  transactionIndex  Int?          @db.SmallInt
+  blockNumber       Decimal?      @db.Decimal(65, 20)
+  at                DateTime?
+  addressFrom       String?
+  addressTo         String?
+  value             Decimal?      @db.Decimal(65, 20)
+  addressContract   String?
+  tokenDecimals     Int?          @db.SmallInt
+  gas               Decimal?      @db.Decimal(65, 20)
+  gasPrice          Decimal?      @db.Decimal(65, 20)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @default(now()) @updatedAt
+  depositNetwork    Network
+  depositHash       String
+  deposit           Deposit       @relation("PaymentRelation", fields: [depositNetwork, depositHash], references: [network, hash])
 
   @@id([network, hash])
   @@index([network, at])
