@@ -23,9 +23,6 @@ export const transferToHotWallet = async ({
 }) => {
   try {
     const { wallet, address, network } = getOnboardData({ onboard: onboardParam });
-    if (network !== 56 && network !== 97) {
-      throw new Error(`Invalid network for BEP20->BEP2 transfers: ${network}`);
-    }
 
     const { address: addressDeposit } = await fetcher<{ address: string }>('/api/v1/address');
     const amount = new Big(amountParam);
