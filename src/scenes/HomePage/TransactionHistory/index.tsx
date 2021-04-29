@@ -10,12 +10,12 @@ import { ShortAddress } from '../../../components/ShortAddress';
 import {
   useDepositsHistoryQuery,
   StringFilterMode,
-  Network,
   PaymentStatus,
 } from '../../../generated/graphql';
 import { useOnboard } from '../../../modules/onboard';
 
 import { buildExplorerLink } from './buildExplorerLink';
+import { fromGraphNetwork } from './fromGraphNetwork';
 import {
   Container,
   Item,
@@ -27,39 +27,29 @@ import {
   WIDE_SCREEN,
   AmountContainer,
   Amount,
+  StyledNetworkTag,
 } from './styled';
 
 const PAGE_SIZE = 25;
 
 export const TransactionHistory = () => {
-  const { address, network } = useOnboard();
-  if (!address || !network) {
-    throw new Error('Not connected to a wallet or valid network');
+  const { address } = useOnboard();
+  if (!address) {
+    throw new Error('Not connected to any wallet ');
   }
 
   const isWideScreen = useMatchMedia({ query: WIDE_SCREEN });
   const where = useMemo(
     () => ({
-      network: {
-        equals: (() => {
-          switch (network) {
-            case 1:
-              return Network.Ethereum;
-            case 5:
-              return Network.Goerli;
-            case 56:
-              return Network.Bsc;
-            case 97:
-              return Network.Bsct;
-          }
-        })(),
-      },
       addressFrom: { equals: address, mode: StringFilterMode.Insensitive },
     }),
-    [address, network],
+    [address],
   );
 
-  const { data, fetchMore } = useDepositsHistoryQuery({ variables: { first: PAGE_SIZE, where } });
+  const { data, fetchMore } = useDepositsHistoryQuery({
+    pollInterval: 15000,
+    variables: { first: PAGE_SIZE, where },
+  });
   if (!data) {
     return <></>;
   }
@@ -97,6 +87,7 @@ export const TransactionHistory = () => {
                   return (
                     <Item key={item.id} style={style} isEven={(index + 1) % 2 === 0}>
                       <SideContainer>
+                        <StyledNetworkTag network={fromGraphNetwork(item.network)} />
                         <ItemHashContainer>
                           <ItemHash>
                             <a href={buildExplorerLink(item)} rel="noreferrer">
@@ -146,6 +137,7 @@ export const TransactionHistory = () => {
                           <ItemHash>…</ItemHash>
                         ) : (
                           <>
+                            <StyledNetworkTag network={fromGraphNetwork(lastPayment.network)} />
                             <ItemHashContainer>
                               <ItemHash>
                                 <a href={buildExplorerLink(lastPayment)} rel="noreferrer">

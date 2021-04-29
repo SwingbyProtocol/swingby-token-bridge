@@ -2,6 +2,8 @@ import { Card } from '@swingby-protocol/pulsar';
 import { rem } from 'polished';
 import styled, { css } from 'styled-components';
 
+import { NetworkTag } from '../../../components/NetworkTag';
+
 export const WIDE_SCREEN = `(min-width: ${rem(768)})`;
 
 export const Container = styled(Card)`
@@ -27,8 +29,9 @@ export const Item = styled.div<{ isEven: boolean }>`
 export const SideContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
+  height: 100%;
 
   @media ${WIDE_SCREEN} {
     flex-direction: row;
@@ -105,5 +108,17 @@ export const Amount = styled.span`
 
   @media ${WIDE_SCREEN} {
     font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
+  }
+`;
+
+export const StyledNetworkTag = styled(NetworkTag)`
+  width: fit-content;
+  font-size: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  margin-bottom: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  justify-self: flex-start;
+
+  @media ${WIDE_SCREEN} {
+    margin-bottom: 0;
+    margin-right: ${({ theme }) => rem(theme.pulsar.size.drawer)};
   }
 `;
