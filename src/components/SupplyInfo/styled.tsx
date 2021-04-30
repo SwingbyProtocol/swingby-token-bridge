@@ -6,11 +6,20 @@ import { NetworkTag } from '../NetworkTag';
 
 export const StyledCard = styled(Card)`
   display: grid;
-  grid-template-columns: min-content auto;
+  grid-template-columns: min-content auto auto;
   width: fit-content;
   grid-column-gap: ${({ theme }) => rem(theme.pulsar.size.closet)};
   grid-row-gap: ${({ theme }) => rem(theme.pulsar.size.box)};
   align-items: center;
+`;
+
+export const Header = styled.div`
+  font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
+  color: ${({ theme }) => theme.pulsar.color.text.masked};
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const StyledNetworkTag = styled(NetworkTag)`
@@ -21,4 +30,7 @@ export const StyledNetworkTag = styled(NetworkTag)`
 export const ItemAmount = styled.div`
   font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
   font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
