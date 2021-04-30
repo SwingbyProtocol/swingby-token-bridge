@@ -24,6 +24,7 @@ type ApiResult = {
     gas: string;
     gasPrice: string;
     transactionIndex: string;
+    confirmations: string;
   }> | null;
 };
 
@@ -72,6 +73,10 @@ export default createEndpoint({
     )
       .slice(0, lastBlock.eq(1) ? 1 : undefined) // Take only the latest transaction into account if the DB is empty
       .filter((item) => {
+        if (new Prisma.Decimal(item.confirmations).lt(15)) {
+          return false;
+        }
+
         if (item.to?.toLowerCase() !== hotWalletAddress.toLowerCase()) {
           return false;
         }

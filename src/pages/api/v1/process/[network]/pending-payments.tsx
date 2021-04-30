@@ -69,7 +69,7 @@ export default createEndpoint({
     ).filter(
       (item) =>
         item.from?.toLowerCase() === hotWalletAddress.toLowerCase() &&
-        new Prisma.Decimal(item.confirmations).gte(10),
+        new Prisma.Decimal(item.confirmations).gte(15),
     );
 
     const failed: typeof depositTxs = [];
