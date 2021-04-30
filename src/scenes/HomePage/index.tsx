@@ -22,6 +22,7 @@ import {
   MaxButton,
   ButtonsContainer,
   FeeContainer,
+  StyledSupplyInfo,
 } from './styled';
 import { useSwapFee } from './useSwapFee';
 import { SwapToBep2 } from './SwapToBep2';
@@ -84,6 +85,7 @@ export const HomePage = () => {
   return (
     <Container>
       <StyledConnectWallet />
+      <StyledSupplyInfo />
       <StyledCard size="town">
         <AmountContainer>
           <TextInput size="state" value={amount} onChange={amountChanged} placeholder="0" />

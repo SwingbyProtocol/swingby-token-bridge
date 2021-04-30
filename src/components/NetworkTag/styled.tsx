@@ -40,7 +40,12 @@ const bsct = css`
   color: ${({ theme }) => theme.pulsar.color.warning.text};
 `;
 
-export const Container = styled.div<{ value: NetworkId | null }>`
+const bridge = css`
+  background: ${({ theme }) => theme.pulsar.color.primary.normal};
+  color: ${({ theme }) => theme.pulsar.color.primary.text};
+`;
+
+export const Container = styled.div<{ value: NetworkId | 'bridge' | null }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,4 +65,5 @@ export const Container = styled.div<{ value: NetworkId | null }>`
   ${({ value }) => value === 5 && goerli};
   ${({ value }) => value === 56 && bsc};
   ${({ value }) => value === 97 && bsct};
+  ${({ value }) => value === 'bridge' && bridge};
 `;
