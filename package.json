@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "yarn -s generate && next dev | pino-pretty",
-    "generate": "ts-node --compiler-options '{ \"module\": \"commonjs\" }' --transpile-only src/modules/model && graphql-codegen --config codegen.yml",
+    "generate": "yarn ts-node --transpile-only src/modules/model && graphql-codegen --config codegen.yml",
     "build": "yarn -s generate && next build",
     "start": "next start",
     "lint": "eslint .",
     "test": "echo 'No tests here so far'",
     "cypress": "TZ=Etc/UTC cypress",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,mdx,html,yml}'"
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,mdx,html,yml}'",
+    "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'"
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
