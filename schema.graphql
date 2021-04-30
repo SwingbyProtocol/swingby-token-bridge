@@ -173,6 +173,7 @@ type Query {
     where: DepositWhereInput
   ): DepositsConnection!
   sanityCheck(network: Network!): Boolean!
+  tokenSupply: TokenSupplyInfo!
 }
 
 input StringFilter {
@@ -193,4 +194,11 @@ input StringFilter {
 enum StringFilterMode {
   default
   insensitive
+}
+
+type TokenSupplyInfo {
+  bridgeBalanceBsc: Decimal
+  bridgeBalanceEthereum: Decimal
+  supplyBsc: Decimal
+  supplyEthereum: Decimal
 }

@@ -7,9 +7,10 @@ import * as scalars from './scalars';
 import * as transactions from './transactions';
 import * as filters from './filters';
 import * as sanityCheck from './sanity-check';
+import * as tokenSupply from './supply';
 
 export const schema = makeSchema({
-  types: { ...scalars, ...transactions, ...filters, ...sanityCheck },
+  types: { ...scalars, ...transactions, ...filters, ...sanityCheck, ...tokenSupply },
   plugins: [nexusPrisma()],
   contextType: {
     module: path.join(__dirname, 'context.ts'),

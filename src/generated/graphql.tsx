@@ -176,6 +176,7 @@ export type Query = {
   __typename?: 'Query';
   deposits: DepositsConnection;
   sanityCheck: Scalars['Boolean'];
+  tokenSupply: TokenSupplyInfo;
 };
 
 
@@ -211,6 +212,14 @@ export enum StringFilterMode {
   Default = 'default',
   Insensitive = 'insensitive'
 }
+
+export type TokenSupplyInfo = {
+  __typename?: 'TokenSupplyInfo';
+  bridgeBalanceBsc?: Maybe<Scalars['Decimal']>;
+  bridgeBalanceEthereum?: Maybe<Scalars['Decimal']>;
+  supplyBsc?: Maybe<Scalars['Decimal']>;
+  supplyEthereum?: Maybe<Scalars['Decimal']>;
+};
 
 export type DepositsHistoryQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;

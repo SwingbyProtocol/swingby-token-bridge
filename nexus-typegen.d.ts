@@ -187,6 +187,7 @@ export interface NexusGenObjects {
     value?: NexusGenScalars['Decimal'] | null; // Decimal
   }
   Query: {};
+  TokenSupplyInfo: {};
 }
 
 export interface NexusGenInterfaces {
@@ -255,6 +256,13 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
     sanityCheck: boolean; // Boolean!
+    tokenSupply: NexusGenRootTypes['TokenSupplyInfo']; // TokenSupplyInfo!
+  }
+  TokenSupplyInfo: { // field return type
+    bridgeBalanceBsc: NexusGenScalars['Decimal'] | null; // Decimal
+    bridgeBalanceEthereum: NexusGenScalars['Decimal'] | null; // Decimal
+    supplyBsc: NexusGenScalars['Decimal'] | null; // Decimal
+    supplyEthereum: NexusGenScalars['Decimal'] | null; // Decimal
   }
 }
 
@@ -314,6 +322,13 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     deposits: 'DepositsConnection'
     sanityCheck: 'Boolean'
+    tokenSupply: 'TokenSupplyInfo'
+  }
+  TokenSupplyInfo: { // field return type name
+    bridgeBalanceBsc: 'Decimal'
+    bridgeBalanceEthereum: 'Decimal'
+    supplyBsc: 'Decimal'
+    supplyEthereum: 'Decimal'
   }
 }
 
