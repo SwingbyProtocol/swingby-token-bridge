@@ -29,6 +29,6 @@
   "tx-toast.hot-wallet-transfer.ok": "Funds sent to our hot wallet!",
   "tx-toast.hot-wallet-transfer.sent": "Funds sent to our hot wallet!",
   "generic.page-title": "Swingby Bridge",
-  "supply-info.chain-tag": "Chain",
+  "supply-info.chain-tag": "Supply",
   "supply-info.bridge-tag": "Bridge"
 }

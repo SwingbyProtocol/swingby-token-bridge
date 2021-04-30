@@ -20,6 +20,7 @@ export const Header = styled.div`
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  justify-self: right;
 `;
 
 export const StyledNetworkTag = styled(NetworkTag)`
@@ -31,6 +32,7 @@ export const ItemAmount = styled.div`
   font-size: ${({ theme }) => rem(theme.pulsar.size.room)};
   font-weight: 500;
   max-width: 100%;
+  justify-self: right;
   overflow: hidden;
   text-overflow: ellipsis;
 `;

@@ -22,6 +22,7 @@ export const StyledConnectWallet = styled(ConnectWallet)`
 `;
 
 export const StyledSupplyInfo = styled(SupplyInfo)`
+  width: 100%;
   margin-top: ${({ theme }) => rem(theme.pulsar.size.closet)};
 
   @media ${MEDIA} {

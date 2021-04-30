@@ -187,7 +187,6 @@ export interface NexusGenObjects {
     value?: NexusGenScalars['Decimal'] | null; // Decimal
   }
   Query: {};
-  TokenSupplyInfo: {};
 }
 
 export interface NexusGenInterfaces {
@@ -254,15 +253,10 @@ export interface NexusGenFieldTypes {
     value: NexusGenScalars['Decimal'] | null; // Decimal
   }
   Query: { // field return type
+    bridgeBalance: NexusGenScalars['Decimal']; // Decimal!
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
     sanityCheck: boolean; // Boolean!
-    tokenSupply: NexusGenRootTypes['TokenSupplyInfo']; // TokenSupplyInfo!
-  }
-  TokenSupplyInfo: { // field return type
-    bridgeBalanceBsc: NexusGenScalars['Decimal'] | null; // Decimal
-    bridgeBalanceEthereum: NexusGenScalars['Decimal'] | null; // Decimal
-    supplyBsc: NexusGenScalars['Decimal'] | null; // Decimal
-    supplyEthereum: NexusGenScalars['Decimal'] | null; // Decimal
+    tokenSupply: NexusGenScalars['Decimal']; // Decimal!
   }
 }
 
@@ -320,15 +314,10 @@ export interface NexusGenFieldTypeNames {
     value: 'Decimal'
   }
   Query: { // field return type name
+    bridgeBalance: 'Decimal'
     deposits: 'DepositsConnection'
     sanityCheck: 'Boolean'
-    tokenSupply: 'TokenSupplyInfo'
-  }
-  TokenSupplyInfo: { // field return type name
-    bridgeBalanceBsc: 'Decimal'
-    bridgeBalanceEthereum: 'Decimal'
-    supplyBsc: 'Decimal'
-    supplyEthereum: 'Decimal'
+    tokenSupply: 'Decimal'
   }
 }
 
@@ -342,6 +331,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    bridgeBalance: { // args
+      network: NexusGenEnums['Network']; // Network!
+    }
     deposits: { // args
       after?: string | null; // String
       before?: string | null; // String
@@ -350,6 +342,9 @@ export interface NexusGenArgTypes {
       where?: NexusGenInputs['DepositWhereInput'] | null; // DepositWhereInput
     }
     sanityCheck: { // args
+      network: NexusGenEnums['Network']; // Network!
+    }
+    tokenSupply: { // args
       network: NexusGenEnums['Network']; // Network!
     }
   }

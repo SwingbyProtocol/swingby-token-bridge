@@ -1,4 +1,4 @@
-import { extendType, objectType } from 'nexus';
+import { arg, extendType, nonNull } from 'nexus';
 import ABI from 'human-standard-token-abi';
 import { Prisma } from '@prisma/client';
 
@@ -6,6 +6,8 @@ import { buildWeb3Instance } from '../server__web3';
 import { SB_TOKEN_CONTRACT } from '../swingby-token';
 import { server__ethereumWalletPrivateKey } from '../server__env';
 import { NetworkId } from '../onboard';
+
+import { fromNexusNetwork } from './network-conversion';
 
 const getSupply = async ({ network }: { network: NetworkId }): Promise<Prisma.Decimal> => {
   const web3 = buildWeb3Instance({ network });
@@ -28,33 +30,23 @@ export const TokenSupplyInfo = extendType({
   type: 'Query',
   definition(t) {
     t.nonNull.field('tokenSupply', {
-      type: objectType({
-        name: 'TokenSupplyInfo',
-        definition(t) {
-          t.decimal('supplyEthereum', {
-            async resolve() {
-              return getSupply({ network: 1 });
-            },
-          });
-          t.decimal('supplyBsc', {
-            async resolve() {
-              return getSupply({ network: 56 });
-            },
-          });
-          t.decimal('bridgeBalanceEthereum', {
-            async resolve() {
-              return getWalletBalance({ network: 1 });
-            },
-          });
-          t.decimal('bridgeBalanceBsc', {
-            async resolve() {
-              return getWalletBalance({ network: 56 });
-            },
-          });
-        },
-      }),
+      type: 'Decimal',
+      args: { network: nonNull(arg({ type: 'Network' })) },
       async resolve(source, args, ctx, info) {
-        return {};
+        return getSupply({ network: fromNexusNetwork(args.network) });
+      },
+    });
+  },
+});
+
+export const BridgeBalanceInfo = extendType({
+  type: 'Query',
+  definition(t) {
+    t.nonNull.field('bridgeBalance', {
+      type: 'Decimal',
+      args: { network: nonNull(arg({ type: 'Network' })) },
+      async resolve(source, args, ctx, info) {
+        return getWalletBalance({ network: fromNexusNetwork(args.network) });
       },
     });
   },

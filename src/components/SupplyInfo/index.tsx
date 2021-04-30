@@ -1,8 +1,17 @@
+import { Loading } from '@swingby-protocol/pulsar';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
+
+import { useSupplyQuery } from '../../generated/graphql';
 
 import { StyledCard, ItemAmount, StyledNetworkTag, Header } from './styled';
 
+const numberFormat: Partial<React.ComponentPropsWithoutRef<typeof FormattedNumber>> = {
+  maximumFractionDigits: 0,
+};
+
 export const SupplyInfo = ({ className }: { className?: string }) => {
+  const { data } = useSupplyQuery({ pollInterval: 60000 });
+
   return (
     <StyledCard size="town" className={className}>
       <div />
@@ -14,17 +23,17 @@ export const SupplyInfo = ({ className }: { className?: string }) => {
       </Header>
       <StyledNetworkTag network={1} />
       <ItemAmount>
-        <FormattedNumber value={124897172401240} maximumFractionDigits={0} />
+        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.ethereumSupply ?? 0)} />}
       </ItemAmount>
       <ItemAmount>
-        <FormattedNumber value={124897172401240} maximumFractionDigits={0} />
+        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.ethereumBalance ?? 0)} />}
       </ItemAmount>
       <StyledNetworkTag network={56} />
       <ItemAmount>
-        <FormattedNumber value={124897172401240} maximumFractionDigits={0} />
+        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.bscSupply ?? 0)} />}
       </ItemAmount>
       <ItemAmount>
-        <FormattedNumber value={124897172401240} maximumFractionDigits={0} />
+        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.bscBalance ?? 0)} />}
       </ItemAmount>
     </StyledCard>
   );
