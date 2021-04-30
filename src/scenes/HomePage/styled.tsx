@@ -1,6 +1,7 @@
 import { Button, Card } from '@swingby-protocol/pulsar';
 import { rem } from 'polished';
 import styled from 'styled-components';
+
 import { SupplyInfo } from '../../components/SupplyInfo';
 
 import { ConnectWallet } from './ConnectWallet';

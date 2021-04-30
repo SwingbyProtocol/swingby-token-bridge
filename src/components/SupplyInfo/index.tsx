@@ -1,4 +1,3 @@
-import { Loading } from '@swingby-protocol/pulsar';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 import { useSupplyQuery } from '../../generated/graphql';
