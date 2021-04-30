@@ -174,8 +174,15 @@ export type PaymentWhereUniqueInput = {
 
 export type Query = {
   __typename?: 'Query';
+  bridgeBalance: Scalars['Decimal'];
   deposits: DepositsConnection;
   sanityCheck: Scalars['Boolean'];
+  tokenSupply: Scalars['Decimal'];
+};
+
+
+export type QueryBridgeBalanceArgs = {
+  network: Network;
 };
 
 
@@ -189,6 +196,11 @@ export type QueryDepositsArgs = {
 
 
 export type QuerySanityCheckArgs = {
+  network: Network;
+};
+
+
+export type QueryTokenSupplyArgs = {
   network: Network;
 };
 
@@ -211,6 +223,14 @@ export enum StringFilterMode {
   Default = 'default',
   Insensitive = 'insensitive'
 }
+
+export type SupplyQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SupplyQuery = (
+  { __typename?: 'Query' }
+  & { ethereumSupply: Query['tokenSupply'], bscSupply: Query['tokenSupply'], ethereumBalance: Query['bridgeBalance'], bscBalance: Query['bridgeBalance'] }
+);
 
 export type DepositsHistoryQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
@@ -255,6 +275,41 @@ export type SanityCheckQuery = (
 );
 
 
+export const SupplyDocument = gql`
+    query Supply {
+  ethereumSupply: tokenSupply(network: ETHEREUM)
+  bscSupply: tokenSupply(network: BSC)
+  ethereumBalance: bridgeBalance(network: ETHEREUM)
+  bscBalance: bridgeBalance(network: BSC)
+}
+    `;
+
+/**
+ * __useSupplyQuery__
+ *
+ * To run a query within a React component, call `useSupplyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSupplyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSupplyQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSupplyQuery(baseOptions?: Apollo.QueryHookOptions<SupplyQuery, SupplyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SupplyQuery, SupplyQueryVariables>(SupplyDocument, options);
+      }
+export function useSupplyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SupplyQuery, SupplyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SupplyQuery, SupplyQueryVariables>(SupplyDocument, options);
+        }
+export type SupplyQueryHookResult = ReturnType<typeof useSupplyQuery>;
+export type SupplyLazyQueryHookResult = ReturnType<typeof useSupplyLazyQuery>;
+export type SupplyQueryResult = Apollo.QueryResult<SupplyQuery, SupplyQueryVariables>;
 export const DepositsHistoryDocument = gql`
     query DepositsHistory($first: Int, $after: String, $last: Int, $before: String, $where: DepositWhereInput) {
   deposits(

@@ -2,6 +2,8 @@ import { Button, Card } from '@swingby-protocol/pulsar';
 import { rem } from 'polished';
 import styled from 'styled-components';
 
+import { SupplyInfo } from '../../components/SupplyInfo';
+
 import { ConnectWallet } from './ConnectWallet';
 
 const MEDIA = `(min-width: ${rem(768)})`;
@@ -9,7 +11,7 @@ const MEDIA = `(min-width: ${rem(768)})`;
 export const Container = styled.div`
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: ${({ theme }) => rem(theme.pulsar.size.city)} auto 1fr;
+  grid-template-rows: ${({ theme }) => rem(theme.pulsar.size.city)} min-content auto 1fr;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
@@ -18,6 +20,16 @@ export const Container = styled.div`
 
 export const StyledConnectWallet = styled(ConnectWallet)`
   justify-self: flex-end;
+`;
+
+export const StyledSupplyInfo = styled(SupplyInfo)`
+  width: 100%;
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.closet)};
+
+  @media ${MEDIA} {
+    width: ${rem(450)};
+    justify-self: center;
+  }
 `;
 
 export const StyledCard = styled(Card)`
