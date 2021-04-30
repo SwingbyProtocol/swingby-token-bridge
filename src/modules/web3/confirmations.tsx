@@ -1,0 +1,1 @@
+export const MIN_CONFIRMATIONS_EXPECTED = 15;

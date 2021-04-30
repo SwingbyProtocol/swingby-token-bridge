@@ -10,6 +10,7 @@ import { buildWeb3Instance, getScanApiUrl } from '../../../../../modules/server_
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
 import { logger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
+import { MIN_CONFIRMATIONS_EXPECTED } from '../../../../../modules/web3';
 
 type ApiResult = {
   result?: Array<{
@@ -73,7 +74,7 @@ export default createEndpoint({
     )
       .slice(0, lastBlock.eq(1) ? 1 : undefined) // Take only the latest transaction into account if the DB is empty
       .filter((item) => {
-        if (new Prisma.Decimal(item.confirmations).lt(15)) {
+        if (new Prisma.Decimal(item.confirmations).lt(MIN_CONFIRMATIONS_EXPECTED)) {
           return false;
         }
 

@@ -7,6 +7,7 @@ import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
 import { logger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
+import { MIN_CONFIRMATIONS_EXPECTED } from '../../../../../modules/web3';
 
 export default createEndpoint({
   isSecret: true,
@@ -28,6 +29,11 @@ export default createEndpoint({
 
       try {
         const receipt = await web3.eth.getTransactionReceipt(pendingTransactions[i].hash);
+        const confirmations = (await web3.eth.getBlockNumber()) - receipt.blockNumber;
+        if (confirmations < MIN_CONFIRMATIONS_EXPECTED) {
+          continue;
+        }
+
         const transaction = await web3.eth.getTransactionFromBlock(
           receipt.blockNumber,
           receipt.transactionIndex,

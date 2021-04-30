@@ -10,6 +10,7 @@ import { buildWeb3Instance, getScanApiUrl } from '../../../../../modules/server_
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
 import { logger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
+import { MIN_CONFIRMATIONS_EXPECTED } from '../../../../../modules/web3';
 
 type ApiResult = {
   result?: Array<{
@@ -66,11 +67,7 @@ export default createEndpoint({
           }),
         )
       ).result ?? []
-    ).filter(
-      (item) =>
-        item.from?.toLowerCase() === hotWalletAddress.toLowerCase() &&
-        new Prisma.Decimal(item.confirmations).gte(15),
-    );
+    ).filter((item) => item.from?.toLowerCase() === hotWalletAddress.toLowerCase());
 
     const failed: typeof depositTxs = [];
     for (let i = 0; i < depositTxs.length; i++) {
@@ -82,7 +79,7 @@ export default createEndpoint({
           data: {
             network: toDbNetwork(network),
             hash: item.hash,
-            status: new Prisma.Decimal(item.confirmations).gte(10)
+            status: new Prisma.Decimal(item.confirmations).gte(MIN_CONFIRMATIONS_EXPECTED)
               ? PaymentStatus.COMPLETED
               : PaymentStatus.PENDING,
             transactionIndex: +item.transactionIndex,
