@@ -27,27 +27,6 @@ export default createEndpoint({
       logger.trace('Will check transaction: %j', pendingTransactions[i].hash);
 
       try {
-        if (
-          (await web3.eth.getTransaction(pendingTransactions[i].hash)) === null &&
-          DateTime.local()
-            .diff(DateTime.fromJSDate(pendingTransactions[i].createdAt))
-            .as('minutes') >= 5
-        ) {
-          logger.debug(
-            'getTransaction(%j) returns "null" after 5 minutes. Will mark as failed.',
-            pendingTransactions[i].hash,
-          );
-
-          await prisma.payment.update({
-            where: {
-              network_hash: { hash: pendingTransactions[i].hash, network: toDbNetwork(network) },
-            },
-            data: { status: PaymentStatus.FAILED },
-          });
-
-          continue;
-        }
-
         const receipt = await web3.eth.getTransactionReceipt(pendingTransactions[i].hash);
         const transaction = await web3.eth.getTransactionFromBlock(
           receipt.blockNumber,
