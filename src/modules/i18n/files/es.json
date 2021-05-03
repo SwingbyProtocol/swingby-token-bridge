@@ -19,6 +19,6 @@
   "tx-toast.hot-wallet-transfer.ok": "¡Fondos enviados a nuestro monedero!",
   "tx-toast.hot-wallet-transfer.sent": "¡Fondos enviados a nuestro monedero!",
   "generic.page-title": "Swingby Bridge",
-  "supply-info.chain-tag": "Suministro",
-  "supply-info.bridge-tag": "Bridge"
+  "supply-info.chain-tag": "En circulación",
+  "supply-info.bridge-tag": "Bloqueados"
 }
