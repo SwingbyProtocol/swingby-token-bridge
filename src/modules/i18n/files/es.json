@@ -1,1 +1,24 @@
-{}
+{
+  "network.sanity-error": "La prueba de cordura para la dirección de destino ha fallado. Por favor, envíanos un email a {email} para recibir soporte.",
+  "wallet.connect": "Conectar",
+  "form.max-btn": "MAX",
+  "form.approve-btn": "Aprobar",
+  "form.swap-to-btn": "Intercambiar a {network}",
+  "form.swap-btn": "Intercambiar",
+  "form.swap-fee": "Comisión de intercambio: {value}",
+  "form.swap-fee.est-value": "~{swingby} ({usd})",
+  "form.bsc-bc.divider": "o",
+  "form.bsc-bc.input.label": "Tu dirección de Binance Chain",
+  "tx-toast.explorer": "Explorador",
+  "tx-toast.transaction-result.bad": "¡La transacción ha fallado!",
+  "tx-toast.transaction-result.confirmed-by": "¡Transacción completada! ({value} confirmaciones)",
+  "tx-toast.transaction-result.ok": "¡Transacción completada!",
+  "tx-toast.transaction-result.sent": "¡Transacción enviada!",
+  "tx-toast.hot-wallet-transfer.bad": "¡La transacción ha fallado!",
+  "tx-toast.hot-wallet-transfer.confirmed-by": "¡Fondos enviados a nuestro monedero! ({value} confirmaciones)",
+  "tx-toast.hot-wallet-transfer.ok": "¡Fondos enviados a nuestro monedero!",
+  "tx-toast.hot-wallet-transfer.sent": "¡Fondos enviados a nuestro monedero!",
+  "generic.page-title": "Swingby Bridge",
+  "supply-info.chain-tag": "Suministro",
+  "supply-info.bridge-tag": "Bridge"
+}
