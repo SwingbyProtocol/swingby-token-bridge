@@ -4,7 +4,10 @@ import Web3 from 'web3';
 const web3 = new Web3();
 const prisma = new PrismaClient();
 
-const LIQUIDITY_PROVIDERS = ['0xDb7D5009D7c594c527227d481e122d821923c673'];
+const LIQUIDITY_PROVIDERS = [
+  '0xDb7D5009D7c594c527227d481e122d821923c673',
+  '0x656fb120760d3CD0BD15ca8296a432e3fe07d56b',
+];
 
 async function main() {
   const liquidityProviders = await Promise.all(
