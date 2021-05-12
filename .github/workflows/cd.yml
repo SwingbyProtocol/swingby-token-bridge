@@ -40,3 +40,11 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - uses: actions-hub/kubectl@master
+        with:
+          args:
+            set image deployment/swingby-token-bridge-ed-deployment app=${{
+            steps.sha_tag.outputs.value }}
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}

@@ -1,4 +1,5 @@
 module.exports = {
+  basePath: process.env.NEXT_CONFIG_BASE_PATH || undefined,
   i18n: {
     locales: ['en', 'es', 'ja', 'zh', 'zh-TW'],
     defaultLocale: 'en',
