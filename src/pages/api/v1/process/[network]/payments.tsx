@@ -100,6 +100,11 @@ export default createEndpoint({
           throw new Error('The hot wallet does not contain enough Swingby Tokens');
         }
 
+        if (!amountReceiving.gt(0)) {
+          loopLogger.fatal({ amountReceiving }, '`amountReceiving` is not >0');
+          throw new Error('`amountReceiving` is not >0');
+        }
+
         loopLogger.debug(
           { amountReceiving, balance },
           'The hot wallet contains enoughs Swingby Tokens. Will sign and send transaction.',
