@@ -38,7 +38,7 @@ export const useSwapFee = () => {
       data: feeData
         ? {
             ...feeData,
-            minimumSwapSwingby: new Big(feeData.estimatedFeeSwingby).times(100).div(10).toFixed(),
+            minimumSwapSwingby: '0', // TODO: Put this back: new Big(feeData.estimatedFeeSwingby).times(100).div(10).toFixed(),
           }
         : undefined,
 
