@@ -7,7 +7,7 @@ import { server__ethereumWalletPrivateKey } from '../../../../../modules/server_
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
-import { logger } from '../../../../../modules/logger';
+import { logger as baseLogger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
 import { getDestinationNetwork } from '../../../../../modules/web3';
 import { fetcher } from '../../../../../modules/fetch';
@@ -17,10 +17,11 @@ const MAX_TRANSACTIONS_PER_CALL = 10;
 
 export default createEndpoint({
   isSecret: true,
-  fn: async ({ req, res, network: depositNetwork, prisma }) => {
+  fn: async ({ res, network: depositNetwork, prisma }) => {
     const network = getDestinationNetwork(depositNetwork);
-    logger.info({ depositNetwork, network }, 'Getting started with these networks');
+    const logger = baseLogger.child({ depositNetwork, network });
 
+    logger.info('Getting started with these networks');
     await assertPaymentSanityCheck({ network });
 
     const etherSymbol = network === 56 || network === 97 ? 'BNB' : 'ETH';
@@ -56,6 +57,9 @@ export default createEndpoint({
     for (let i = 0; i < cappedPendingTransactions.length; i++) {
       const txIn = cappedPendingTransactions[i];
 
+      const loopLogger = logger.child({ txIn });
+      loopLogger.debug('Will get started with transaction %j', txIn.hash);
+
       try {
         const gasPrice = new Prisma.Decimal(await web3.eth.getGasPrice()).times('1.5').toFixed(0);
         const rawTx: TransactionConfig = {
@@ -69,20 +73,37 @@ export default createEndpoint({
           data: contract.methods
             .transfer(
               txIn.addressFrom,
-              web3.utils.toHex(txIn.value.times(`1e${decimals}`).toFixed(0)),
+              // We use `1` here to make sure that we can estimate gas even if there is not enough Swingby tokens in the wallet for the swap.
+              web3.utils.toHex(1),
             )
             .encodeABI(),
         };
 
-        logger.trace({ txIn, rawTx }, 'Will estimate gas');
+        loopLogger.trace({ rawTx }, 'Will estimate gas');
         const estimatedGas = await web3.eth.estimateGas(rawTx);
         const etherGasPrice = new Prisma.Decimal(web3.utils.fromWei(gasPrice, 'ether'));
         const estimatedFeeEther = etherGasPrice.times(estimatedGas);
         const estimatedFeeSwingby = estimatedFeeEther.times(etherUsdtPrice).div(swingbyUsdtPrice);
-        logger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
+        loopLogger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
 
         const amountReceiving = txIn.value.minus(estimatedFeeSwingby);
-        logger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
+        loopLogger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
+
+        const balance = new Prisma.Decimal(
+          await contract.methods.balanceOf(hotWallet.address).call(),
+        ).div(`1e${decimals}`);
+        if (balance.lt(amountReceiving)) {
+          loopLogger.fatal(
+            { amountReceiving, balance },
+            'The hot wallet does not contain enough Swingby Tokens',
+          );
+          throw new Error('The hot wallet does not contain enough Swingby Tokens');
+        }
+
+        loopLogger.debug(
+          { amountReceiving, balance },
+          'The hot wallet contains enoughs Swingby Tokens. Will sign and send transaction.',
+        );
 
         const signedTransaction = await web3.eth.accounts.signTransaction(
           {
@@ -100,7 +121,7 @@ export default createEndpoint({
 
         const { rawTransaction } = signedTransaction;
         if (!rawTransaction) {
-          logger.error({ signedTransaction }, 'Error signing transaction');
+          loopLogger.error({ signedTransaction }, 'Error signing transaction');
           throw new Error('Error signing transaction!');
         }
 
@@ -109,7 +130,7 @@ export default createEndpoint({
             .sendSignedTransaction(rawTransaction)
             .on('error', reject)
             .on('transactionHash', async (hash) => {
-              logger.trace('Got transaction hash %j', hash);
+              loopLogger.trace('Got transaction hash %j', hash);
 
               await prisma.payment.create({
                 data: {
@@ -126,7 +147,7 @@ export default createEndpoint({
             });
         });
       } catch (err) {
-        logger.fatal({ err }, 'Crashed sending transaction');
+        loopLogger.fatal({ err }, 'Crashed sending transaction');
         failed.push(txIn);
       }
     }
