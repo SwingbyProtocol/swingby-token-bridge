@@ -86,7 +86,7 @@ export default createEndpoint({
         const estimatedFeeSwingby = estimatedFeeEther.times(etherUsdtPrice).div(swingbyUsdtPrice);
         loopLogger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
 
-        const amountReceiving = txIn.value.minus(estimatedFeeSwingby);
+        const amountReceiving = txIn.value; //.minus(estimatedFeeSwingby);
         loopLogger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
 
         const balance = new Prisma.Decimal(
