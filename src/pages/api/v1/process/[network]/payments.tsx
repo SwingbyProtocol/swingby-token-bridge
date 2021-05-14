@@ -67,8 +67,7 @@ export default createEndpoint({
         const gasPrice = new Prisma.Decimal(await web3.eth.getGasPrice()).times('1.5').toFixed(0);
         const rawTx: TransactionConfig = {
           chainId: network,
-          // Dirty trick adding `i` here to avoid having to wait for a tx receipt for each item.
-          nonce: i + (await web3.eth.getTransactionCount(hotWallet.address)),
+          nonce: await web3.eth.getTransactionCount(hotWallet.address),
           gasPrice: web3.utils.toHex(gasPrice),
           from: hotWallet.address,
           to: SB_TOKEN_CONTRACT[network],
@@ -141,7 +140,6 @@ export default createEndpoint({
             .on('error', reject)
             .on('transactionHash', async (hash) => {
               loopLogger.trace('Got transaction hash %j', hash);
-
               await prisma.payment.create({
                 data: {
                   deposit: {
@@ -152,8 +150,13 @@ export default createEndpoint({
                   signedTransaction: rawTransaction,
                 },
               });
-
-              resolve(hash);
+            })
+            .on('receipt', (receipt) => {
+              if (receipt.status) {
+                resolve(receipt.transactionHash);
+              } else {
+                reject(receipt.transactionHash);
+              }
             });
         });
       } catch (err) {
