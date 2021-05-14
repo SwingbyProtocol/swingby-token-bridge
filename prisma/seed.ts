@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 const LIQUIDITY_PROVIDERS = [
   '0xDb7D5009D7c594c527227d481e122d821923c673',
   '0x656fb120760d3CD0BD15ca8296a432e3fe07d56b',
+  '0x219b35ff0528fe11e55f68f9a63e0b1392b0a299',
 ];
 
 async function main() {
