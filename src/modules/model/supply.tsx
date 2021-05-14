@@ -9,7 +9,15 @@ import { NetworkId } from '../onboard';
 
 import { fromNexusNetwork } from './network-conversion';
 
-const getSupply = async ({ network }: { network: NetworkId }): Promise<Prisma.Decimal> => {
+const BC_TEAM_WALLETS = [
+  'bnb1hn8ym9xht925jkncjpf7lhjnax6z8nv24fv2yq',
+  'bnb1e82l2pjarhcpgy85mmlq8atuc5stfugaah29rz',
+  'bnb10sy32my2tuhlhkcyxqpqtukglfu7cswkrdrmd5',
+  'bnb1duw3nm4ehcrpxg9xwxpw9ya0kpuwyk4s7a0fzk',
+  'bnb1j2nkv2fe6rn2hur3vf052r00hdnaj27c3lp2w6',
+];
+
+const getMaxSupply = async ({ network }: { network: NetworkId }): Promise<Prisma.Decimal> => {
   const web3 = buildWeb3Instance({ network });
   const contract = new web3.eth.Contract(ABI, SB_TOKEN_CONTRACT[network]);
 
@@ -26,14 +34,40 @@ const getWalletBalance = async ({ network }: { network: NetworkId }): Promise<Pr
   return new Prisma.Decimal(await contract.methods.balanceOf(address).call()).div(`1e${decimals}`);
 };
 
-export const TokenSupplyInfo = extendType({
+const getCirculatingSupply = async ({
+  network,
+}: {
+  network: NetworkId;
+}): Promise<Prisma.Decimal> => {
+  const maxSupply = await getMaxSupply({ network });
+  const hotWalletBalance = await getWalletBalance({ network });
+
+  // https://explorer.binance.org/api/v1/balances/bnb1hn8ym9xht925jkncjpf7lhjnax6z8nv24fv2yq
+
+  return maxSupply.minus(hotWalletBalance);
+};
+
+export const TokenMaxSupplyInfo = extendType({
   type: 'Query',
   definition(t) {
-    t.nonNull.field('tokenSupply', {
+    t.nonNull.field('tokenMaxSupply', {
       type: 'Decimal',
       args: { network: nonNull(arg({ type: 'Network' })) },
       async resolve(source, args, ctx, info) {
-        return getSupply({ network: fromNexusNetwork(args.network) });
+        return getMaxSupply({ network: fromNexusNetwork(args.network) });
+      },
+    });
+  },
+});
+
+export const TokenCirculatingSupplyInfo = extendType({
+  type: 'Query',
+  definition(t) {
+    t.nonNull.field('tokenCirculatingSupply', {
+      type: 'Decimal',
+      args: { network: nonNull(arg({ type: 'Network' })) },
+      async resolve(source, args, ctx, info) {
+        return getCirculatingSupply({ network: fromNexusNetwork(args.network) });
       },
     });
   },

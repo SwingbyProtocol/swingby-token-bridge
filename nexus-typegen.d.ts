@@ -256,7 +256,8 @@ export interface NexusGenFieldTypes {
     bridgeBalance: NexusGenScalars['Decimal']; // Decimal!
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
     sanityCheck: boolean; // Boolean!
-    tokenSupply: NexusGenScalars['Decimal']; // Decimal!
+    tokenCirculatingSupply: NexusGenScalars['Decimal']; // Decimal!
+    tokenMaxSupply: NexusGenScalars['Decimal']; // Decimal!
   }
 }
 
@@ -317,7 +318,8 @@ export interface NexusGenFieldTypeNames {
     bridgeBalance: 'Decimal'
     deposits: 'DepositsConnection'
     sanityCheck: 'Boolean'
-    tokenSupply: 'Decimal'
+    tokenCirculatingSupply: 'Decimal'
+    tokenMaxSupply: 'Decimal'
   }
 }
 
@@ -344,7 +346,10 @@ export interface NexusGenArgTypes {
     sanityCheck: { // args
       network: NexusGenEnums['Network']; // Network!
     }
-    tokenSupply: { // args
+    tokenCirculatingSupply: { // args
+      network: NexusGenEnums['Network']; // Network!
+    }
+    tokenMaxSupply: { // args
       network: NexusGenEnums['Network']; // Network!
     }
   }
