@@ -3,7 +3,10 @@ import ABI from 'human-standard-token-abi';
 import { TransactionConfig } from 'web3-eth';
 import { PaymentStatus, Prisma } from '@prisma/client';
 
-import { server__ethereumWalletPrivateKey } from '../../../../../modules/server__env';
+import {
+  server__disableSubtractingNetworkFeeAsSwingby,
+  server__ethereumWalletPrivateKey,
+} from '../../../../../modules/server__env';
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
@@ -86,7 +89,9 @@ export default createEndpoint({
         const estimatedFeeSwingby = estimatedFeeEther.times(etherUsdtPrice).div(swingbyUsdtPrice);
         loopLogger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
 
-        const amountReceiving = txIn.value; //.minus(estimatedFeeSwingby);
+        const amountReceiving = txIn.value.minus(
+          server__disableSubtractingNetworkFeeAsSwingby ? 0 : estimatedFeeSwingby,
+        );
         loopLogger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
 
         const balance = new Prisma.Decimal(
