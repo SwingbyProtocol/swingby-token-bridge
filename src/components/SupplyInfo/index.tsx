@@ -1,3 +1,4 @@
+import { Big } from 'big.js';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 import { useSupplyQuery } from '../../generated/graphql';
@@ -22,17 +23,31 @@ export const SupplyInfo = ({ className }: { className?: string }) => {
       </Header>
       <StyledNetworkTag network={1} />
       <ItemAmount>
-        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.ethereumSupply ?? 0)} />}
+        {!data ? (
+          '?'
+        ) : (
+          <FormattedNumber
+            {...numberFormat}
+            value={new Big(data.ethereumSupply).minus(data.ethereumBalance).toNumber()}
+          />
+        )}
       </ItemAmount>
       <ItemAmount>
-        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.ethereumBalance ?? 0)} />}
+        {!data ? '?' : <FormattedNumber {...numberFormat} value={+data.ethereumBalance} />}
       </ItemAmount>
       <StyledNetworkTag network={56} />
       <ItemAmount>
-        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.bscSupply ?? 0)} />}
+        {!data ? (
+          '?'
+        ) : (
+          <FormattedNumber
+            {...numberFormat}
+            value={new Big(data.bscSupply).minus(data.bscBalance).toNumber()}
+          />
+        )}
       </ItemAmount>
       <ItemAmount>
-        {!data ? '?' : <FormattedNumber {...numberFormat} value={+(data.bscBalance ?? 0)} />}
+        {!data ? '?' : <FormattedNumber {...numberFormat} value={+data.bscBalance} />}
       </ItemAmount>
     </StyledCard>
   );
