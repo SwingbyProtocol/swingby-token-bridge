@@ -23,6 +23,15 @@ enum PaymentStatus {
   FAILED
 }
 
+enum LockId {
+  PAYMENTS_SCRIPT
+}
+
+model Locks {
+  id LockId   @id
+  at DateTime
+}
+
 model LiquidityProvider {
   address String @id
 }

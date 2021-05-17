@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { StatusCodes } from 'http-status-codes';
 import { DateTime, Duration } from 'luxon';
+import { LockId } from '@prisma/client';
 
 import { corsMiddleware } from '../server__cors';
 import { logger } from '../logger';
@@ -15,6 +16,10 @@ export class InvalidParamError extends Error {}
 export class InvalidMethodError extends Error {}
 
 export class NotAuthenticatedError extends Error {}
+
+export class AlreadyLockedError extends Error {}
+
+export class LockMismatchError extends Error {}
 
 export const getStringParam = <T extends string>({
   req,
@@ -51,14 +56,17 @@ export const getStringParam = <T extends string>({
 
 export const createEndpoint = <T extends any = any>({
   isSecret = false,
+  lockId,
   fn,
 }: {
   isSecret?: boolean;
+  lockId?: LockId;
   fn: (params: {
     req: NextApiRequest;
     res: NextApiResponse<T>;
     network: NetworkId;
     prisma: typeof prisma;
+    assertLockIsValid: () => Promise<void>;
   }) => void | Promise<void>;
 }) => async (req: NextApiRequest, res: NextApiResponse<T>) => {
   const startedAt = DateTime.utc();
@@ -71,7 +79,22 @@ export const createEndpoint = <T extends any = any>({
       throw new NotAuthenticatedError('Must provide a secret key to be able to call this endpoint');
     }
 
-    return await fn({
+    if (lockId) {
+      const lock = await prisma.locks.findUnique({ where: { id: lockId } });
+      if (lock) {
+        throw new AlreadyLockedError();
+      }
+
+      await prisma.locks.upsert({
+        where: { id: lockId },
+        create: { id: lockId, at: startedAt.toJSDate() },
+        update: { at: startedAt.toJSDate() },
+      });
+
+      logger.info('Lock %j created', lockId);
+    }
+
+    await fn({
       req,
       res,
       prisma,
@@ -84,6 +107,14 @@ export const createEndpoint = <T extends any = any>({
         });
 
         return fromDbNetwork(value.toUpperCase() as Uppercase<typeof value>);
+      },
+      assertLockIsValid: async () => {
+        if (!lockId) return;
+
+        const lock = await prisma.locks.findUnique({ where: { id: lockId } });
+        if (!lock || !DateTime.fromJSDate(lock.at).equals(startedAt)) {
+          throw new LockMismatchError();
+        }
       },
     });
   } catch (e) {
@@ -109,9 +140,35 @@ export const createEndpoint = <T extends any = any>({
       return;
     }
 
+    if (e instanceof AlreadyLockedError) {
+      logger.trace(e);
+      res
+        .status(StatusCodes.LOCKED)
+        .json({ message: message || 'This script is already being run' } as any);
+      return;
+    }
+
+    if (e instanceof LockMismatchError) {
+      logger.fatal(e);
+      res.status(StatusCodes.LOCKED).json({ message: message || 'Lock assertion failed' } as any);
+      return;
+    }
+
     logger.error(e);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' } as any);
   } finally {
+    try {
+      const lock = await prisma.locks.findUnique({ where: { id: lockId } });
+      if (lock && DateTime.fromJSDate(lock.at).equals(startedAt)) {
+        logger.info('Lock %j released', lockId);
+        await prisma.locks.delete({ where: { id: lockId } });
+      } else {
+        logger.debug('Lock %j *not* released since it does not belong to this execution', lockId);
+      }
+    } catch (e) {
+      logger.fatal(e, 'Could not release DB lock');
+    }
+
     const spent = DateTime.utc().diff(startedAt);
     const finalLogger = logger.child({ spent: spent.toObject() });
 

@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import ABI from 'human-standard-token-abi';
 import { TransactionConfig } from 'web3-eth';
-import { PaymentStatus, Prisma } from '@prisma/client';
+import { LockId, PaymentStatus, Prisma } from '@prisma/client';
 
 import {
   server__disableSubtractingNetworkFeeAsSwingby,
@@ -20,7 +20,8 @@ const MAX_TRANSACTIONS_PER_CALL = 10;
 
 export default createEndpoint({
   isSecret: true,
-  fn: async ({ res, network: depositNetwork, prisma }) => {
+  lockId: LockId.PAYMENTS_SCRIPT,
+  fn: async ({ res, network: depositNetwork, prisma, assertLockIsValid }) => {
     const network = getDestinationNetwork(depositNetwork);
     const logger = baseLogger.child({ depositNetwork, network });
 
@@ -134,6 +135,7 @@ export default createEndpoint({
           throw new Error('Error signing transaction!');
         }
 
+        await assertLockIsValid();
         await new Promise<string>((resolve, reject) => {
           web3.eth
             .sendSignedTransaction(rawTransaction)
