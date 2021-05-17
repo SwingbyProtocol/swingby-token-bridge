@@ -81,7 +81,7 @@ export const createEndpoint = <T extends any = any>({
 
     if (lockId) {
       const lock = await prisma.locks.findUnique({ where: { id: lockId } });
-      if (lock) {
+      if (lock && !DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
         throw new AlreadyLockedError();
       }
 
@@ -112,7 +112,7 @@ export const createEndpoint = <T extends any = any>({
         if (!lockId) return;
 
         const lock = await prisma.locks.findUnique({ where: { id: lockId } });
-        if (!lock || !DateTime.fromJSDate(lock.at).equals(startedAt)) {
+        if (!lock || !DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
           throw new LockMismatchError();
         }
       },
@@ -159,11 +159,15 @@ export const createEndpoint = <T extends any = any>({
   } finally {
     try {
       const lock = await prisma.locks.findUnique({ where: { id: lockId } });
-      if (lock && DateTime.fromJSDate(lock.at).equals(startedAt)) {
+      if (lock && DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
         logger.info('Lock %j released', lockId);
         await prisma.locks.delete({ where: { id: lockId } });
       } else {
-        logger.debug('Lock %j *not* released since it does not belong to this execution', lockId);
+        logger.debug(
+          { lock, startedAt },
+          'Lock %j *not* released since it does not belong to this execution',
+          lockId,
+        );
       }
     } catch (e) {
       logger.fatal(e, 'Could not release DB lock');
