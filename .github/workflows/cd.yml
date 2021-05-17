@@ -82,6 +82,7 @@ jobs:
         id: docker_build
         with:
           push: true
+          file: ./process-bot.Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
