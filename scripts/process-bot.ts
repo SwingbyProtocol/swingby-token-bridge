@@ -10,7 +10,7 @@ NETWORKS.forEach((network) => {
     (async () => {
       const generator = runNetworkTask(network, task);
       for await (let value of generator) {
-        logger.info(value);
+        logger.info(value, 'Got result for %j/%j', network, task);
       }
     })();
   });
@@ -25,7 +25,7 @@ async function* runNetworkTask(network: typeof NETWORKS[number], task: typeof TA
 
       yield { network, task, result };
     } catch (e) {
-      yield { network, task, error: e as Error };
+      yield { network, task, err: e as Error };
     }
 
     await new Promise((resolve) => setTimeout(resolve, 5000));
