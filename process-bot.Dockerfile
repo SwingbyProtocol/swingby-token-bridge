@@ -19,5 +19,5 @@ RUN adduser -S nextjs -u 1001
 
 USER nextjs
 
-CMD ["yarn", "ts-node", "src/modules/process-bot/index.ts"]
+CMD ["yarn", "ts-node", "scripts/process-bot"]
 

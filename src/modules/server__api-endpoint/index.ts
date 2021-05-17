@@ -56,19 +56,19 @@ export const getStringParam = <T extends string>({
 
 export const createEndpoint = <T extends any = any>({
   isSecret = false,
-  lockId,
   fn,
 }: {
   isSecret?: boolean;
-  lockId?: LockId;
   fn: (params: {
     req: NextApiRequest;
     res: NextApiResponse<T>;
     network: NetworkId;
     prisma: typeof prisma;
+    lock: (lockId: LockId) => Promise<void>;
     assertLockIsValid: () => Promise<void>;
   }) => void | Promise<void>;
 }) => async (req: NextApiRequest, res: NextApiResponse<T>) => {
+  let lockId: LockId | null = null;
   const startedAt = DateTime.utc();
 
   try {
@@ -77,21 +77,6 @@ export const createEndpoint = <T extends any = any>({
     const secret = getStringParam({ req, from: 'query', name: 'secret', defaultValue: '' });
     if (isSecret && server__processTaskSecret && server__processTaskSecret !== secret) {
       throw new NotAuthenticatedError('Must provide a secret key to be able to call this endpoint');
-    }
-
-    if (lockId) {
-      const lock = await prisma.locks.findUnique({ where: { id: lockId } });
-      if (lock && !DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
-        throw new AlreadyLockedError();
-      }
-
-      await prisma.locks.upsert({
-        where: { id: lockId },
-        create: { id: lockId, at: startedAt.toJSDate() },
-        update: { at: startedAt.toJSDate() },
-      });
-
-      logger.info('Lock %j created', lockId);
     }
 
     await fn({
@@ -107,6 +92,22 @@ export const createEndpoint = <T extends any = any>({
         });
 
         return fromDbNetwork(value.toUpperCase() as Uppercase<typeof value>);
+      },
+      lock: async (id: LockId) => {
+        lockId = id;
+
+        const lock = await prisma.locks.findUnique({ where: { id } });
+        if (lock && !DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
+          throw new AlreadyLockedError();
+        }
+
+        await prisma.locks.upsert({
+          where: { id },
+          create: { id, at: startedAt.toJSDate() },
+          update: { at: startedAt.toJSDate() },
+        });
+
+        logger.info('Lock %j created', id);
       },
       assertLockIsValid: async () => {
         if (!lockId) return;
@@ -158,16 +159,18 @@ export const createEndpoint = <T extends any = any>({
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Something went wrong' } as any);
   } finally {
     try {
-      const lock = await prisma.locks.findUnique({ where: { id: lockId } });
-      if (lock && DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
-        logger.info('Lock %j released', lockId);
-        await prisma.locks.delete({ where: { id: lockId } });
-      } else {
-        logger.debug(
-          { lock, startedAt },
-          'Lock %j *not* released since it does not belong to this execution',
-          lockId,
-        );
+      if (lockId) {
+        const lock = await prisma.locks.findUnique({ where: { id: lockId } });
+        if (lock && DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
+          logger.info('Lock %j released', lockId);
+          await prisma.locks.delete({ where: { id: lockId } });
+        } else {
+          logger.debug(
+            { lock, startedAt },
+            'Lock %j *not* released since it does not belong to this execution',
+            lockId,
+          );
+        }
       }
     } catch (e) {
       logger.fatal(e, 'Could not release DB lock');

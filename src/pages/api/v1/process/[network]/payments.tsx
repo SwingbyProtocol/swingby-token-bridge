@@ -20,9 +20,23 @@ const MAX_TRANSACTIONS_PER_CALL = 10;
 
 export default createEndpoint({
   isSecret: true,
-  lockId: LockId.PAYMENTS_SCRIPT,
-  fn: async ({ res, network: depositNetwork, prisma, assertLockIsValid }) => {
+  fn: async ({ res, network: depositNetwork, prisma, lock, assertLockIsValid }) => {
     const network = getDestinationNetwork(depositNetwork);
+    await lock(
+      (() => {
+        switch (network) {
+          case 1:
+            return LockId.PAYMENTS_SCRIPT_ETHEREUM;
+          case 5:
+            return LockId.PAYMENTS_SCRIPT_GOERLI;
+          case 56:
+            return LockId.PAYMENTS_SCRIPT_BSC;
+          case 97:
+            return LockId.PAYMENTS_SCRIPT_BSCT;
+        }
+      })(),
+    );
+
     const logger = baseLogger.child({ depositNetwork, network });
 
     logger.info('Getting started with these networks');
