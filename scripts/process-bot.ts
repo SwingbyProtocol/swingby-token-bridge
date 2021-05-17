@@ -1,4 +1,5 @@
 import { fetcher } from '../src/modules/fetch';
+import { logger } from '../src/modules/logger';
 import { server__processTaskSecret } from '../src/modules/server__env';
 
 const NETWORKS = ['ethereum', 'goerli', 'bsc', 'bsct'];
@@ -9,7 +10,7 @@ NETWORKS.forEach((network) => {
     (async () => {
       const generator = runNetworkTask(network, task);
       for await (let value of generator) {
-        console.log(value);
+        logger.info(value);
       }
     })();
   });
