@@ -16,7 +16,7 @@ import { getDestinationNetwork } from '../../../../../modules/web3';
 import { fetcher } from '../../../../../modules/fetch';
 import { assertPaymentSanityCheck } from '../../../../../modules/server__payment-sanity-check';
 
-const MAX_TRANSACTIONS_PER_CALL = 10;
+const MAX_TRANSACTIONS_PER_CALL = 1; // No need to do more, since we call this endpoint tons of times.
 
 export default createEndpoint({
   isSecret: true,
