@@ -97,7 +97,14 @@ export const createEndpoint = <T extends any = any>({
         lockId = id;
 
         const lock = await prisma.locks.findUnique({ where: { id } });
-        if (lock && !DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt)) {
+        if (
+          lock &&
+          !DateTime.fromJSDate(lock.at, { zone: 'utc' }).equals(startedAt) &&
+          // If the lock is too old, we want to overwrite it and create a new one.
+          DateTime.utc()
+            .diff(DateTime.fromJSDate(lock.at, { zone: 'utc' }))
+            .as('milliseconds') < Duration.fromObject({ minutes: 30 }).as('milliseconds')
+        ) {
           throw new AlreadyLockedError();
         }
 
