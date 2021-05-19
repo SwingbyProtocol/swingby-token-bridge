@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import ABI from 'human-standard-token-abi';
 import { TransactionConfig } from 'web3-eth';
-import { LockId, PaymentStatus, Prisma } from '@prisma/client';
+import { LockId, PaymentCrashReason, PaymentStatus, Prisma } from '@prisma/client';
 
 import {
   server__disableSubtractingNetworkFeeAsSwingby,
@@ -65,6 +65,7 @@ export default createEndpoint({
         network: { equals: toDbNetwork(depositNetwork) },
         addressTo: { equals: hotWallet.address, mode: 'insensitive' },
         payments: { none: { status: { in: [PaymentStatus.PENDING, PaymentStatus.COMPLETED] } } },
+        crashes: { none: {} },
       },
       orderBy: { at: 'asc' },
     });
@@ -121,6 +122,16 @@ export default createEndpoint({
 
         if (!amountReceiving.gt(0)) {
           loopLogger.fatal({ amountReceiving }, '`amountReceiving` is not >0');
+
+          await prisma.paymentCrash.create({
+            data: {
+              reason: PaymentCrashReason.FEES_HIGHER_THAN_AMOUNT,
+              deposit: {
+                connect: { network_hash: { network: toDbNetwork(network), hash: txIn.hash } },
+              },
+            },
+          });
+
           throw new Error('`amountReceiving` is not >0');
         }
 

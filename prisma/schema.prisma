@@ -42,19 +42,20 @@ model LiquidityProvider {
 model Deposit {
   network          Network
   hash             String
-  transactionIndex Int       @db.SmallInt
-  blockNumber      Decimal   @db.Decimal(65, 20)
+  transactionIndex Int            @db.SmallInt
+  blockNumber      Decimal        @db.Decimal(65, 20)
   at               DateTime
   addressFrom      String
   addressTo        String
-  value            Decimal   @db.Decimal(65, 20)
+  value            Decimal        @db.Decimal(65, 20)
   addressContract  String
-  tokenDecimals    Int       @db.SmallInt
-  gas              Decimal   @db.Decimal(65, 20)
-  gasPrice         Decimal   @db.Decimal(65, 20)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @default(now()) @updatedAt
-  payments         Payment[] @relation("PaymentRelation")
+  tokenDecimals    Int            @db.SmallInt
+  gas              Decimal        @db.Decimal(65, 20)
+  gasPrice         Decimal        @db.Decimal(65, 20)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+  payments         Payment[]      @relation("PaymentRelation")
+  crashes          PaymentCrash[] @relation("PaymentCrashesRelation")
 
   @@id([network, hash])
   @@index([network, at])
@@ -91,4 +92,17 @@ model Payment {
   @@index([network, addressTo])
   @@index([network, status])
   @@index([network, depositNetwork, depositHash])
+}
+
+enum PaymentCrashReason {
+  UNKNOWN
+  FEES_HIGHER_THAN_AMOUNT
+}
+
+model PaymentCrash {
+  id             Int                @id @default(autoincrement())
+  reason         PaymentCrashReason @default(UNKNOWN)
+  depositNetwork Network
+  depositHash    String
+  deposit        Deposit            @relation("PaymentCrashesRelation", fields: [depositNetwork, depositHash], references: [network, hash])
 }
