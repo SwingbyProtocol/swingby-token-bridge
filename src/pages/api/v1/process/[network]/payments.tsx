@@ -143,31 +143,30 @@ export default createEndpoint({
           hotWallet.privateKey,
         );
 
-        const { rawTransaction } = signedTransaction;
-        if (!rawTransaction) {
+        const { rawTransaction, transactionHash } = signedTransaction;
+        if (!rawTransaction || !transactionHash) {
           loopLogger.error({ signedTransaction }, 'Error signing transaction');
           throw new Error('Error signing transaction!');
         }
 
         await assertLockIsValid();
+        await prisma.payment.create({
+          data: {
+            deposit: {
+              connect: { network_hash: { hash: txIn.hash, network: txIn.network } },
+            },
+            network: toDbNetwork(network),
+            hash: transactionHash,
+            signedTransaction: rawTransaction,
+          },
+        });
+
         await new Promise<string>((resolve, reject) => {
           web3.eth
             .sendSignedTransaction(rawTransaction)
             .on('error', reject)
-            .on('transactionHash', async (hash) => {
-              loopLogger.trace('Got transaction hash %j', hash);
-              await prisma.payment.create({
-                data: {
-                  deposit: {
-                    connect: { network_hash: { hash: txIn.hash, network: txIn.network } },
-                  },
-                  network: toDbNetwork(network),
-                  hash,
-                  signedTransaction: rawTransaction,
-                },
-              });
-            })
             .on('receipt', (receipt) => {
+              loopLogger.trace('Got transaction receipt: %j', receipt);
               if (receipt.status) {
                 resolve(receipt.transactionHash);
               } else {
