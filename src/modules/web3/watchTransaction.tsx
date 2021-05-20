@@ -1,11 +1,12 @@
-import type { TransactionReceipt } from 'web3-eth';
-import type { PromiEvent } from 'web3-core';
 import { createOrUpdateToast, updateToast } from '@swingby-protocol/pulsar';
 
-import type { NetworkId } from '../onboard';
 import { logger } from '../logger';
 
 import { TransferToast } from './TransferToast';
+
+import type { TransactionReceipt } from 'web3-eth';
+import type { PromiEvent } from 'web3-core';
+import type { NetworkId } from '../onboard';
 
 export const watchTransaction = ({
   network,

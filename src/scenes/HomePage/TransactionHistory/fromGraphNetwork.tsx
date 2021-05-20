@@ -1,4 +1,5 @@
 import { Network } from '../../../generated/graphql';
+
 import type { NetworkId } from '../../../modules/onboard';
 
 export const fromGraphNetwork = (network: Network): NetworkId => {

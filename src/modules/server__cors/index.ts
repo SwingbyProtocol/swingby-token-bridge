@@ -1,4 +1,5 @@
 import Cors from 'cors';
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const defaultCors = Cors();

@@ -14,7 +14,7 @@ export const languages = {
   ja,
 } as const;
 
-export const SUPPORTED_LANGUAGES = (Object.keys(languages) as unknown) as Array<
+export const SUPPORTED_LANGUAGES = Object.keys(languages) as unknown as Array<
   keyof typeof languages
 >;
 
