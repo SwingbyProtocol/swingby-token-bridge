@@ -127,7 +127,13 @@ export const HomePage = () => {
                     id="form.swap-to-btn"
                     values={{
                       network: (
-                        <FormattedMessage id={`network.short.${getDestinationNetwork(network)}`} />
+                        <FormattedMessage
+                          id={
+                            network === 56
+                              ? `network.full.${getDestinationNetwork(network)}`
+                              : `network.short.${getDestinationNetwork(network)}`
+                          }
+                        />
                       ),
                     }}
                   />
