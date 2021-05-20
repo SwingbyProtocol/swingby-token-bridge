@@ -130,7 +130,7 @@ export const HomePage = () => {
                         <FormattedMessage
                           id={
                             network === 56
-                              ? `network.full.1`
+                              ? `network.full.${getDestinationNetwork(network)}`
                               : `network.short.${getDestinationNetwork(network)}`
                           }
                         />
