@@ -127,7 +127,9 @@ export default createEndpoint({
             data: {
               reason: PaymentCrashReason.FEES_HIGHER_THAN_AMOUNT,
               deposit: {
-                connect: { network_hash: { network: toDbNetwork(network), hash: txIn.hash } },
+                connect: {
+                  network_hash: { network: toDbNetwork(depositNetwork), hash: txIn.hash },
+                },
               },
             },
           });
