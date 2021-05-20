@@ -36,6 +36,7 @@ type Deposit {
   addressTo: String!
   at: DateTime!
   blockNumber: Decimal!
+  crashes(after: PaymentCrashWhereUniqueInput, before: PaymentCrashWhereUniqueInput, first: Int, last: Int): [PaymentCrash!]!
   createdAt: DateTime!
   gas: Decimal!
   gasPrice: Decimal!
@@ -130,6 +131,21 @@ type Payment {
   transactionIndex: Int
   updatedAt: DateTime!
   value: Decimal
+}
+
+type PaymentCrash {
+  deposit: Deposit!
+  id: ID!
+  reason: PaymentCrashReason!
+}
+
+enum PaymentCrashReason {
+  FEES_HIGHER_THAN_AMOUNT
+  UNKNOWN
+}
+
+input PaymentCrashWhereUniqueInput {
+  id: Int
 }
 
 input PaymentNetworkHashCompoundUniqueInput {

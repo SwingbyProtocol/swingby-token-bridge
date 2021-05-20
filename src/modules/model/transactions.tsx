@@ -29,6 +29,7 @@ export const Deposit = objectType({
     t.model.updatedAt();
 
     t.model.payments();
+    t.model.crashes();
   },
 });
 
@@ -57,6 +58,15 @@ export const Payment = objectType({
     t.model.updatedAt();
 
     t.model.status();
+    t.model.deposit();
+  },
+});
+
+export const PaymentCrash = objectType({
+  name: 'PaymentCrash',
+  definition(t) {
+    t.nonNull.id('id');
+    t.model.reason();
     t.model.deposit();
   },
 });
@@ -103,7 +113,7 @@ export const DepositsQuery = extendType({
           id: ['network', 'hash'],
           allEdges: await ctx.prisma.deposit.findMany({
             where: fromGraphWhereArgToPrisma(args.where),
-            include: { payments: true },
+            include: { payments: true, crashes: true },
             orderBy: { at: 'desc' },
           }),
         });

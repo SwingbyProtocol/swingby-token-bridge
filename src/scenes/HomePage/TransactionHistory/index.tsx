@@ -129,7 +129,7 @@ export const TransactionHistory = () => {
                                   return 'danger';
                                 case PaymentStatus.Pending:
                                 default:
-                                  return 'warning';
+                                  return item.crashes.length > 0 ? 'danger' : 'warning';
                               }
                             })()}
                           >
@@ -137,9 +137,7 @@ export const TransactionHistory = () => {
                           </Arrow>
 
                           <SideContainer>
-                            {!lastPayment ? (
-                              <ItemHash>…</ItemHash>
-                            ) : (
+                            {lastPayment ? (
                               <>
                                 <StyledNetworkTag network={fromGraphNetwork(lastPayment.network)} />
                                 <ItemHashContainer>
@@ -175,6 +173,10 @@ export const TransactionHistory = () => {
                                   </AmountContainer>
                                 )}
                               </>
+                            ) : item.crashes.length > 0 ? (
+                              <ItemHash>{item.crashes[item.crashes.length - 1].reason}</ItemHash>
+                            ) : (
+                              <ItemHash>…</ItemHash>
                             )}
                           </SideContainer>
                         </ItemWrapper>
