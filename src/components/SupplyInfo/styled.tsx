@@ -11,6 +11,7 @@ export const StyledCard = styled(Card)`
   grid-column-gap: ${({ theme }) => rem(theme.pulsar.size.closet)};
   grid-row-gap: ${({ theme }) => rem(theme.pulsar.size.box)};
   align-items: center;
+  font-feature-settings: 'tnum' 1;
 `;
 
 export const Header = styled.div`
