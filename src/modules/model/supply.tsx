@@ -4,19 +4,10 @@ import { Prisma } from '@prisma/client';
 
 import { buildWeb3Instance } from '../server__web3';
 import { SB_TOKEN_CONTRACT } from '../swingby-token';
-import { server__ethereumWalletPrivateKey } from '../server__env';
+import { prisma, server__ethereumWalletPrivateKey } from '../server__env';
 import { NetworkId } from '../onboard';
-import { fetcher } from '../fetch';
 
-import { fromNexusNetwork } from './network-conversion';
-
-const BC_TEAM_WALLETS = [
-  'bnb1hn8ym9xht925jkncjpf7lhjnax6z8nv24fv2yq',
-  'bnb1e82l2pjarhcpgy85mmlq8atuc5stfugaah29rz',
-  'bnb10sy32my2tuhlhkcyxqpqtukglfu7cswkrdrmd5',
-  'bnb1duw3nm4ehcrpxg9xwxpw9ya0kpuwyk4s7a0fzk',
-  'bnb1j2nkv2fe6rn2hur3vf052r00hdnaj27c3lp2w6',
-];
+import { fromNexusNetwork, toNexusNetwork } from './network-conversion';
 
 const getMaxSupply = async ({ network }: { network: NetworkId }): Promise<Prisma.Decimal> => {
   const web3 = buildWeb3Instance({ network });
@@ -44,24 +35,12 @@ const getCirculatingSupply = async ({
   const hotWalletBalance = await getWalletBalance({ network });
 
   const teamWalletsTotalBalance =
-    network !== 56
-      ? new Prisma.Decimal(0)
-      : (
-          await Promise.all(
-            BC_TEAM_WALLETS.map(async (address) => {
-              const result = (
-                await fetcher<{
-                  balance: Array<{ asset: string; free: string; frozen: string; locked: string }>;
-                }>(`https://explorer.binance.org/api/v1/balances/${address}`)
-              ).balance.find((it) => it.asset === 'SWINGBY-888');
-              if (!result) {
-                return new Prisma.Decimal(0);
-              }
-
-              return new Prisma.Decimal(result.free).add(result.frozen).add(result.locked);
-            }),
-          )
-        ).reduce((acc, curr) => acc.add(curr), new Prisma.Decimal(0));
+    (
+      await prisma.teamWalletBalances.aggregate({
+        where: { network: toNexusNetwork(network) },
+        sum: { balance: true },
+      })
+    ).sum.balance ?? new Prisma.Decimal(0);
 
   return maxSupply.minus(hotWalletBalance).minus(teamWalletsTotalBalance);
 };
