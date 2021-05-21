@@ -1,6 +1,6 @@
 query Supply {
-  ethereumSupply: tokenSupply(network: ETHEREUM)
-  bscSupply: tokenSupply(network: BSC)
+  ethereumSupply: tokenCirculatingSupply(network: ETHEREUM)
+  bscSupply: tokenCirculatingSupply(network: BSC)
   ethereumBalance: bridgeBalance(network: ETHEREUM)
   bscBalance: bridgeBalance(network: BSC)
 }

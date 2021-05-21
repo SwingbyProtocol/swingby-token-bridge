@@ -190,7 +190,8 @@ type Query {
     where: DepositWhereInput
   ): DepositsConnection!
   sanityCheck(network: Network!): Boolean!
-  tokenSupply(network: Network!): Decimal!
+  tokenCirculatingSupply(network: Network!): Decimal!
+  tokenMaxSupply(network: Network!): Decimal!
 }
 
 input StringFilter {

@@ -202,7 +202,8 @@ export type Query = {
   bridgeBalance: Scalars['Decimal'];
   deposits: DepositsConnection;
   sanityCheck: Scalars['Boolean'];
-  tokenSupply: Scalars['Decimal'];
+  tokenCirculatingSupply: Scalars['Decimal'];
+  tokenMaxSupply: Scalars['Decimal'];
 };
 
 
@@ -225,7 +226,12 @@ export type QuerySanityCheckArgs = {
 };
 
 
-export type QueryTokenSupplyArgs = {
+export type QueryTokenCirculatingSupplyArgs = {
+  network: Network;
+};
+
+
+export type QueryTokenMaxSupplyArgs = {
   network: Network;
 };
 
@@ -254,7 +260,7 @@ export type SupplyQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type SupplyQuery = (
   { __typename?: 'Query' }
-  & { ethereumSupply: Query['tokenSupply'], bscSupply: Query['tokenSupply'], ethereumBalance: Query['bridgeBalance'], bscBalance: Query['bridgeBalance'] }
+  & { ethereumSupply: Query['tokenCirculatingSupply'], bscSupply: Query['tokenCirculatingSupply'], ethereumBalance: Query['bridgeBalance'], bscBalance: Query['bridgeBalance'] }
 );
 
 export type DepositsHistoryQueryVariables = Exact<{
@@ -305,8 +311,8 @@ export type SanityCheckQuery = (
 
 export const SupplyDocument = gql`
     query Supply {
-  ethereumSupply: tokenSupply(network: ETHEREUM)
-  bscSupply: tokenSupply(network: BSC)
+  ethereumSupply: tokenCirculatingSupply(network: ETHEREUM)
+  bscSupply: tokenCirculatingSupply(network: BSC)
   ethereumBalance: bridgeBalance(network: ETHEREUM)
   bscBalance: bridgeBalance(network: BSC)
 }
