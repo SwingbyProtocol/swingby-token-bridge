@@ -6,6 +6,7 @@ import { buildWeb3Instance } from '../server__web3';
 import { SB_TOKEN_CONTRACT } from '../swingby-token';
 import { server__ethereumWalletPrivateKey } from '../server__env';
 import { NetworkId } from '../onboard';
+import { fetcher } from '../fetch';
 
 import { fromNexusNetwork } from './network-conversion';
 
@@ -42,9 +43,27 @@ const getCirculatingSupply = async ({
   const maxSupply = await getMaxSupply({ network });
   const hotWalletBalance = await getWalletBalance({ network });
 
-  // https://explorer.binance.org/api/v1/balances/bnb1hn8ym9xht925jkncjpf7lhjnax6z8nv24fv2yq
+  const teamWalletsTotalBalance =
+    network !== 56
+      ? new Prisma.Decimal(0)
+      : (
+          await Promise.all(
+            BC_TEAM_WALLETS.map(async (address) => {
+              const result = (
+                await fetcher<{
+                  balance: Array<{ asset: string; free: string; frozen: string; locked: string }>;
+                }>(`https://explorer.binance.org/api/v1/balances/${address}`)
+              ).balance.find((it) => it.asset === 'SWINGBY-888');
+              if (!result) {
+                return new Prisma.Decimal(0);
+              }
 
-  return maxSupply.minus(hotWalletBalance);
+              return new Prisma.Decimal(result.free).add(result.frozen).add(result.locked);
+            }),
+          )
+        ).reduce((acc, curr) => acc.add(curr), new Prisma.Decimal(0));
+
+  return maxSupply.minus(hotWalletBalance).minus(teamWalletsTotalBalance);
 };
 
 export const TokenMaxSupplyInfo = extendType({
