@@ -11,15 +11,17 @@ const MEDIA = `(min-width: ${rem(768)})`;
 export const Container = styled.div`
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: ${({ theme }) => rem(theme.pulsar.size.city)} min-content auto 1fr;
+  grid-template-rows: min-content min-content auto 1fr;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: 0 ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  padding-top: ${({ theme }) => rem(theme.pulsar.size.drawer)};
 `;
 
 export const StyledConnectWallet = styled(ConnectWallet)`
   justify-self: flex-end;
+  margin-bottom: ${({ theme }) => rem(theme.pulsar.size.drawer)};
 `;
 
 export const StyledSupplyInfo = styled(SupplyInfo)`

@@ -11,6 +11,7 @@
   "network.short.bct": "BC (T)",
   "network.sanity-error": "Sanity checks for the destination address failed. Please contact {email} for further assistance.",
   "wallet.connect": "Connect",
+  "wallet.add-token-to-wallet": "Add token to MetaMask",
   "form.max-btn": "MAX",
   "form.approve-btn": "Approve",
   "form.swap-to-btn": "Swap to {network}",
