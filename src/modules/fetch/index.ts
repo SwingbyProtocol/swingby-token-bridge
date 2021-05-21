@@ -38,7 +38,7 @@ export const fetcher = async <Data extends unknown = unknown>(
 ) => {
   const result = await fetch<Data>(...args);
   if (!result.ok) {
-    throw new Error(`${result.status}: ${result.response}`);
+    throw new Error(`${result.status}: ${JSON.stringify(result.response)}`);
   }
 
   return result.response;

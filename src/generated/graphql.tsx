@@ -49,6 +49,7 @@ export type Deposit = {
   addressTo: Scalars['String'];
   at: Scalars['DateTime'];
   blockNumber: Scalars['Decimal'];
+  crashes: Array<PaymentCrash>;
   createdAt: Scalars['DateTime'];
   gas: Scalars['Decimal'];
   gasPrice: Scalars['Decimal'];
@@ -60,6 +61,14 @@ export type Deposit = {
   transactionIndex: Scalars['Int'];
   updatedAt: Scalars['DateTime'];
   value: Scalars['Decimal'];
+};
+
+
+export type DepositCrashesArgs = {
+  after?: Maybe<PaymentCrashWhereUniqueInput>;
+  before?: Maybe<PaymentCrashWhereUniqueInput>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
 
@@ -157,6 +166,22 @@ export type Payment = {
   value?: Maybe<Scalars['Decimal']>;
 };
 
+export type PaymentCrash = {
+  __typename?: 'PaymentCrash';
+  deposit: Deposit;
+  id: Scalars['ID'];
+  reason: PaymentCrashReason;
+};
+
+export enum PaymentCrashReason {
+  FeesHigherThanAmount = 'FEES_HIGHER_THAN_AMOUNT',
+  Unknown = 'UNKNOWN'
+}
+
+export type PaymentCrashWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type PaymentNetworkHashCompoundUniqueInput = {
   hash: Scalars['String'];
   network: Network;
@@ -252,7 +277,10 @@ export type DepositsHistoryQuery = (
       & { node: (
         { __typename?: 'Deposit' }
         & Pick<Deposit, 'id' | 'at' | 'network' | 'hash' | 'value'>
-        & { payments: Array<(
+        & { crashes: Array<(
+          { __typename?: 'PaymentCrash' }
+          & Pick<PaymentCrash, 'reason'>
+        )>, payments: Array<(
           { __typename?: 'Payment' }
           & Pick<Payment, 'id' | 'at' | 'network' | 'hash' | 'status' | 'value' | 'updatedAt'>
         )> }
@@ -328,6 +356,9 @@ export const DepositsHistoryDocument = gql`
         network
         hash
         value
+        crashes {
+          reason
+        }
         payments {
           id
           at

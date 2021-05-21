@@ -1,26 +1,45 @@
 import { StatusCodes } from 'http-status-codes';
 import ABI from 'human-standard-token-abi';
 import { TransactionConfig } from 'web3-eth';
-import { PaymentStatus, Prisma } from '@prisma/client';
+import { LockId, PaymentCrashReason, PaymentStatus, Prisma } from '@prisma/client';
 
-import { server__ethereumWalletPrivateKey } from '../../../../../modules/server__env';
+import {
+  server__disableSubtractingNetworkFeeAsSwingby,
+  server__ethereumWalletPrivateKey,
+} from '../../../../../modules/server__env';
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
-import { logger } from '../../../../../modules/logger';
+import { logger as baseLogger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
 import { getDestinationNetwork } from '../../../../../modules/web3';
 import { fetcher } from '../../../../../modules/fetch';
 import { assertPaymentSanityCheck } from '../../../../../modules/server__payment-sanity-check';
 
-const MAX_TRANSACTIONS_PER_CALL = 10;
+const MAX_TRANSACTIONS_PER_CALL = 1; // No need to do more, since we call this endpoint tons of times.
 
 export default createEndpoint({
   isSecret: true,
-  fn: async ({ req, res, network: depositNetwork, prisma }) => {
+  fn: async ({ res, network: depositNetwork, prisma, lock, assertLockIsValid }) => {
     const network = getDestinationNetwork(depositNetwork);
-    logger.info({ depositNetwork, network }, 'Getting started with these networks');
+    await lock(
+      (() => {
+        switch (network) {
+          case 1:
+            return LockId.PAYMENTS_SCRIPT_ETHEREUM;
+          case 5:
+            return LockId.PAYMENTS_SCRIPT_GOERLI;
+          case 56:
+            return LockId.PAYMENTS_SCRIPT_BSC;
+          case 97:
+            return LockId.PAYMENTS_SCRIPT_BSCT;
+        }
+      })(),
+    );
 
+    const logger = baseLogger.child({ depositNetwork, network });
+
+    logger.info('Getting started with these networks');
     await assertPaymentSanityCheck({ network });
 
     const etherSymbol = network === 56 || network === 97 ? 'BNB' : 'ETH';
@@ -46,6 +65,7 @@ export default createEndpoint({
         network: { equals: toDbNetwork(depositNetwork) },
         addressTo: { equals: hotWallet.address, mode: 'insensitive' },
         payments: { none: { status: { in: [PaymentStatus.PENDING, PaymentStatus.COMPLETED] } } },
+        crashes: { none: {} },
       },
       orderBy: { at: 'asc' },
     });
@@ -56,12 +76,14 @@ export default createEndpoint({
     for (let i = 0; i < cappedPendingTransactions.length; i++) {
       const txIn = cappedPendingTransactions[i];
 
+      const loopLogger = logger.child({ txIn });
+      loopLogger.debug('Will get started with transaction %j', txIn.hash);
+
       try {
         const gasPrice = new Prisma.Decimal(await web3.eth.getGasPrice()).times('1.5').toFixed(0);
         const rawTx: TransactionConfig = {
           chainId: network,
-          // Dirty trick adding `i` here to avoid having to wait for a tx receipt for each item.
-          nonce: i + (await web3.eth.getTransactionCount(hotWallet.address)),
+          nonce: await web3.eth.getTransactionCount(hotWallet.address),
           gasPrice: web3.utils.toHex(gasPrice),
           from: hotWallet.address,
           to: SB_TOKEN_CONTRACT[network],
@@ -69,20 +91,56 @@ export default createEndpoint({
           data: contract.methods
             .transfer(
               txIn.addressFrom,
-              web3.utils.toHex(txIn.value.times(`1e${decimals}`).toFixed(0)),
+              // We use `1` here to make sure that we can estimate gas even if there is not enough Swingby tokens in the wallet for the swap.
+              web3.utils.toHex(1),
             )
             .encodeABI(),
         };
 
-        logger.trace({ txIn, rawTx }, 'Will estimate gas');
+        loopLogger.trace({ rawTx }, 'Will estimate gas');
         const estimatedGas = await web3.eth.estimateGas(rawTx);
         const etherGasPrice = new Prisma.Decimal(web3.utils.fromWei(gasPrice, 'ether'));
         const estimatedFeeEther = etherGasPrice.times(estimatedGas);
         const estimatedFeeSwingby = estimatedFeeEther.times(etherUsdtPrice).div(swingbyUsdtPrice);
-        logger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
+        loopLogger.info({ estimatedFeeEther, estimatedFeeSwingby }, 'Estimated transaction');
 
-        const amountReceiving = txIn.value.minus(estimatedFeeSwingby);
-        logger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
+        const amountReceiving = txIn.value.minus(
+          server__disableSubtractingNetworkFeeAsSwingby ? 0 : estimatedFeeSwingby,
+        );
+        loopLogger.info({ value: amountReceiving }, 'Calculated outgoing transaction value');
+
+        const balance = new Prisma.Decimal(
+          await contract.methods.balanceOf(hotWallet.address).call(),
+        ).div(`1e${decimals}`);
+        if (balance.lt(amountReceiving)) {
+          loopLogger.fatal(
+            { amountReceiving, balance },
+            'The hot wallet does not contain enough Swingby Tokens',
+          );
+          throw new Error('The hot wallet does not contain enough Swingby Tokens');
+        }
+
+        if (!amountReceiving.gt(0)) {
+          loopLogger.fatal({ amountReceiving }, '`amountReceiving` is not >0');
+
+          await prisma.paymentCrash.create({
+            data: {
+              reason: PaymentCrashReason.FEES_HIGHER_THAN_AMOUNT,
+              deposit: {
+                connect: {
+                  network_hash: { network: toDbNetwork(depositNetwork), hash: txIn.hash },
+                },
+              },
+            },
+          });
+
+          throw new Error('`amountReceiving` is not >0');
+        }
+
+        loopLogger.debug(
+          { amountReceiving, balance },
+          'The hot wallet contains enoughs Swingby Tokens. Will sign and send transaction.',
+        );
 
         const signedTransaction = await web3.eth.accounts.signTransaction(
           {
@@ -98,35 +156,39 @@ export default createEndpoint({
           hotWallet.privateKey,
         );
 
-        const { rawTransaction } = signedTransaction;
-        if (!rawTransaction) {
-          logger.error({ signedTransaction }, 'Error signing transaction');
+        const { rawTransaction, transactionHash } = signedTransaction;
+        if (!rawTransaction || !transactionHash) {
+          loopLogger.error({ signedTransaction }, 'Error signing transaction');
           throw new Error('Error signing transaction!');
         }
+
+        await assertLockIsValid();
+        await prisma.payment.create({
+          data: {
+            deposit: {
+              connect: { network_hash: { hash: txIn.hash, network: txIn.network } },
+            },
+            network: toDbNetwork(network),
+            hash: transactionHash,
+            signedTransaction: rawTransaction,
+          },
+        });
 
         await new Promise<string>((resolve, reject) => {
           web3.eth
             .sendSignedTransaction(rawTransaction)
             .on('error', reject)
-            .on('transactionHash', async (hash) => {
-              logger.trace('Got transaction hash %j', hash);
-
-              await prisma.payment.create({
-                data: {
-                  deposit: {
-                    connect: { network_hash: { hash: txIn.hash, network: txIn.network } },
-                  },
-                  network: toDbNetwork(network),
-                  hash,
-                  signedTransaction: rawTransaction,
-                },
-              });
-
-              resolve(hash);
+            .on('receipt', (receipt) => {
+              loopLogger.trace('Got transaction receipt: %j', receipt);
+              if (receipt.status) {
+                resolve(receipt.transactionHash);
+              } else {
+                reject(receipt.transactionHash);
+              }
             });
         });
       } catch (err) {
-        logger.fatal({ err }, 'Crashed sending transaction');
+        loopLogger.fatal({ err }, 'Crashed sending transaction');
         failed.push(txIn);
       }
     }

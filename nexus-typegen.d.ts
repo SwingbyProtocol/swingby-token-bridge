@@ -98,6 +98,9 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NetworkFilter'] | null; // NetworkFilter
     notIn?: Array<NexusGenEnums['Network'] | null> | null; // [Network]
   }
+  PaymentCrashWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
   PaymentNetworkHashCompoundUniqueInput: { // input type
     hash: string; // String!
     network: NexusGenEnums['Network']; // Network!
@@ -123,6 +126,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   Network: "BSC" | "BSCT" | "ETHEREUM" | "GOERLI"
+  PaymentCrashReason: "FEES_HIGHER_THAN_AMOUNT" | "UNKNOWN"
   PaymentStatus: "COMPLETED" | "FAILED" | "PENDING"
   StringFilterMode: "default" | "insensitive"
 }
@@ -186,6 +190,10 @@ export interface NexusGenObjects {
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     value?: NexusGenScalars['Decimal'] | null; // Decimal
   }
+  PaymentCrash: { // root type
+    id: string; // ID!
+    reason: NexusGenEnums['PaymentCrashReason']; // PaymentCrashReason!
+  }
   Query: {};
 }
 
@@ -206,6 +214,7 @@ export interface NexusGenFieldTypes {
     addressTo: string; // String!
     at: NexusGenScalars['DateTime']; // DateTime!
     blockNumber: NexusGenScalars['Decimal']; // Decimal!
+    crashes: NexusGenRootTypes['PaymentCrash'][]; // [PaymentCrash!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     gas: NexusGenScalars['Decimal']; // Decimal!
     gasPrice: NexusGenScalars['Decimal']; // Decimal!
@@ -252,6 +261,11 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     value: NexusGenScalars['Decimal'] | null; // Decimal
   }
+  PaymentCrash: { // field return type
+    deposit: NexusGenRootTypes['Deposit']; // Deposit!
+    id: string; // ID!
+    reason: NexusGenEnums['PaymentCrashReason']; // PaymentCrashReason!
+  }
   Query: { // field return type
     bridgeBalance: NexusGenScalars['Decimal']; // Decimal!
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
@@ -268,6 +282,7 @@ export interface NexusGenFieldTypeNames {
     addressTo: 'String'
     at: 'DateTime'
     blockNumber: 'Decimal'
+    crashes: 'PaymentCrash'
     createdAt: 'DateTime'
     gas: 'Decimal'
     gasPrice: 'Decimal'
@@ -314,6 +329,11 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
     value: 'Decimal'
   }
+  PaymentCrash: { // field return type name
+    deposit: 'Deposit'
+    id: 'ID'
+    reason: 'PaymentCrashReason'
+  }
   Query: { // field return type name
     bridgeBalance: 'Decimal'
     deposits: 'DepositsConnection'
@@ -325,6 +345,12 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Deposit: {
+    crashes: { // args
+      after?: NexusGenInputs['PaymentCrashWhereUniqueInput'] | null; // PaymentCrashWhereUniqueInput
+      before?: NexusGenInputs['PaymentCrashWhereUniqueInput'] | null; // PaymentCrashWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
     payments: { // args
       after?: NexusGenInputs['PaymentWhereUniqueInput'] | null; // PaymentWhereUniqueInput
       before?: NexusGenInputs['PaymentWhereUniqueInput'] | null; // PaymentWhereUniqueInput
