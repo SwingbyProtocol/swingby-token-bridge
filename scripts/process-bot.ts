@@ -36,7 +36,7 @@ async function* runNetworkTask(network: typeof NETWORKS[number], task: typeof TA
     try {
       const { abort, signal } = new AbortController();
 
-      const id = setTimeout(abort, TIMEOUT_AFTER);
+      const id = setTimeout(() => abort(), TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
         `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${network}/${task}?secret=${server__processTaskSecret}`,
         { signal },
@@ -57,7 +57,7 @@ async function* runGenericTask(task: typeof GENERIC_TASKS[number]) {
     try {
       const { abort, signal } = new AbortController();
 
-      const id = setTimeout(abort, TIMEOUT_AFTER);
+      const id = setTimeout(() => abort(), TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
         `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${task}?secret=${server__processTaskSecret}`,
         { signal },
