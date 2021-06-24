@@ -8,7 +8,7 @@ const NETWORKS = ['ethereum', 'goerli', 'bsc', 'bsct'];
 const TASKS = ['deposits', 'failed-payments', 'payments', 'pending-payments'];
 const GENERIC_TASKS = ['team-wallet-balances'];
 
-const REPEAT_INTERVAL = Duration.fromObject({ seconds: 10 }).as('milliseconds');
+const REPEAT_INTERVAL = Duration.fromObject({ seconds: 30 }).as('milliseconds');
 const TIMEOUT_AFTER = Duration.fromObject({ minutes: 1.5 }).as('milliseconds');
 
 NETWORKS.forEach((network) => {
