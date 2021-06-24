@@ -1,3 +1,5 @@
+import { Duration } from 'luxon';
+
 import { fetcher } from '../src/modules/fetch';
 import { logger } from '../src/modules/logger';
 import { server__processTaskSecret } from '../src/modules/server__env';
@@ -5,6 +7,9 @@ import { server__processTaskSecret } from '../src/modules/server__env';
 const NETWORKS = ['ethereum', 'goerli', 'bsc', 'bsct'];
 const TASKS = ['deposits', 'failed-payments', 'payments', 'pending-payments'];
 const GENERIC_TASKS = ['team-wallet-balances'];
+
+const REPEAT_INTERVAL = Duration.fromObject({ seconds: 10 }).as('milliseconds');
+const TIMEOUT_AFTER = Duration.fromObject({ minutes: 1.5 }).as('milliseconds');
 
 NETWORKS.forEach((network) => {
   TASKS.forEach((task) => {
@@ -29,31 +34,41 @@ GENERIC_TASKS.forEach((task) => {
 async function* runNetworkTask(network: typeof NETWORKS[number], task: typeof TASKS[number]) {
   for (;;) {
     try {
+      const { abort, signal } = new AbortController();
+
+      const id = setTimeout(abort, TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
         `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${network}/${task}?secret=${server__processTaskSecret}`,
+        { signal },
       );
+      clearTimeout(id);
 
       yield { network, task, result };
     } catch (e) {
       yield { network, task, err: e as Error };
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, REPEAT_INTERVAL));
   }
 }
 
 async function* runGenericTask(task: typeof GENERIC_TASKS[number]) {
   for (;;) {
     try {
+      const { abort, signal } = new AbortController();
+
+      const id = setTimeout(abort, TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
         `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${task}?secret=${server__processTaskSecret}`,
+        { signal },
       );
+      clearTimeout(id);
 
       yield { task, result };
     } catch (e) {
       yield { task, err: e as Error };
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, REPEAT_INTERVAL));
   }
 }
