@@ -34,12 +34,12 @@ GENERIC_TASKS.forEach((task) => {
 async function* runNetworkTask(network: typeof NETWORKS[number], task: typeof TASKS[number]) {
   for (;;) {
     try {
-      const { abort, signal } = new AbortController();
+      const controller = new AbortController();
 
-      const id = setTimeout(() => abort(), TIMEOUT_AFTER);
+      const id = setTimeout(() => controller.abort(), TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
         `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${network}/${task}?secret=${server__processTaskSecret}`,
-        { signal },
+        { signal: controller.signal },
       );
       clearTimeout(id);
 
@@ -55,12 +55,12 @@ async function* runNetworkTask(network: typeof NETWORKS[number], task: typeof TA
 async function* runGenericTask(task: typeof GENERIC_TASKS[number]) {
   for (;;) {
     try {
-      const { abort, signal } = new AbortController();
+      const controller = new AbortController();
 
-      const id = setTimeout(() => abort(), TIMEOUT_AFTER);
+      const id = setTimeout(() => controller.abort(), TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
         `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${task}?secret=${server__processTaskSecret}`,
-        { signal },
+        { signal: controller.signal },
       );
       clearTimeout(id);
 
