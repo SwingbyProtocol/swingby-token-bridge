@@ -15,12 +15,12 @@ export default createEndpoint({
     const etherSymbol = network === 56 || network === 97 ? 'BNB' : 'ETH';
     const etherUsdtPrice = (
       await fetcher<{ data: { [k in 'ask' | 'bid']: [string, string] } }>(
-        `https://bitmax.io/api/pro/v1/ticker?symbol=${etherSymbol}/USDT`,
+        `https://ascendex.com/api/pro/v1/ticker?symbol=${etherSymbol}/USDT`,
       )
     ).data.bid[0];
     const swingbyUsdtPrice = (
       await fetcher<{ data: { [k in 'ask' | 'bid']: [string, string] } }>(
-        `https://bitmax.io/api/pro/v1/ticker?symbol=SWINGBY/USDT`,
+        `https://ascendex.com/api/pro/v1/ticker?symbol=SWINGBY/USDT`,
       )
     ).data.bid[0];
 
