@@ -8,9 +8,17 @@ import * as transactions from './transactions';
 import * as filters from './filters';
 import * as sanityCheck from './sanity-check';
 import * as tokenSupply from './supply';
+import * as liquidityProviders from './liquidity-providers';
 
 export const schema = makeSchema({
-  types: { ...scalars, ...transactions, ...filters, ...sanityCheck, ...tokenSupply },
+  types: {
+    ...scalars,
+    ...transactions,
+    ...filters,
+    ...sanityCheck,
+    ...tokenSupply,
+    ...liquidityProviders,
+  },
   plugins: [nexusPrisma()],
   contextType: {
     module: path.join(__dirname, 'context.ts'),
