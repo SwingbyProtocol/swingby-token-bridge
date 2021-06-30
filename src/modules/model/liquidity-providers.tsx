@@ -13,7 +13,7 @@ export const LiquidityProviderQuery = extendType({
     t.nonNull.field('liquidityProviders', {
       type: nonNull(list(nonNull(LiquidityProvider))),
       async resolve(source, args, ctx, info) {
-        return ctx.prisma.liquidityProvider.findMany();
+        return (await ctx.prisma.liquidityProvider.findMany()).map((it) => ({ id: it.address }));
       },
     });
   },
