@@ -99,6 +99,10 @@ input IntFilter {
   notIn: [Int]
 }
 
+type LiquidityProvider {
+  id: String
+}
+
 enum Network {
   BSC
   BSCT
@@ -189,6 +193,7 @@ type Query {
     """Allows to filter results by several properties."""
     where: DepositWhereInput
   ): DepositsConnection!
+  liquidityProviders: [LiquidityProvider!]!
   sanityCheck(network: Network!): Boolean!
   tokenCirculatingSupply(network: Network!): Decimal!
   tokenMaxSupply(network: Network!): Decimal!

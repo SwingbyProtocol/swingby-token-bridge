@@ -131,6 +131,11 @@ export type IntFilter = {
   notIn?: Maybe<Array<Maybe<Scalars['Int']>>>;
 };
 
+export type LiquidityProvider = {
+  __typename?: 'LiquidityProvider';
+  id?: Maybe<Scalars['String']>;
+};
+
 export enum Network {
   Bsc = 'BSC',
   Bsct = 'BSCT',
@@ -201,6 +206,7 @@ export type Query = {
   __typename?: 'Query';
   bridgeBalance: Scalars['Decimal'];
   deposits: DepositsConnection;
+  liquidityProviders: Array<LiquidityProvider>;
   sanityCheck: Scalars['Boolean'];
   tokenCirculatingSupply: Scalars['Decimal'];
   tokenMaxSupply: Scalars['Decimal'];

@@ -173,6 +173,9 @@ export interface NexusGenObjects {
     hasPreviousPage: boolean; // Boolean!
     startCursor: string; // String!
   }
+  LiquidityProvider: { // root type
+    id?: string | null; // String
+  }
   Payment: { // root type
     addressContract?: string | null; // String
     addressFrom?: string | null; // String
@@ -242,6 +245,9 @@ export interface NexusGenFieldTypes {
     hasPreviousPage: boolean; // Boolean!
     startCursor: string; // String!
   }
+  LiquidityProvider: { // field return type
+    id: string | null; // String
+  }
   Payment: { // field return type
     addressContract: string | null; // String
     addressFrom: string | null; // String
@@ -269,6 +275,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     bridgeBalance: NexusGenScalars['Decimal']; // Decimal!
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
+    liquidityProviders: NexusGenRootTypes['LiquidityProvider'][]; // [LiquidityProvider!]!
     sanityCheck: boolean; // Boolean!
     tokenCirculatingSupply: NexusGenScalars['Decimal']; // Decimal!
     tokenMaxSupply: NexusGenScalars['Decimal']; // Decimal!
@@ -310,6 +317,9 @@ export interface NexusGenFieldTypeNames {
     hasPreviousPage: 'Boolean'
     startCursor: 'String'
   }
+  LiquidityProvider: { // field return type name
+    id: 'String'
+  }
   Payment: { // field return type name
     addressContract: 'String'
     addressFrom: 'String'
@@ -337,6 +347,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     bridgeBalance: 'Decimal'
     deposits: 'DepositsConnection'
+    liquidityProviders: 'LiquidityProvider'
     sanityCheck: 'Boolean'
     tokenCirculatingSupply: 'Decimal'
     tokenMaxSupply: 'Decimal'
