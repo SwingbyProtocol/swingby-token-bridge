@@ -43,6 +43,18 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CrashRelationWhereInput: { // input type
+    every?: NexusGenInputs['CrashWhereInput'] | null; // CrashWhereInput
+    none?: NexusGenInputs['CrashWhereInput'] | null; // CrashWhereInput
+    some?: NexusGenInputs['CrashWhereInput'] | null; // CrashWhereInput
+  }
+  CrashWhereInput: { // input type
+    AND?: Array<NexusGenInputs['CrashWhereInput'] | null> | null; // [CrashWhereInput]
+    NOT?: Array<NexusGenInputs['CrashWhereInput'] | null> | null; // [CrashWhereInput]
+    OR?: Array<NexusGenInputs['CrashWhereInput'] | null> | null; // [CrashWhereInput]
+    id?: NexusGenInputs['IdFilter'] | null; // IdFilter
+    reason?: NexusGenInputs['PaymentCrashReasonFilter'] | null; // PaymentCrashReasonFilter
+  }
   DateTimeFilter: { // input type
     equals?: NexusGenScalars['DateTime'] | null; // DateTime
     gt?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -72,6 +84,7 @@ export interface NexusGenInputs {
     addressTo?: NexusGenInputs['StringFilter'] | null; // StringFilter
     at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     blockNumber?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
+    crashes?: NexusGenInputs['CrashRelationWhereInput'] | null; // CrashRelationWhereInput
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     gas?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
     gasPrice?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
@@ -82,6 +95,16 @@ export interface NexusGenInputs {
     transactionIndex?: NexusGenInputs['IntFilter'] | null; // IntFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     value?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
+  }
+  IdFilter: { // input type
+    equals?: string | null; // ID
+    gt?: string | null; // ID
+    gte?: string | null; // ID
+    in?: Array<string | null> | null; // [ID]
+    lt?: string | null; // ID
+    lte?: string | null; // ID
+    not?: NexusGenInputs['IdFilter'] | null; // IdFilter
+    notIn?: Array<string | null> | null; // [ID]
   }
   IntFilter: { // input type
     equals?: number | null; // Int
@@ -98,6 +121,12 @@ export interface NexusGenInputs {
     in?: Array<NexusGenEnums['Network'] | null> | null; // [Network]
     not?: NexusGenInputs['NetworkFilter'] | null; // NetworkFilter
     notIn?: Array<NexusGenEnums['Network'] | null> | null; // [Network]
+  }
+  PaymentCrashReasonFilter: { // input type
+    equals?: NexusGenEnums['PaymentCrashReason'] | null; // PaymentCrashReason
+    in?: Array<NexusGenEnums['PaymentCrashReason'] | null> | null; // [PaymentCrashReason]
+    not?: NexusGenInputs['PaymentCrashReasonFilter'] | null; // PaymentCrashReasonFilter
+    notIn?: Array<NexusGenEnums['PaymentCrashReason'] | null> | null; // [PaymentCrashReason]
   }
   PaymentCrashWhereUniqueInput: { // input type
     id?: number | null; // Int

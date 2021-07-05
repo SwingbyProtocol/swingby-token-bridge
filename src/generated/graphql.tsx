@@ -18,6 +18,20 @@ export type Scalars = {
   Decimal: string;
 };
 
+export type CrashRelationWhereInput = {
+  every?: Maybe<CrashWhereInput>;
+  none?: Maybe<CrashWhereInput>;
+  some?: Maybe<CrashWhereInput>;
+};
+
+export type CrashWhereInput = {
+  AND?: Maybe<Array<Maybe<CrashWhereInput>>>;
+  NOT?: Maybe<Array<Maybe<CrashWhereInput>>>;
+  OR?: Maybe<Array<Maybe<CrashWhereInput>>>;
+  id?: Maybe<IdFilter>;
+  reason?: Maybe<PaymentCrashReasonFilter>;
+};
+
 
 export type DateTimeFilter = {
   equals?: Maybe<Scalars['DateTime']>;
@@ -88,6 +102,7 @@ export type DepositWhereInput = {
   addressTo?: Maybe<StringFilter>;
   at?: Maybe<DateTimeFilter>;
   blockNumber?: Maybe<DecimalFilter>;
+  crashes?: Maybe<CrashRelationWhereInput>;
   createdAt?: Maybe<DateTimeFilter>;
   gas?: Maybe<DecimalFilter>;
   gasPrice?: Maybe<DecimalFilter>;
@@ -119,6 +134,17 @@ export type ForwardPaginationPageInfo = {
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
   startCursor: Scalars['String'];
+};
+
+export type IdFilter = {
+  equals?: Maybe<Scalars['ID']>;
+  gt?: Maybe<Scalars['ID']>;
+  gte?: Maybe<Scalars['ID']>;
+  in?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  lt?: Maybe<Scalars['ID']>;
+  lte?: Maybe<Scalars['ID']>;
+  not?: Maybe<IdFilter>;
+  notIn?: Maybe<Array<Maybe<Scalars['ID']>>>;
 };
 
 export type IntFilter = {
@@ -183,6 +209,13 @@ export enum PaymentCrashReason {
   FeesHigherThanAmount = 'FEES_HIGHER_THAN_AMOUNT',
   Unknown = 'UNKNOWN'
 }
+
+export type PaymentCrashReasonFilter = {
+  equals?: Maybe<PaymentCrashReason>;
+  in?: Maybe<Array<Maybe<PaymentCrashReason>>>;
+  not?: Maybe<PaymentCrashReasonFilter>;
+  notIn?: Maybe<Array<Maybe<PaymentCrashReason>>>;
+};
 
 export type PaymentCrashWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;

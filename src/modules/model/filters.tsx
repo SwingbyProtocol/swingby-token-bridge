@@ -5,6 +5,20 @@ export const StringFilterMode = enumType({
   members: ['default', 'insensitive'],
 });
 
+export const IdFilter = inputObjectType({
+  name: 'IdFilter',
+  definition(t) {
+    t.id('equals');
+    t.id('gt');
+    t.id('gte');
+    t.list.id('in');
+    t.id('lt');
+    t.id('lte');
+    t.field('not', { type: 'IdFilter' });
+    t.list.id('notIn');
+  },
+});
+
 export const StringFilter = inputObjectType({
   name: 'StringFilter',
   definition(t) {
@@ -82,5 +96,15 @@ export const PaymentStatusFilter = inputObjectType({
     t.list.field('in', { type: 'PaymentStatus' });
     t.field('not', { type: 'PaymentStatusFilter' });
     t.list.field('notIn', { type: 'PaymentStatus' });
+  },
+});
+
+export const PaymentCrashReasonFilter = inputObjectType({
+  name: 'PaymentCrashReasonFilter',
+  definition(t) {
+    t.field('equals', { type: 'PaymentCrashReason' });
+    t.list.field('in', { type: 'PaymentCrashReason' });
+    t.field('not', { type: 'PaymentCrashReasonFilter' });
+    t.list.field('notIn', { type: 'PaymentCrashReason' });
   },
 });

@@ -2,6 +2,20 @@
 ### Do not make changes to this file directly
 
 
+input CrashRelationWhereInput {
+  every: CrashWhereInput
+  none: CrashWhereInput
+  some: CrashWhereInput
+}
+
+input CrashWhereInput {
+  AND: [CrashWhereInput]
+  NOT: [CrashWhereInput]
+  OR: [CrashWhereInput]
+  id: IdFilter
+  reason: PaymentCrashReasonFilter
+}
+
 """A timestamp."""
 scalar DateTime
 
@@ -59,6 +73,7 @@ input DepositWhereInput {
   addressTo: StringFilter
   at: DateTimeFilter
   blockNumber: DecimalFilter
+  crashes: CrashRelationWhereInput
   createdAt: DateTimeFilter
   gas: DecimalFilter
   gasPrice: DecimalFilter
@@ -87,6 +102,17 @@ type ForwardPaginationPageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
   startCursor: String!
+}
+
+input IdFilter {
+  equals: ID
+  gt: ID
+  gte: ID
+  in: [ID]
+  lt: ID
+  lte: ID
+  not: IdFilter
+  notIn: [ID]
 }
 
 input IntFilter {
@@ -147,6 +173,13 @@ type PaymentCrash {
 enum PaymentCrashReason {
   FEES_HIGHER_THAN_AMOUNT
   UNKNOWN
+}
+
+input PaymentCrashReasonFilter {
+  equals: PaymentCrashReason
+  in: [PaymentCrashReason]
+  not: PaymentCrashReasonFilter
+  notIn: [PaymentCrashReason]
 }
 
 input PaymentCrashWhereUniqueInput {

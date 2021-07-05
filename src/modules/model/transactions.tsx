@@ -1,4 +1,4 @@
-import { extendType, objectType, arg, inputObjectType, enumType } from 'nexus';
+import { extendType, objectType, arg, inputObjectType } from 'nexus';
 
 import { paginate, paginatedType, paginationArgs } from '../pagination';
 
@@ -71,9 +71,16 @@ export const PaymentCrash = objectType({
   },
 });
 
-export const PaymentStatus = enumType({
-  name: 'PaymentStatus',
-  members: ['PENDING', 'COMPLETED', 'FAILED'],
+const CrashWhereInput = inputObjectType({
+  name: 'CrashWhereInput',
+  definition(t) {
+    t.list.field('AND', { type: 'CrashWhereInput' });
+    t.list.field('NOT', { type: 'CrashWhereInput' });
+    t.list.field('OR', { type: 'CrashWhereInput' });
+
+    t.field('id', { type: 'IdFilter' });
+    t.field('reason', { type: 'PaymentCrashReasonFilter' });
+  },
 });
 
 const PaymentWhereInput = inputObjectType({
@@ -98,6 +105,15 @@ const PaymentWhereInput = inputObjectType({
     t.field('value', { type: 'DecimalFilter' });
     t.field('createdAt', { type: 'DateTimeFilter' });
     t.field('updatedAt', { type: 'DateTimeFilter' });
+  },
+});
+
+const CrashRelationWhereInput = inputObjectType({
+  name: 'CrashRelationWhereInput',
+  definition(t) {
+    t.field('every', { type: CrashWhereInput });
+    t.field('none', { type: CrashWhereInput });
+    t.field('some', { type: CrashWhereInput });
   },
 });
 
@@ -132,6 +148,7 @@ const DepositWhereInput = inputObjectType({
     t.field('createdAt', { type: 'DateTimeFilter' });
     t.field('updatedAt', { type: 'DateTimeFilter' });
     t.field('payments', { type: PaymentRelationWhereInput });
+    t.field('crashes', { type: CrashRelationWhereInput });
   },
 });
 
