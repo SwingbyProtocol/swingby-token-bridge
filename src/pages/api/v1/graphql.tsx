@@ -2,57 +2,20 @@ import { ApolloServer } from 'apollo-server-micro';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { corsMiddleware } from '../../../modules/server__cors';
-import { prisma } from '../../../modules/server__env';
+import { prisma, server__graphqlEndpoint } from '../../../modules/server__env';
 import { schema } from '../../../modules/model';
-
-const endpoint = '/api/v1/graphql';
-
-const stuckDeposits = `
-  {
-    deposits(
-      where: {
-        network: { in: [ETHEREUM, BSC] }
-        payments: { every: { status: { notIn: [COMPLETED, PENDING] } } }
-        crashes: { none: {} }
-      }
-    ) {
-      edges {
-        node {
-          hash
-          at
-          addressFrom
-          value
-          crashes {
-            reason
-          }
-          payments {
-            hash
-            status
-          }
-        }
-      }
-    }
-  }
-`;
+import { playground } from '../../../modules/server__gql-playground';
 
 const server = new ApolloServer({
   schema,
-  playground: {
-    tabs: [
-      {
-        name: 'Stuck deposits',
-        endpoint,
-        query: stuckDeposits,
-      },
-    ],
-  },
+  playground,
   introspection: true,
   context: {
     prisma,
   },
 });
 
-const handler = server.createHandler({ path: endpoint });
+const handler = server.createHandler({ path: server__graphqlEndpoint });
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   await corsMiddleware({ req, res });
   return handler(req, res);

@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
+export const server__graphqlEndpoint = '/api/v1/graphql';
+
 export const server__processTaskSecret = process.env.PROCESS_TASK_SECRET || undefined;
 export const server__ethereumWalletPrivateKey = process.env.ETH_BSC_WALLET_KEY || '';
 export const server__infuraProjectId = process.env.INFURA_PROJECT_ID || undefined;
