@@ -77,6 +77,7 @@ export interface NexusGenInputs {
     gasPrice?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
     hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
     network?: NexusGenInputs['NetworkFilter'] | null; // NetworkFilter
+    payments?: NexusGenInputs['PaymentRelationWhereInput'] | null; // PaymentRelationWhereInput
     tokenDecimals?: NexusGenInputs['IntFilter'] | null; // IntFilter
     transactionIndex?: NexusGenInputs['IntFilter'] | null; // IntFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
@@ -104,6 +105,37 @@ export interface NexusGenInputs {
   PaymentNetworkHashCompoundUniqueInput: { // input type
     hash: string; // String!
     network: NexusGenEnums['Network']; // Network!
+  }
+  PaymentRelationWhereInput: { // input type
+    every?: NexusGenInputs['PaymentWhereInput'] | null; // PaymentWhereInput
+    none?: NexusGenInputs['PaymentWhereInput'] | null; // PaymentWhereInput
+    some?: NexusGenInputs['PaymentWhereInput'] | null; // PaymentWhereInput
+  }
+  PaymentStatusFilter: { // input type
+    equals?: NexusGenEnums['PaymentStatus'] | null; // PaymentStatus
+    in?: Array<NexusGenEnums['PaymentStatus'] | null> | null; // [PaymentStatus]
+    not?: NexusGenInputs['PaymentStatusFilter'] | null; // PaymentStatusFilter
+    notIn?: Array<NexusGenEnums['PaymentStatus'] | null> | null; // [PaymentStatus]
+  }
+  PaymentWhereInput: { // input type
+    AND?: Array<NexusGenInputs['PaymentWhereInput'] | null> | null; // [PaymentWhereInput]
+    NOT?: Array<NexusGenInputs['PaymentWhereInput'] | null> | null; // [PaymentWhereInput]
+    OR?: Array<NexusGenInputs['PaymentWhereInput'] | null> | null; // [PaymentWhereInput]
+    addressContract?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    addressFrom?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    addressTo?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    blockNumber?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    gas?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
+    gasPrice?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
+    hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    network?: NexusGenInputs['NetworkFilter'] | null; // NetworkFilter
+    status?: NexusGenInputs['PaymentStatusFilter'] | null; // PaymentStatusFilter
+    tokenDecimals?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    transactionIndex?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    value?: NexusGenInputs['DecimalFilter'] | null; // DecimalFilter
   }
   PaymentWhereUniqueInput: { // input type
     network_hash?: NexusGenInputs['PaymentNetworkHashCompoundUniqueInput'] | null; // PaymentNetworkHashCompoundUniqueInput

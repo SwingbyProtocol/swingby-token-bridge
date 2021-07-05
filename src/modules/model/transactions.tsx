@@ -1,4 +1,4 @@
-import { extendType, objectType, arg, inputObjectType } from 'nexus';
+import { extendType, objectType, arg, inputObjectType, enumType } from 'nexus';
 
 import { paginate, paginatedType, paginationArgs } from '../pagination';
 
@@ -71,6 +71,45 @@ export const PaymentCrash = objectType({
   },
 });
 
+export const PaymentStatus = enumType({
+  name: 'PaymentStatus',
+  members: ['PENDING', 'COMPLETED', 'FAILED'],
+});
+
+const PaymentWhereInput = inputObjectType({
+  name: 'PaymentWhereInput',
+  definition(t) {
+    t.list.field('AND', { type: 'PaymentWhereInput' });
+    t.list.field('NOT', { type: 'PaymentWhereInput' });
+    t.list.field('OR', { type: 'PaymentWhereInput' });
+
+    t.field('network', { type: 'NetworkFilter' });
+    t.field('hash', { type: 'StringFilter' });
+    t.field('status', { type: 'PaymentStatusFilter' });
+    t.field('blockNumber', { type: 'DecimalFilter' });
+    t.field('transactionIndex', { type: 'IntFilter' });
+    t.field('at', { type: 'DateTimeFilter' });
+    t.field('addressContract', { type: 'StringFilter' });
+    t.field('addressFrom', { type: 'StringFilter' });
+    t.field('addressTo', { type: 'StringFilter' });
+    t.field('gas', { type: 'DecimalFilter' });
+    t.field('gasPrice', { type: 'DecimalFilter' });
+    t.field('tokenDecimals', { type: 'IntFilter' });
+    t.field('value', { type: 'DecimalFilter' });
+    t.field('createdAt', { type: 'DateTimeFilter' });
+    t.field('updatedAt', { type: 'DateTimeFilter' });
+  },
+});
+
+const PaymentRelationWhereInput = inputObjectType({
+  name: 'PaymentRelationWhereInput',
+  definition(t) {
+    t.field('every', { type: PaymentWhereInput });
+    t.field('none', { type: PaymentWhereInput });
+    t.field('some', { type: PaymentWhereInput });
+  },
+});
+
 const DepositWhereInput = inputObjectType({
   name: 'DepositWhereInput',
   definition(t) {
@@ -92,6 +131,7 @@ const DepositWhereInput = inputObjectType({
     t.field('value', { type: 'DecimalFilter' });
     t.field('createdAt', { type: 'DateTimeFilter' });
     t.field('updatedAt', { type: 'DateTimeFilter' });
+    t.field('payments', { type: PaymentRelationWhereInput });
   },
 });
 

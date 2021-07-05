@@ -74,3 +74,13 @@ export const NetworkFilter = inputObjectType({
     t.list.field('notIn', { type: 'Network' });
   },
 });
+
+export const PaymentStatusFilter = inputObjectType({
+  name: 'PaymentStatusFilter',
+  definition(t) {
+    t.field('equals', { type: 'PaymentStatus' });
+    t.list.field('in', { type: 'PaymentStatus' });
+    t.field('not', { type: 'PaymentStatusFilter' });
+    t.list.field('notIn', { type: 'PaymentStatus' });
+  },
+});

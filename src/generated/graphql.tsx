@@ -93,6 +93,7 @@ export type DepositWhereInput = {
   gasPrice?: Maybe<DecimalFilter>;
   hash?: Maybe<StringFilter>;
   network?: Maybe<NetworkFilter>;
+  payments?: Maybe<PaymentRelationWhereInput>;
   tokenDecimals?: Maybe<IntFilter>;
   transactionIndex?: Maybe<IntFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
@@ -192,11 +193,45 @@ export type PaymentNetworkHashCompoundUniqueInput = {
   network: Network;
 };
 
+export type PaymentRelationWhereInput = {
+  every?: Maybe<PaymentWhereInput>;
+  none?: Maybe<PaymentWhereInput>;
+  some?: Maybe<PaymentWhereInput>;
+};
+
 export enum PaymentStatus {
   Completed = 'COMPLETED',
   Failed = 'FAILED',
   Pending = 'PENDING'
 }
+
+export type PaymentStatusFilter = {
+  equals?: Maybe<PaymentStatus>;
+  in?: Maybe<Array<Maybe<PaymentStatus>>>;
+  not?: Maybe<PaymentStatusFilter>;
+  notIn?: Maybe<Array<Maybe<PaymentStatus>>>;
+};
+
+export type PaymentWhereInput = {
+  AND?: Maybe<Array<Maybe<PaymentWhereInput>>>;
+  NOT?: Maybe<Array<Maybe<PaymentWhereInput>>>;
+  OR?: Maybe<Array<Maybe<PaymentWhereInput>>>;
+  addressContract?: Maybe<StringFilter>;
+  addressFrom?: Maybe<StringFilter>;
+  addressTo?: Maybe<StringFilter>;
+  at?: Maybe<DateTimeFilter>;
+  blockNumber?: Maybe<DecimalFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  gas?: Maybe<DecimalFilter>;
+  gasPrice?: Maybe<DecimalFilter>;
+  hash?: Maybe<StringFilter>;
+  network?: Maybe<NetworkFilter>;
+  status?: Maybe<PaymentStatusFilter>;
+  tokenDecimals?: Maybe<IntFilter>;
+  transactionIndex?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  value?: Maybe<DecimalFilter>;
+};
 
 export type PaymentWhereUniqueInput = {
   network_hash?: Maybe<PaymentNetworkHashCompoundUniqueInput>;

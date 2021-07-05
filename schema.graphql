@@ -64,6 +64,7 @@ input DepositWhereInput {
   gasPrice: DecimalFilter
   hash: StringFilter
   network: NetworkFilter
+  payments: PaymentRelationWhereInput
   tokenDecimals: IntFilter
   transactionIndex: IntFilter
   updatedAt: DateTimeFilter
@@ -157,10 +158,44 @@ input PaymentNetworkHashCompoundUniqueInput {
   network: Network!
 }
 
+input PaymentRelationWhereInput {
+  every: PaymentWhereInput
+  none: PaymentWhereInput
+  some: PaymentWhereInput
+}
+
 enum PaymentStatus {
   COMPLETED
   FAILED
   PENDING
+}
+
+input PaymentStatusFilter {
+  equals: PaymentStatus
+  in: [PaymentStatus]
+  not: PaymentStatusFilter
+  notIn: [PaymentStatus]
+}
+
+input PaymentWhereInput {
+  AND: [PaymentWhereInput]
+  NOT: [PaymentWhereInput]
+  OR: [PaymentWhereInput]
+  addressContract: StringFilter
+  addressFrom: StringFilter
+  addressTo: StringFilter
+  at: DateTimeFilter
+  blockNumber: DecimalFilter
+  createdAt: DateTimeFilter
+  gas: DecimalFilter
+  gasPrice: DecimalFilter
+  hash: StringFilter
+  network: NetworkFilter
+  status: PaymentStatusFilter
+  tokenDecimals: IntFilter
+  transactionIndex: IntFilter
+  updatedAt: DateTimeFilter
+  value: DecimalFilter
 }
 
 input PaymentWhereUniqueInput {
