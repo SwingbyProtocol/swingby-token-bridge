@@ -11,6 +11,7 @@ import { SB_TOKEN_CONTRACT } from '../../../../modules/swingby-token';
 import { fetcher } from '../../../../modules/fetch';
 
 export default createEndpoint({
+  logId: 'swap-fee',
   fn: async ({ req, res, network }) => {
     const etherSymbol = network === 56 || network === 97 ? 'BNB' : 'ETH';
     const etherUsdtPrice = (

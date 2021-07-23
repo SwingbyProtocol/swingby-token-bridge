@@ -8,7 +8,6 @@ import { fetcher } from '../../../../../modules/fetch';
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance, getScanApiUrl } from '../../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
-import { logger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
 import { MIN_CONFIRMATIONS_EXPECTED } from '../../../../../modules/web3';
 
@@ -31,7 +30,8 @@ type ApiResult = {
 
 export default createEndpoint({
   isSecret: true,
-  fn: async ({ req, res, network, prisma }) => {
+  logId: 'process/pending-payments',
+  fn: async ({ req, res, network, prisma, logger }) => {
     const web3 = buildWeb3Instance({ network });
     const { address: hotWalletAddress } = web3.eth.accounts.privateKeyToAccount(
       server__ethereumWalletPrivateKey,

@@ -10,7 +10,6 @@ import {
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
 import { SB_TOKEN_CONTRACT } from '../../../../../modules/swingby-token';
-import { logger as baseLogger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
 import { getDestinationNetwork } from '../../../../../modules/web3';
 import { fetcher } from '../../../../../modules/fetch';
@@ -20,7 +19,8 @@ const MAX_TRANSACTIONS_PER_CALL = 1; // No need to do more, since we call this e
 
 export default createEndpoint({
   isSecret: true,
-  fn: async ({ res, network: depositNetwork, prisma, lock, assertLockIsValid }) => {
+  logId: 'process/payments',
+  fn: async ({ res, network: depositNetwork, prisma, lock, assertLockIsValid, logger }) => {
     const network = getDestinationNetwork(depositNetwork);
     await lock(
       (() => {
@@ -36,8 +36,6 @@ export default createEndpoint({
         }
       })(),
     );
-
-    const logger = baseLogger.child({ depositNetwork, network });
 
     logger.info('Getting started with these networks');
     await assertPaymentSanityCheck({ network });

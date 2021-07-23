@@ -14,6 +14,7 @@ const BC_TEAM_WALLETS = [
 
 export default createEndpoint({
   isSecret: true,
+  logId: 'process/wallet-balances',
   fn: async ({ res, prisma }) => {
     const failed: typeof BC_TEAM_WALLETS = [];
 

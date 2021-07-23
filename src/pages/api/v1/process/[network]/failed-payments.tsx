@@ -5,13 +5,13 @@ import ABI from 'human-standard-token-abi';
 
 import { createEndpoint } from '../../../../../modules/server__api-endpoint';
 import { buildWeb3Instance } from '../../../../../modules/server__web3';
-import { logger } from '../../../../../modules/logger';
 import { toDbNetwork } from '../../../../../modules/server__db';
 import { MIN_CONFIRMATIONS_EXPECTED } from '../../../../../modules/web3';
 
 export default createEndpoint({
   isSecret: true,
-  fn: async ({ req, res, network, prisma }) => {
+  logId: 'process/failed-payments',
+  fn: async ({ req, res, network, prisma, logger }) => {
     const web3 = buildWeb3Instance({ network });
 
     const pendingTransactions = await prisma.payment.findMany({
