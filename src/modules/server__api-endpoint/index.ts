@@ -108,14 +108,14 @@ export const createEndpoint =
             });
 
             ctx.networkId = fromDbNetwork(value.toUpperCase() as Uppercase<typeof value>);
-            ctx.logger = ctx.logger.child(ctx);
+            ctx.logger = ctx.logger.child({ networkId: ctx.networkId });
           }
 
           return ctx.networkId;
         },
         lock: async (id: LockId) => {
           ctx.lockId = id;
-          ctx.logger = ctx.logger.child(ctx);
+          ctx.logger = ctx.logger.child({ lockId: ctx.lockId });
 
           const lock = await prisma.locks.findUnique({ where: { id } });
           if (
