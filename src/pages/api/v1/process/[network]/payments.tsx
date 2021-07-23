@@ -82,7 +82,6 @@ export default createEndpoint({
       try {
         const gasPrice = new Prisma.Decimal(await web3.eth.getGasPrice()).times('1.5').toFixed(0);
         const rawTx: TransactionConfig = {
-          chainId: network,
           nonce: await web3.eth.getTransactionCount(hotWallet.address),
           gasPrice: web3.utils.toHex(gasPrice),
           from: hotWallet.address,
