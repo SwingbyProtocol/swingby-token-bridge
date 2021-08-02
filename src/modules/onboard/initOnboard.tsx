@@ -58,7 +58,7 @@ export const initOnboard = ({
     hideBranding: true,
     subscriptions,
     walletSelect: {
-      wallets: [...defaultWallets, walletConnectBsc],
+      wallets: [...defaultWallets, ...(infuraApiKey ? [walletConnectBsc] : [])],
     },
     walletCheck: [
       { checkName: 'derivationPath' },
