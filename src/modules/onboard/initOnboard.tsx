@@ -2,6 +2,8 @@ import Onboard from 'bnc-onboard';
 
 import { blocknativeApiKey, infuraApiKey } from '../env';
 
+import { walletConnectBsc } from './customWallet';
+
 import type { Subscriptions } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
 
 const appName = 'Swingby Bridge';
@@ -26,30 +28,43 @@ export const initOnboard = ({
     throw new Error(`Could not find RPC URL for network ID: "${networkId}"`);
   }
 
+  const defaultWallets = [
+    { walletName: 'metamask', preferred: true },
+    { walletName: 'ledger', preferred: true },
+    ...(infuraApiKey
+      ? [
+          {
+            walletName: 'walletConnect',
+            preferred: true,
+            bridge: 'https://pancakeswap.bridge.walletconnect.org/',
+            rpc: {
+              1: RPC_URLS[1],
+              56: RPC_URLS[56],
+            },
+          },
+        ]
+      : []),
+    { walletName: 'walletLink' },
+    { walletName: 'authereum' },
+    { walletName: 'lattice' },
+    { walletName: 'torus' },
+    { walletName: 'opera' },
+    { walletName: 'trezor' },
+  ].map((it) => ({ ...it, rpcUrl, appUrl, appName, infuraKey: infuraApiKey }));
+
   return Onboard({
     dappId: blocknativeApiKey,
     networkId,
     hideBranding: true,
     subscriptions,
     walletSelect: {
-      wallets: [
-        { walletName: 'metamask', preferred: true },
-        { walletName: 'ledger', preferred: true },
-        ...(infuraApiKey ? [{ walletName: 'walletConnect', preferred: true }] : []),
-        { walletName: 'walletLink', preferred: true },
-        { walletName: 'authereum' },
-        { walletName: 'lattice' },
-        { walletName: 'torus' },
-        { walletName: 'opera' },
-        { walletName: 'trezor' },
-      ].map((it) => ({ ...it, rpcUrl, appUrl, appName, infuraKey: infuraApiKey })),
+      wallets: [...defaultWallets, ...(infuraApiKey ? [walletConnectBsc] : [])],
     },
     walletCheck: [
       { checkName: 'derivationPath' },
       { checkName: 'connect' },
       { checkName: 'accounts' },
       { checkName: 'network' },
-      { checkName: 'balance', minimumBalance: '100000' },
     ],
   });
 };
