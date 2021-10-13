@@ -2,7 +2,6 @@ import { Duration } from 'luxon';
 
 import { fetcher } from '../src/modules/fetch';
 import { logger } from '../src/modules/logger';
-import { server__processTaskSecret } from '../src/modules/server__env';
 
 const NETWORKS = ['ethereum', 'goerli', 'bsc', 'bsct'];
 const TASKS = ['deposits', 'failed-payments', 'payments', 'pending-payments'];
@@ -38,7 +37,7 @@ async function* runNetworkTask(network: typeof NETWORKS[number], task: typeof TA
 
       const id = setTimeout(() => controller.abort(), TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
-        `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${network}/${task}?secret=${server__processTaskSecret}`,
+        `${process.env.BASE_URL}/api/v1/process/${network}/${task}`,
         { signal: controller.signal },
       );
       clearTimeout(id);
@@ -59,7 +58,7 @@ async function* runGenericTask(task: typeof GENERIC_TASKS[number]) {
 
       const id = setTimeout(() => controller.abort(), TIMEOUT_AFTER);
       const result = await fetcher<Record<string, any>>(
-        `https://k8s.skybridge.exchange/swingby-token-bridge/api/v1/process/${task}?secret=${server__processTaskSecret}`,
+        `${process.env.BASE_URL}/api/v1/process/${task}`,
         { signal: controller.signal },
       );
       clearTimeout(id);

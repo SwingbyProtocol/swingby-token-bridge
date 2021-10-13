@@ -44,7 +44,7 @@ jobs:
       - uses: actions-hub/kubectl@master
         with:
           args:
-            set image deployment/swingby-token-bridge-ed-deployment app=${{
+            set image --namespace=swingby deployment/swingby-token-bridge app=${{
             steps.sha_tag.outputs.value }}
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
@@ -89,7 +89,7 @@ jobs:
       - uses: actions-hub/kubectl@master
         with:
           args:
-            set image deployment/swingby-token-bridge-bot-ed-deployment app=${{
+            set image --namespace=swingby deployment/swingby-token-bridge-bot app=${{
             steps.sha_tag.outputs.value }}
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
