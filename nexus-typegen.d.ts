@@ -237,6 +237,11 @@ export interface NexusGenObjects {
   LiquidityProvider: { // root type
     id?: string | null; // String
   }
+  Message: { // root type
+    message: string; // String!
+    seed: string; // String!
+  }
+  Mutation: {};
   Payment: { // root type
     addressContract?: string | null; // String
     addressFrom?: string | null; // String
@@ -309,6 +314,13 @@ export interface NexusGenFieldTypes {
   LiquidityProvider: { // field return type
     id: string | null; // String
   }
+  Message: { // field return type
+    message: string; // String!
+    seed: string; // String!
+  }
+  Mutation: { // field return type
+    signTerms: boolean | null; // Boolean
+  }
   Payment: { // field return type
     addressContract: string | null; // String
     addressFrom: string | null; // String
@@ -336,8 +348,10 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     bridgeBalance: NexusGenScalars['Decimal']; // Decimal!
     deposits: NexusGenRootTypes['DepositsConnection']; // DepositsConnection!
+    hasSignedTerms: boolean | null; // Boolean
     liquidityProviders: NexusGenRootTypes['LiquidityProvider'][]; // [LiquidityProvider!]!
     sanityCheck: boolean; // Boolean!
+    termsMessage: NexusGenRootTypes['Message']; // Message!
     tokenCirculatingSupply: NexusGenScalars['Decimal']; // Decimal!
     tokenMaxSupply: NexusGenScalars['Decimal']; // Decimal!
   }
@@ -381,6 +395,13 @@ export interface NexusGenFieldTypeNames {
   LiquidityProvider: { // field return type name
     id: 'String'
   }
+  Message: { // field return type name
+    message: 'String'
+    seed: 'String'
+  }
+  Mutation: { // field return type name
+    signTerms: 'Boolean'
+  }
   Payment: { // field return type name
     addressContract: 'String'
     addressFrom: 'String'
@@ -408,8 +429,10 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     bridgeBalance: 'Decimal'
     deposits: 'DepositsConnection'
+    hasSignedTerms: 'Boolean'
     liquidityProviders: 'LiquidityProvider'
     sanityCheck: 'Boolean'
+    termsMessage: 'Message'
     tokenCirculatingSupply: 'Decimal'
     tokenMaxSupply: 'Decimal'
   }
@@ -430,6 +453,12 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
     }
   }
+  Mutation: {
+    signTerms: { // args
+      address: string; // String!
+      signature: string; // String!
+    }
+  }
   Query: {
     bridgeBalance: { // args
       network: NexusGenEnums['Network']; // Network!
@@ -440,6 +469,9 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       where?: NexusGenInputs['DepositWhereInput'] | null; // DepositWhereInput
+    }
+    hasSignedTerms: { // args
+      address: string; // String!
     }
     sanityCheck: { // args
       network: NexusGenEnums['Network']; // Network!

@@ -1,0 +1,19 @@
+query TermsMessage {
+  termsMessage {
+    message
+    seed
+  }
+}
+
+query HasSignedTerms (
+  $address: String!
+) {
+  hasSignedTerms(address: $address)
+}
+
+mutation SignTerms (
+  $address: String!
+  $signature: String!
+) {
+  signTerms(address: $address, signature: $signature)
+}
