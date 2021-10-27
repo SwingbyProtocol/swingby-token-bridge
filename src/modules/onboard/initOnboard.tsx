@@ -1,6 +1,6 @@
 import Onboard from 'bnc-onboard';
 
-import { blocknativeApiKey, infuraApiKey } from '../env';
+import { blocknativeApiKey, infuraApiKey, walletConnectBridge } from '../env';
 
 import type { Subscriptions } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
 
@@ -35,7 +35,9 @@ export const initOnboard = ({
       wallets: [
         { walletName: 'metamask', preferred: true },
         { walletName: 'ledger', preferred: true },
-        ...(infuraApiKey ? [{ walletName: 'walletConnect', preferred: true }] : []),
+        ...(infuraApiKey
+          ? [{ walletName: 'walletConnect', bridge: walletConnectBridge, preferred: true }]
+          : []),
         { walletName: 'walletLink', preferred: true },
         { walletName: 'authereum' },
         { walletName: 'lattice' },
