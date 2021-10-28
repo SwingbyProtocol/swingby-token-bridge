@@ -130,6 +130,15 @@ type LiquidityProvider {
   id: String
 }
 
+type Message {
+  message: String!
+  seed: String!
+}
+
+type Mutation {
+  signTerms(address: String!, signature: String!): Boolean
+}
+
 enum Network {
   BSC
   BSCT
@@ -261,8 +270,10 @@ type Query {
     """Allows to filter results by several properties."""
     where: DepositWhereInput
   ): DepositsConnection!
+  hasSignedTerms(address: String!): Boolean
   liquidityProviders: [LiquidityProvider!]!
   sanityCheck(network: Network!): Boolean!
+  termsMessage: Message!
   tokenCirculatingSupply(network: Network!): Decimal!
   tokenMaxSupply(network: Network!): Decimal!
 }

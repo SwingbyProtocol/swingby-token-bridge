@@ -9,6 +9,9 @@ import * as filters from './filters';
 import * as sanityCheck from './sanity-check';
 import * as tokenSupply from './supply';
 import * as liquidityProviders from './liquidity-providers';
+import * as hasSignedTerms from './hasSignedTerms';
+import * as termsMessage from './termsMessage';
+import * as signTerms from './signTerms';
 
 export const schema = makeSchema({
   types: {
@@ -18,6 +21,9 @@ export const schema = makeSchema({
     ...sanityCheck,
     ...tokenSupply,
     ...liquidityProviders,
+    ...hasSignedTerms,
+    ...termsMessage,
+    ...signTerms,
   },
   plugins: [nexusPrisma()],
   contextType: {

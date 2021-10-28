@@ -114,3 +114,21 @@ model TeamWalletBalances {
 
   @@id([network, address])
 }
+
+model TermsAgreementMessage {
+  id         Int                 @id @default(autoincrement())
+  message    String
+  seed       String
+  createdAt  DateTime            @default(now())
+  signatures TermsAgreementLog[]
+}
+
+model TermsAgreementLog {
+  address   String
+  signature String
+  messageId Int
+  message   TermsAgreementMessage @relation(fields: [messageId], references: id)
+  createdAt DateTime              @default(now())
+
+  @@id([address, messageId])
+}

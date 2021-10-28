@@ -13,6 +13,7 @@ import { logger } from '../../modules/logger';
 import { useOnboard } from '../../modules/onboard';
 import { getDestinationNetwork, getSwingbyBalance, transferToHotWallet } from '../../modules/web3';
 import { isTransactionHistoryEnabled } from '../../modules/env';
+import { useAssertTermsSignature } from '../../modules/terms';
 
 import {
   Container,
@@ -40,6 +41,7 @@ export const HomePage = () => {
   const [transferring, setTrasferring] = useState(false);
   const { data: feeData, node: feeNode } = useSwapFee();
   const { isOk: isSanityCheckOk } = useCheckSanityEffect();
+  const { assertTermsSignature } = useAssertTermsSignature();
 
   const parsedAmount = useMemo(() => {
     try {
@@ -75,12 +77,13 @@ export const HomePage = () => {
     if (!parsedAmount) return;
     try {
       setTrasferring(true);
+      await assertTermsSignature();
       await transferToHotWallet({ amount: parsedAmount, onboard });
     } catch (err) {
     } finally {
       setTrasferring(false);
     }
-  }, [onboard, parsedAmount]);
+  }, [onboard, parsedAmount, assertTermsSignature]);
 
   return (
     <Container>
