@@ -16,6 +16,8 @@ export const useAssertTermsSignature = () => {
   const [fetchTerms, { data }] = useHasSignedTermsLazyQuery();
 
   const assertTermsSignature = useCallback(async () => {
+    console.log('msgData', msgData);
+    console.log('data', data);
     if (!msgData) {
       throw new Error('No Terms of Service message found');
     }
