@@ -10,6 +10,7 @@ import { Big } from 'big.js';
 import { ChangeEventHandler, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { useSupplyQuery } from '../../generated/graphql';
 import { isTransactionHistoryEnabled } from '../../modules/env';
 import { logger } from '../../modules/logger';
 import { useOnboard } from '../../modules/onboard';
@@ -25,6 +26,9 @@ import {
   StyledCard,
   StyledConnectWallet,
   StyledSupplyInfo,
+  Guideline,
+  TitleGuideline,
+  RowTutorial,
 } from './styled';
 import { SwapToBep2 } from './SwapToBep2';
 import { TransactionHistory } from './TransactionHistory';
@@ -44,6 +48,9 @@ export const HomePage = () => {
   const { isOk: isSanityCheckOk } = useCheckSanityEffect();
   const { assertTermsSignature } = useAssertTermsSignature();
   const { locale } = useIntl();
+  const { data } = useSupplyQuery({ pollInterval: 60000 });
+  const hotWalletBalance =
+    data && network ? (network === 1 ? data.bscBalance : data.ethereumBalance) : 0;
 
   const parsedAmount = useMemo(() => {
     try {
@@ -87,6 +94,9 @@ export const HomePage = () => {
     }
   }, [onboard, parsedAmount, assertTermsSignature]);
 
+  const minAmount = feeData && Number(feeData.minimumSwapSwingby);
+  const minAmountRound = minAmount && Math.ceil(minAmount / 1000) * 1000;
+
   return (
     <Container>
       <StyledConnectWallet />
@@ -106,7 +116,7 @@ export const HomePage = () => {
         </AmountContainer>
         <FeeContainer>
           <div>
-            {feeData && feeData.minimumSwapSwingby && (
+            {minAmountRound && (
               <FormattedMessage
                 id="form.swap-fee.min-swingby"
                 values={{
@@ -115,14 +125,13 @@ export const HomePage = () => {
                     displaySymbol: 'SWINGBY',
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
-                  }).format(Math.ceil(Number(feeData.minimumSwapSwingby))),
+                  }).format(minAmountRound),
                 }}
               />
             )}
           </div>
           <div>{feeNode}</div>
         </FeeContainer>
-        <FeeContainer></FeeContainer>
         <ButtonsContainer>
           <div />
           <Button
@@ -135,7 +144,8 @@ export const HomePage = () => {
               !parsedAmount?.gt(0) ||
               transferring ||
               !feeData ||
-              parsedAmount.lt(feeData.minimumSwapSwingby)
+              parsedAmount.lt(String(minAmountRound)) ||
+              Number(amount) > Number(hotWalletBalance)
             }
             onClick={transfer}
           >
@@ -167,6 +177,29 @@ export const HomePage = () => {
             })()}
           </Button>
         </ButtonsContainer>
+        <Guideline>
+          <TitleGuideline>
+            <FormattedMessage id="form.guideline-title" />
+          </TitleGuideline>
+          <RowTutorial>
+            <span>
+              <FormattedMessage id="form.guideline-step-1" />
+            </span>
+            <a
+              href="https://community.trustwallet.com/t/how-to-make-a-crosschain-swap-on-trust-wallet/85522"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <FormattedMessage id="form.guideline-see-tutorial" />
+            </a>
+          </RowTutorial>
+          <span>
+            <FormattedMessage id="form.guideline-step-2" />
+          </span>
+          <span>
+            <FormattedMessage id="form.guideline-step-3" />
+          </span>
+        </Guideline>
         <SwapToBep2 amount={parsedAmount} />
       </StyledCard>
       {!!address && !!network && isTransactionHistoryEnabled && <TransactionHistory />}

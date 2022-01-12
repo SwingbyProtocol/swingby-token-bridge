@@ -67,3 +67,22 @@ export const ButtonsContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
 `;
+
+export const Guideline = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.house)};
+  font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
+  row-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+`;
+
+export const TitleGuideline = styled.div`
+  text-align: center;
+  margin-bottom: ${({ theme }) => rem(theme.pulsar.size.box)};
+  font-size: ${({ theme }) => rem(theme.pulsar.size.house)};
+`;
+
+export const RowTutorial = styled.div`
+  display: flex;
+  column-gap: ${({ theme }) => rem(theme.pulsar.size.room)};
+`;

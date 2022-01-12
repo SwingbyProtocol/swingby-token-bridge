@@ -38,6 +38,7 @@ export const useSwapFee = () => {
       data: feeData
         ? {
             ...feeData,
+            // Memo: the gas fee has to be up to 10% of the total amount
             minimumSwapSwingby: new Big(feeData.estimatedFeeSwingby).times(100).div(10).toFixed(),
           }
         : undefined,
