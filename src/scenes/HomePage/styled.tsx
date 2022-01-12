@@ -72,8 +72,10 @@ export const Guideline = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${({ theme }) => rem(theme.pulsar.size.house)};
+  padding-top: ${({ theme }) => rem(theme.pulsar.size.room)};
   font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
   row-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  border-top: 1px solid ${({ theme }) => theme.pulsar.color.border.normal};
 `;
 
 export const TitleGuideline = styled.div`

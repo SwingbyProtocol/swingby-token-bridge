@@ -22,15 +22,14 @@ import {
   ButtonsContainer,
   Container,
   FeeContainer,
+  Guideline,
   MaxButton,
+  RowTutorial,
   StyledCard,
   StyledConnectWallet,
   StyledSupplyInfo,
-  Guideline,
   TitleGuideline,
-  RowTutorial,
 } from './styled';
-import { SwapToBep2 } from './SwapToBep2';
 import { TransactionHistory } from './TransactionHistory';
 import { useCheckSanityEffect } from './useCheckSanityEffect';
 import { useSwapFee } from './useSwapFee';
@@ -200,7 +199,7 @@ export const HomePage = () => {
             <FormattedMessage id="form.guideline-step-3" />
           </span>
         </Guideline>
-        <SwapToBep2 amount={parsedAmount} />
+        {/* <SwapToBep2 amount={parsedAmount} /> */}
       </StyledCard>
       {!!address && !!network && isTransactionHistoryEnabled && <TransactionHistory />}
     </Container>
