@@ -43,28 +43,31 @@ export const useSwapFee = () => {
         : undefined,
 
       node: (
-        <FormattedMessage
-          id="form.swap-fee"
-          values={{
-            value: feeData ? (
-              <FormattedMessage
-                id="form.swap-fee.est-value"
-                values={{
-                  swingby: getCryptoAssetFormatter({
-                    locale,
-                    displaySymbol: 'SWINGBY',
-                    maximumFractionDigits: 2,
-                  }).format(+feeData.estimatedFeeSwingby),
-                  usd: getFiatAssetFormatter({ locale, currency: 'USD' }).format(
-                    +feeData.estimatedFeeUsd,
-                  ),
-                }}
-              />
-            ) : (
-              '?'
-            ),
-          }}
-        />
+        <div>
+          <FormattedMessage
+            id="form.swap-fee"
+            values={{
+              value: feeData ? (
+                <FormattedMessage
+                  id="form.swap-fee.est-value"
+                  values={{
+                    swingby: getCryptoAssetFormatter({
+                      locale,
+                      displaySymbol: 'SWINGBY',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    }).format(+feeData.estimatedFeeSwingby),
+                    usd: getFiatAssetFormatter({ locale, currency: 'USD' }).format(
+                      +feeData.estimatedFeeUsd,
+                    ),
+                  }}
+                />
+              ) : (
+                '?'
+              ),
+            }}
+          />
+        </div>
       ),
     }),
     [feeData, locale],

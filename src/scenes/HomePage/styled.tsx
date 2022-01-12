@@ -53,7 +53,7 @@ export const AmountContainer = styled.div`
 
 export const FeeContainer = styled.div`
   font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
-  margin-top: ${({ theme }) => rem(theme.pulsar.size.box)};
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.drawer)};
   margin-bottom: ${({ theme }) => rem(theme.pulsar.size.street)};
 `;
 

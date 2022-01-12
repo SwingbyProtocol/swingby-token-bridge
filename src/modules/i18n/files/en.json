@@ -18,6 +18,7 @@
   "form.swap-btn": "Swap",
   "form.swap-fee": "Swap fee: {value}",
   "form.swap-fee.est-value": "~{swingby} ({usd})",
+  "form.swap-fee.min-swingby": "Minimum swap amount: {swingby}",
   "form.bsc-bc.divider": "or",
   "form.bsc-bc.input.label": "Your Binance Chain address",
   "tx-toast.explorer": "Explorer",
