@@ -11,6 +11,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
+      - name: Put auth token into .npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> .npmrc
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: bahmutov/npm-install@v1
 
       - name: Lint
