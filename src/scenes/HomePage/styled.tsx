@@ -53,7 +53,7 @@ export const AmountContainer = styled.div`
 
 export const FeeContainer = styled.div`
   font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
-  margin-top: ${({ theme }) => rem(theme.pulsar.size.box)};
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.drawer)};
   margin-bottom: ${({ theme }) => rem(theme.pulsar.size.street)};
 `;
 
@@ -66,4 +66,25 @@ export const ButtonsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+`;
+
+export const Guideline = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: ${({ theme }) => rem(theme.pulsar.size.house)};
+  padding-top: ${({ theme }) => rem(theme.pulsar.size.room)};
+  font-size: ${({ theme }) => rem(theme.pulsar.size.closet)};
+  row-gap: ${({ theme }) => rem(theme.pulsar.size.drawer)};
+  border-top: 1px solid ${({ theme }) => theme.pulsar.color.border.normal};
+`;
+
+export const TitleGuideline = styled.div`
+  text-align: center;
+  margin-bottom: ${({ theme }) => rem(theme.pulsar.size.box)};
+  font-size: ${({ theme }) => rem(theme.pulsar.size.house)};
+`;
+
+export const RowTutorial = styled.div`
+  display: flex;
+  column-gap: ${({ theme }) => rem(theme.pulsar.size.room)};
 `;

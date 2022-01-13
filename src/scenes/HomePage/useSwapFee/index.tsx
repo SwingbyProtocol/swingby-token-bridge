@@ -38,33 +38,37 @@ export const useSwapFee = () => {
       data: feeData
         ? {
             ...feeData,
+            // Memo: the gas fee has to be up to 10% of the total amount
             minimumSwapSwingby: new Big(feeData.estimatedFeeSwingby).times(100).div(10).toFixed(),
           }
         : undefined,
 
       node: (
-        <FormattedMessage
-          id="form.swap-fee"
-          values={{
-            value: feeData ? (
-              <FormattedMessage
-                id="form.swap-fee.est-value"
-                values={{
-                  swingby: getCryptoAssetFormatter({
-                    locale,
-                    displaySymbol: 'SWINGBY',
-                    maximumFractionDigits: 2,
-                  }).format(+feeData.estimatedFeeSwingby),
-                  usd: getFiatAssetFormatter({ locale, currency: 'USD' }).format(
-                    +feeData.estimatedFeeUsd,
-                  ),
-                }}
-              />
-            ) : (
-              '?'
-            ),
-          }}
-        />
+        <div>
+          <FormattedMessage
+            id="form.swap-fee"
+            values={{
+              value: feeData ? (
+                <FormattedMessage
+                  id="form.swap-fee.est-value"
+                  values={{
+                    swingby: getCryptoAssetFormatter({
+                      locale,
+                      displaySymbol: 'SWINGBY',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    }).format(+feeData.estimatedFeeSwingby),
+                    usd: getFiatAssetFormatter({ locale, currency: 'USD' }).format(
+                      +feeData.estimatedFeeUsd,
+                    ),
+                  }}
+                />
+              ) : (
+                '?'
+              ),
+            }}
+          />
+        </div>
       ),
     }),
     [feeData, locale],

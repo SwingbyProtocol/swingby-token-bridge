@@ -11,6 +11,10 @@ jobs:
 
     steps:
       - uses: docker/setup-qemu-action@v1
+      - name: Put auth token into .npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> .npmrc
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_PACKAGES }}
 
       - uses: crazy-max/ghaction-docker-meta@v2
         id: meta

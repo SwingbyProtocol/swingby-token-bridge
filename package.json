@@ -21,7 +21,7 @@
     "apollo-server": "^2.24.1",
     "apollo-server-micro": "^2.24.1",
     "big.js": "^6.0.3",
-    "binance-chain-sdk-lite": "^1.0.0-alpha.3",
+    "@swingbyprotocol/binance-chain-sdk-lite": "^1.0.0",
     "bnc-onboard": "1.25.0",
     "cors": "^2.8.5",
     "graphql": "^15.5.0",
