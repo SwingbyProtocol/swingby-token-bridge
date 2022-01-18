@@ -26,32 +26,39 @@ export const initOnboard = ({
     throw new Error(`Could not find RPC URL for network ID: "${networkId}"`);
   }
 
+  const wallets = [
+    { walletName: 'metamask', preferred: true },
+    {
+      walletName: 'walletConnect',
+      bridge: walletConnectBridge,
+      preferred: true,
+      rpc: RPC_URLS,
+    },
+    {
+      walletName: 'ledger',
+      rpcUrl,
+      preferred: true,
+    },
+    { walletName: 'walletLink', rpcUrl, appName, preferred: true },
+    { walletName: 'authereum' },
+    { walletName: 'lattice', rpcUrl, appName },
+    { walletName: 'torus' },
+    { walletName: 'opera' },
+    {
+      walletName: 'trezor',
+      email: 'info@swingby.network',
+      appUrl,
+      rpcUrl,
+    },
+  ];
+
   return Onboard({
     dappId: blocknativeApiKey,
     networkId,
     hideBranding: true,
     subscriptions,
     walletSelect: {
-      wallets: [
-        { walletName: 'metamask', preferred: true },
-        { walletName: 'ledger', preferred: true },
-        ...(infuraApiKey
-          ? [
-              {
-                walletName: 'walletConnect',
-                bridge: walletConnectBridge,
-                preferred: true,
-                rpc: RPC_URLS,
-              },
-            ]
-          : []),
-        { walletName: 'walletLink', preferred: true },
-        { walletName: 'authereum' },
-        { walletName: 'lattice' },
-        { walletName: 'torus' },
-        { walletName: 'opera' },
-        { walletName: 'trezor' },
-      ].map((it) => ({ ...it, rpcUrl, appUrl, appName, infuraKey: infuraApiKey })),
+      wallets,
     },
     walletCheck: [
       { checkName: 'derivationPath' },
