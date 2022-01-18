@@ -47,7 +47,7 @@ export const initOnboard = ({
     {
       walletName: 'trezor',
       email: 'info@swingby.network',
-      appUrl: appName,
+      appUrl,
       rpcUrl,
     },
   ];
