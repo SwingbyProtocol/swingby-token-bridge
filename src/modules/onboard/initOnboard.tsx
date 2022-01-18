@@ -36,7 +36,14 @@ export const initOnboard = ({
         { walletName: 'metamask', preferred: true },
         { walletName: 'ledger', preferred: true },
         ...(infuraApiKey
-          ? [{ walletName: 'walletConnect', bridge: walletConnectBridge, preferred: true }]
+          ? [
+              {
+                walletName: 'walletConnect',
+                bridge: walletConnectBridge,
+                preferred: true,
+                rpc: RPC_URLS,
+              },
+            ]
           : []),
         { walletName: 'walletLink', preferred: true },
         { walletName: 'authereum' },
