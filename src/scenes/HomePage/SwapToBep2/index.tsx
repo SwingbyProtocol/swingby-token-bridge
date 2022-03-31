@@ -2,7 +2,7 @@ import { Button, Icon, Loading, TextInput } from '@swingby-protocol/pulsar';
 import { Big } from 'big.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { isAddressValid } from '@swingbyprotocol/binance-chain-sdk-lite';
+import { isAddressValid } from '@swingby-protocol/binance-chain-sdk-lite';
 
 import { logger } from '../../../modules/logger';
 import { useOnboard } from '../../../modules/onboard';

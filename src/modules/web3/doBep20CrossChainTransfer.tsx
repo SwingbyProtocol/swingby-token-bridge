@@ -3,7 +3,7 @@ import { Big, BigSource } from 'big.js';
 import { TransactionConfig } from 'web3-eth';
 import { API } from 'bnc-onboard/dist/src/interfaces'; // eslint-disable-line import/no-internal-modules
 import { DateTime } from 'luxon';
-import { decodeAddress, isAddressValid } from '@swingbyprotocol/binance-chain-sdk-lite';
+import { decodeAddress, isAddressValid } from '@swingby-protocol/binance-chain-sdk-lite';
 import ABI from 'human-standard-token-abi';
 import { createOrUpdateToast } from '@swingby-protocol/pulsar';
 
