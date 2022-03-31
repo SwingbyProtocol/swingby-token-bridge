@@ -16,10 +16,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Put auth token into .npmrc
-        run: echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> .npmrc
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_PACKAGES }}
 
       - uses: docker/login-action@v1
         with:
