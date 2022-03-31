@@ -3075,10 +3075,10 @@
     qrcode.react "^1.0.0"
     react-toastify "^6.2.0"
 
-"@swingbyprotocol/binance-chain-sdk-lite@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@swingbyprotocol/binance-chain-sdk-lite/1.0.0/6151a71fb959bbecec6fabe5921803b1f69ef716046c5684d6c231b530f1ab63#2ca790ead9dc47709457f249c41c08f6c8c0f96f"
-  integrity sha512-HNmMzyr0QmcTdnSgrNH/aA8eVNNdxtvi9i57mPdJ6uIx3XH4Z99WWZd1XeVKtIiiIjg44IgXh4trZWTEwGdXcg==
+"@swingbyprotocol/binance-chain-sdk-lite@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@swingbyprotocol/binance-chain-sdk-lite/1.0.1/7636a08be872d00e17b339bc9f3dd8307eef7c7532564066c2e393d90eb52bd5#842e4fe3d60b67f6d17a1a6eb4e2b111ee9e957f"
+  integrity sha512-nbpz4mM5OPxb40IRSAiv8QgrXelQwDod9+01xjsL3wqofBsX9Vu7RBLeegghiwIekctxXWcqTnfAyiIbKycSwg==
   dependencies:
     bech32 "^1.1.4"
     big.js "^6.0.3"
