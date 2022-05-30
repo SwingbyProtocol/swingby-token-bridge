@@ -65,14 +65,6 @@ export const FooterBottom = styled.div`
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-
-    .copyright {
-      order: 2;
-    }
-
-    .footerBottomLinks {
-      order: 1;
-    }
   }
 `;
 

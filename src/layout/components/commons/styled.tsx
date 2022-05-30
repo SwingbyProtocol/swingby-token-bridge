@@ -5,8 +5,8 @@ export const Base = styled.a<{ size: 'small' | 'normal' | 'big'; iconOnly: boole
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  font: var(--font-p2-bold);
-
+  font-weight: bold;
+  font-size: 14px;
   text-align: center;
   white-space: nowrap;
 
@@ -62,7 +62,7 @@ export const GhostAlt = styled(Base)`
 `;
 
 export const TextAlt = styled(Base)`
-  color: var(--theme-secondary-color);
+  color: ${({ theme }) => theme.pulsar.color.text.placeholder};
   border: 0;
   background-color: transparent;
   padding: 0;
@@ -71,23 +71,11 @@ export const TextAlt = styled(Base)`
   align-items: center;
 
   &:hover {
-    color: var(--theme-primary-color);
+    color: ${({ theme }) => theme.pulsar.color.text.normal};
   }
 
   &:active {
-    color: var(--theme-primary-color);
-  }
-
-  &.small {
-    font: var(--font-sm-bold);
-  }
-
-  &.normal {
-    font: var(--font-p2-bold);
-  }
-
-  &.big {
-    font: var(--font-p1-bold);
+    color: ${({ theme }) => theme.pulsar.color.text.normal};
   }
 
   &:disabled,
@@ -96,7 +84,7 @@ export const TextAlt = styled(Base)`
   &.disabled {
     cursor: not-allowed;
     pointer-events: none;
-    color: var(--theme-grey300-color);
+    color: ${({ theme }) => theme.pulsar.color.text.masked};
   }
 `;
 

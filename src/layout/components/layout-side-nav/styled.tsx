@@ -122,7 +122,7 @@ export const ButtonText = styled.text`
 `;
 
 export const Mask = styled.div<{ navOpen: boolean }>`
-  background: var(--theme-mask-color);
+  background-color: rgba(19, 32, 43, 0.8);
   bottom: 0;
   height: 100%;
   left: 0;
