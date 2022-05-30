@@ -1,7 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-// eslint-disable-next-line import/no-internal-modules
-import Sprite from '../../resources/icons-sprite.svg';
+import { Sprite } from '../../resources';
 
 import { SvgIcon } from './styled';
 
@@ -168,7 +167,7 @@ export type IconProps = {
   style?: CSSProperties;
 };
 
-const Icon: React.FC<IconProps> = (props) => {
+export const Icon: React.FC<IconProps> = (props) => {
   const { name, width = 24, height = 24, rotate, color, className, style, ...rest } = props;
 
   return (
@@ -184,5 +183,3 @@ const Icon: React.FC<IconProps> = (props) => {
     </SvgIcon>
   );
 };
-
-export default Icon;

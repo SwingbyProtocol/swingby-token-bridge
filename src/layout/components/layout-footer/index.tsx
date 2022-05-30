@@ -1,11 +1,7 @@
 import React from 'react';
 
-// eslint-disable-next-line import/no-internal-modules
-import { ExternalLink } from '../commons/ExternalLink';
-// eslint-disable-next-line import/no-internal-modules
-import { useConfig } from '../../config/useConfig';
-// eslint-disable-next-line import/no-internal-modules
-import Icon from '../commons/Icon';
+import { useConfig } from '../../config';
+import { Icon, ExternalLink } from '../commons';
 
 import {
   Footer,

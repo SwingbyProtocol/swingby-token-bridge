@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-// eslint-disable-next-line import/no-internal-modules
-import Icon, { IconNames } from '../commons/Icon';
+import { Icon, IconNames } from '../commons';
 
 import {
   Aside,
