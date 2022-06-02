@@ -1,7 +1,7 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { relayStylePagination } from '@apollo/client/utilities'; // eslint-disable-line import/no-internal-modules
 import { AppProps } from 'next/app';
-import { useMemo } from 'react';
+import { ReactElement, ReactNode, useMemo } from 'react';
 import { IntlProvider } from 'react-intl';
 import {
   PulsarThemeProvider,
@@ -10,11 +10,13 @@ import {
   PULSAR_GLOBAL_FONT_HREF,
 } from '@swingby-protocol/pulsar';
 import Head from 'next/head';
+import { NextPage } from 'next';
 
 import { languages } from '../modules/i18n';
 import { Favicon } from '../components/Favicon';
 import { OnboardProvider } from '../modules/onboard';
 import { GlobalStyles } from '../modules/styles';
+import LayoutView from '../layout';
 
 const apolloClient = new ApolloClient({
   uri: '/api/v1/graphql',
@@ -29,7 +31,14 @@ const apolloClient = new ApolloClient({
   }),
 });
 
-function MyApp({ Component, pageProps, router }: AppProps) {
+type AppWithLayoutProps = AppProps & {
+  Component: NextPageWithLayout;
+};
+export type NextPageWithLayout<P = Record<string, unknown>> = NextPage<P> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+function MyApp({ Component, pageProps, router }: AppWithLayoutProps) {
   const locale = (() => {
     const result = router.locale ?? router.defaultLocale ?? 'en';
     if (Object.keys(languages).includes(result)) {
@@ -40,6 +49,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   })();
 
   const messages = useMemo(() => ({ ...languages.en, ...languages[locale] }), [locale]);
+
+  const getLayout = Component.getLayout || ((page) => <LayoutView>{page}</LayoutView>);
 
   return (
     <ApolloProvider client={apolloClient}>
@@ -56,8 +67,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
               <PulsarGlobalStyles />
               <Favicon />
               <GlobalStyles />
-
-              <Component {...pageProps} />
+              {getLayout(<Component {...pageProps} />)}
               <PulsarToastContainer />
             </>
           </OnboardProvider>
