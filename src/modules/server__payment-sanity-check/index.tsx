@@ -88,9 +88,9 @@ export const assertPaymentSanityCheck = async ({
   let latestPayment = latestPayments[0];
 
   // !! Use this to skip a broken tx hash ↓
-  if (latestPayment.hash === '0xc598883e461845821fe913cbd4cb335e53b78554822900e3bcbfd6b3aab3f544') {
-    latestPayment = latestPayments[1];
-  }
+  // if (latestPayment.hash === '0xc598883e461845821fe913cbd4cb335e53b78554822900e3bcbfd6b3aab3f544') {
+  //   latestPayment = latestPayments[1];
+  // }
   const lastPayment = await prisma.payment.findUnique({
     where: { network_hash: { network: toDbNetwork(network), hash: latestPayment.hash } },
   });
