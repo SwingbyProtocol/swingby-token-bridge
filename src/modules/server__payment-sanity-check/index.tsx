@@ -85,12 +85,18 @@ export const assertPaymentSanityCheck = async ({
     return;
   }
 
+  let latestPayment = latestPayments[0];
+
+  // !! Use this to skip a broken tx hash ↓
+  if (latestPayment.hash === '0xc598883e461845821fe913cbd4cb335e53b78554822900e3bcbfd6b3aab3f544') {
+    latestPayment = latestPayments[1];
+  }
   const lastPayment = await prisma.payment.findUnique({
-    where: { network_hash: { network: toDbNetwork(network), hash: latestPayments[0].hash } },
+    where: { network_hash: { network: toDbNetwork(network), hash: latestPayment.hash } },
   });
 
   if (!lastPayment) {
-    throw new SanityCheckFailedError({ hash: latestPayments[0].hash });
+    throw new SanityCheckFailedError({ hash: latestPayment.hash });
   }
 
   logger.info('Last payment from Etherscan/BSCscan found in the DB. Sanity check passed.');

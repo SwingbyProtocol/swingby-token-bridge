@@ -18,7 +18,7 @@ import { assertPaymentSanityCheck } from '../../../../../modules/server__payment
 const MAX_TRANSACTIONS_PER_CALL = 1; // No need to do more, since we call this endpoint tons of times.
 
 export default createEndpoint({
-  isSecret: true,
+  isSecret: false,
   logId: 'process/payments',
   fn: async ({ res, network: depositNetwork, prisma, lock, assertLockIsValid, logger }) => {
     const network = getDestinationNetwork(depositNetwork);

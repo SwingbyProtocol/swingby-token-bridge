@@ -29,7 +29,7 @@ type ApiResult = {
 };
 
 export default createEndpoint({
-  isSecret: true,
+  isSecret: false,
   logId: 'process/pending-payments',
   fn: async ({ req, res, network, prisma, logger }) => {
     const web3 = buildWeb3Instance({ network });

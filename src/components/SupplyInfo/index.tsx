@@ -15,37 +15,17 @@ export const SupplyInfo = ({ className }: { className?: string }) => {
   return (
     <StyledCard size="town" className={className}>
       <div />
-      <Header>
-        <FormattedMessage id="supply-info.chain-tag" />
-      </Header>
+      <Header />
       <Header>
         <FormattedMessage id="supply-info.bridge-tag" />
       </Header>
       <StyledNetworkTag network={1} />
-      <ItemAmount>
-        {!data ? (
-          '?'
-        ) : (
-          <FormattedNumber
-            {...numberFormat}
-            value={new Big(data.ethereumSupply).minus(data.ethereumBalance).toNumber()}
-          />
-        )}
-      </ItemAmount>
+      <ItemAmount />
       <ItemAmount>
         {!data ? '?' : <FormattedNumber {...numberFormat} value={+data.ethereumBalance} />}
       </ItemAmount>
       <StyledNetworkTag network={56} />
-      <ItemAmount>
-        {!data ? (
-          '?'
-        ) : (
-          <FormattedNumber
-            {...numberFormat}
-            value={new Big(data.bscSupply).minus(data.bscBalance).toNumber()}
-          />
-        )}
-      </ItemAmount>
+      <ItemAmount />
       <ItemAmount>
         {!data ? '?' : <FormattedNumber {...numberFormat} value={+data.bscBalance} />}
       </ItemAmount>
