@@ -34,6 +34,7 @@ import { TransactionHistory } from './TransactionHistory';
 import { useCheckSanityEffect } from './useCheckSanityEffect';
 import { useSwapFee } from './useSwapFee';
 
+const SWAP_ENABLED = false;
 const TOAST_ID_GET_MAX = 'get-max';
 
 logger.debug({ isTransactionHistoryEnabled }, 'Is the transaction history feature enabled?');
@@ -137,6 +138,7 @@ export const HomePage = () => {
             variant="primary"
             size="state"
             disabled={
+              !SWAP_ENABLED ||
               !isSanityCheckOk ||
               !address ||
               !network ||
@@ -149,6 +151,10 @@ export const HomePage = () => {
             onClick={transfer}
           >
             {(() => {
+              if (!SWAP_ENABLED) {
+                return 'Temporarily Offline';
+              }
+
               if (transferring) {
                 return <Loading />;
               }
