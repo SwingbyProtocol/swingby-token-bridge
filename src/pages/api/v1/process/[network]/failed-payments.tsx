@@ -9,7 +9,7 @@ import { toDbNetwork } from '../../../../../modules/server__db';
 import { MIN_CONFIRMATIONS_EXPECTED } from '../../../../../modules/web3';
 
 export default createEndpoint({
-  isSecret: false,
+  isSecret: true,
   logId: 'process/failed-payments',
   fn: async ({ req, res, network, prisma, logger }) => {
     const web3 = buildWeb3Instance({ network });
