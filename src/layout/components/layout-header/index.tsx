@@ -13,7 +13,7 @@ const LayoutHeader: React.FC<NavHandlerProps> = ({ navOpen, setNavOpen }) => {
       <BurgerButton onClick={() => setNavOpen(!navOpen)}>
         <ArrowIcon navOpen={navOpen} />
       </BurgerButton>
-      <Tittle>Swingby Token Bridge (Ethereum ⇄ BSC)</Tittle>
+      <Tittle>Swingby Token Bridge (ETH ⇄ BSC)</Tittle>
     </Header>
   );
 };
