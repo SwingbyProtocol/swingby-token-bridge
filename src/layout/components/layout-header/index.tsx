@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ArrowIcon, BurgerButton, ConnectButton, Header, Tittle } from './styled';
+import { ArrowIcon, BurgerButton, Header, Tittle } from './styled';
 
 type NavHandlerProps = {
   navOpen: boolean;

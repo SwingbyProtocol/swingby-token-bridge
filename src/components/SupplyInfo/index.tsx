@@ -1,4 +1,3 @@
-import { Big } from 'big.js';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 import { useSupplyQuery } from '../../generated/graphql';

@@ -171,12 +171,12 @@ const UnderConstruction: React.FC = () => {
       }
     };
 
-    const handleResize = debounce(() => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      startGame();
-    }, 300);
+    //const handleResize = debounce(() => {
+    //  if (animationFrameId) {
+    //    cancelAnimationFrame(animationFrameId);
+    //  }
+    //  startGame();
+    //}, 300);
 
     resizeCanvas();
     gameOfLife();
