@@ -15,4 +15,13 @@ module.exports = {
 
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: 'https://app.swingby.network/migrate',
+        permanent: true,
+      },
+    ]
+  },
 };
